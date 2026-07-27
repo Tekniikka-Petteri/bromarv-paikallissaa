@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bromarvin paikallissää v16 – 30 km</title>
+  <title>Bromarvin paikallissää v17 – 30 km</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
   <style id="leaflet-critical-css">
@@ -703,34 +703,104 @@ function showMarineError(err) {
   document.getElementById('marineLight').className = 'marine-light caution';
 }
 
-async function fetchWeather() {
-  setStatus('Haetaan 25 sääpisteen tiedot…');
-  document.getElementById('errorBox').style.display = 'none';
-  const points = buildPoints();
-  const latitudes = points.map(p => p.lat.toFixed(5)).join(',');
-  const longitudes = points.map(p => p.lon.toFixed(5)).join(',');
-  const params = new URLSearchParams({
-    latitude: latitudes,
-    longitude: longitudes,
-    current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day,uv_index,pressure_msl',
-    hourly: 'temperature_2m,relative_humidity_2m,dew_point_2m,cloud_cover,pressure_msl,precipitation_probability,precipitation,rain,showers,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m',
-    forecast_days: '2',
-    past_hours: '6',
-    timezone: 'Europe/Helsinki',
-    wind_speed_unit: 'ms',
-    precipitation_unit: 'mm'
-  });
-  const url = 'https://api.open-meteo.com/v1/forecast?' + params.toString();
+const WEATHER_CACHE_KEY = 'bromarv-weather-v17';
+const WEATHER_CACHE_MAX_AGE = 10 * 60 * 1000;
+let weatherRequestRunning = false;
+let lastWeatherRequestAt = 0;
+
+function saveWeatherCache() {
+  try {
+    localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), allWeather }));
+  } catch (err) { console.warn('Säätietojen välimuistia ei voitu tallentaa.', err); }
+}
+
+function loadWeatherCache(maxAge = Infinity) {
+  try {
+    const raw = localStorage.getItem(WEATHER_CACHE_KEY);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (!cached?.savedAt || !Array.isArray(cached.allWeather)) return null;
+    if (Date.now() - cached.savedAt > maxAge) return null;
+    return cached;
+  } catch (err) { return null; }
+}
+
+async function fetchJson(url, label) {
   const response = await fetch(url, { cache: 'no-store' });
-  if (!response.ok) throw new Error(`Sääpalvelin vastasi virheellä ${response.status}`);
-  let data = await response.json();
-  if (!Array.isArray(data)) data = [data];
-  allWeather = points.map((point, i) => ({ point, data: data[i] }));
-  renderAll();
-  const pageStamp = new Date().toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
-  const modelTimeRaw = allWeather[0]?.data?.current?.time;
-  const modelStamp = modelTimeRaw ? new Date(modelTimeRaw).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' }) : '--';
-  setStatus(`Säädata klo ${modelStamp} · sivu päivitetty klo ${pageStamp}<br>Kartalla Bromarv, 24 ympäröivää ennustepistettä ja vaikutusalueen livekamerat.`);
+  if (!response.ok) {
+    const err = new Error(`${label} vastasi virheellä ${response.status}`);
+    err.status = response.status;
+    throw err;
+  }
+  return response.json();
+}
+
+async function fetchWeather({ force = false } = {}) {
+  if (weatherRequestRunning) return;
+  const now = Date.now();
+  if (!force && now - lastWeatherRequestAt < 60 * 1000) return;
+  weatherRequestRunning = true;
+  lastWeatherRequestAt = now;
+  setStatus('Haetaan Bromarvin sää ja 24 lähialueen pistettä…');
+  document.getElementById('errorBox').style.display = 'none';
+
+  try {
+    const points = buildPoints();
+    const latitudes = points.map(p => p.lat.toFixed(5)).join(',');
+    const longitudes = points.map(p => p.lon.toFixed(5)).join(',');
+
+    // Kevyt pyyntö kaikille 25 pisteelle: nykytila ja vain 3 tunnin saderiski.
+    const areaParams = new URLSearchParams({
+      latitude: latitudes,
+      longitude: longitudes,
+      current: 'temperature_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day',
+      hourly: 'precipitation_probability',
+      forecast_hours: '3',
+      timezone: 'Europe/Helsinki',
+      wind_speed_unit: 'ms',
+      precipitation_unit: 'mm'
+    });
+
+    // Täydet tiedot haetaan vain Bromarvin keskipisteelle.
+    const centerParams = new URLSearchParams({
+      latitude: CENTER.lat,
+      longitude: CENTER.lon,
+      current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day,uv_index,pressure_msl',
+      hourly: 'temperature_2m,relative_humidity_2m,dew_point_2m,cloud_cover,pressure_msl,precipitation_probability,precipitation,rain,showers,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m',
+      forecast_hours: '18',
+      past_hours: '6',
+      timezone: 'Europe/Helsinki',
+      wind_speed_unit: 'ms',
+      precipitation_unit: 'mm'
+    });
+
+    const [areaRaw, centerData] = await Promise.all([
+      fetchJson('https://api.open-meteo.com/v1/forecast?' + areaParams.toString(), 'Sääpalvelin'),
+      fetchJson('https://api.open-meteo.com/v1/forecast?' + centerParams.toString(), 'Sääpalvelin')
+    ]);
+    const areaData = Array.isArray(areaRaw) ? areaRaw : [areaRaw];
+    allWeather = points.map((point, i) => ({ point, data: i === 0 ? centerData : areaData[i] }));
+    renderAll();
+    saveWeatherCache();
+
+    const pageStamp = new Date().toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
+    const modelTimeRaw = centerData?.current?.time;
+    const modelStamp = modelTimeRaw ? new Date(modelTimeRaw).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' }) : '--';
+    setStatus(`Säädata klo ${modelStamp} · sivu päivitetty klo ${pageStamp}<br>Kartalla Bromarv, 24 ympäröivää ennustepistettä ja vaikutusalueen livekamerat.`);
+  } catch (err) {
+    const cached = loadWeatherCache();
+    if (cached) {
+      allWeather = cached.allWeather;
+      renderAll();
+      const cacheTime = new Date(cached.savedAt).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
+      setStatus(`Open-Meteo rajoitti tai keskeytti haun. Näytetään viimeksi onnistuneet tiedot klo ${cacheTime}.`);
+      if (err.status !== 429) console.error(err);
+      return;
+    }
+    throw err;
+  } finally {
+    weatherRequestRunning = false;
+  }
 }
 
 function precipitationState(current) {
@@ -1030,7 +1100,7 @@ document.getElementById('modeTemp').onclick = () => setMode('temp');
 document.getElementById('modeWind').onclick = () => setMode('wind');
 document.getElementById('modeRain').onclick = () => setMode('rain');
 document.getElementById('refreshBtn').onclick = async () => {
-  await Promise.allSettled([fetchWeather(), fetchMarine().catch(showMarineError)]);
+  await Promise.allSettled([fetchWeather({ force: true }), fetchMarine().catch(showMarineError)]);
 };
 document.getElementById('radarToggle').onclick = toggleRadar;
 document.getElementById('radarPlay').onclick = toggleRadarAnimation;
@@ -1047,28 +1117,31 @@ async function startApp() {
     return;
   }
 
-  let attempts = 0;
-  const loadWeatherWithRetry = async () => {
-    attempts += 1;
+  const freshCache = loadWeatherCache(WEATHER_CACHE_MAX_AGE);
+  if (freshCache) {
+    allWeather = freshCache.allWeather;
+    renderAll();
+    const cacheTime = new Date(freshCache.savedAt).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
+    setStatus(`Näytetään selaimen välimuistista tallennetut säätiedot klo ${cacheTime}. Uusi haku tehdään tarvittaessa.`);
+  } else {
     try {
       await fetchWeather();
-      await fetchMarine().catch(showMarineError);
     } catch (err) {
       console.error(err);
-      if (attempts < 3) {
-        setStatus(`Säätietojen lataus epäonnistui. Yritetään uudelleen (${attempts}/3)…`);
-        setTimeout(loadWeatherWithRetry, 1800);
+      if (err.status === 429) {
+        showError(new Error('Open-Meteo rajoittaa tilapäisesti pyyntöjä (429). Odota muutama minuutti ja paina Päivitä vain kerran.'));
       } else {
         showError(err);
       }
     }
-  };
-
-  await loadWeatherWithRetry();
+  }
+  await fetchMarine().catch(showMarineError);
   setInterval(() => {
-    fetchWeather().catch(showError);
+    fetchWeather().catch(err => {
+      if (err.status !== 429) showError(err);
+    });
     fetchMarine().catch(showMarineError);
-  }, 10 * 60 * 1000);
+  }, 15 * 60 * 1000);
 }
 
 if (document.readyState === 'loading') {
