@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bromarvin paikallissää v18 – 30 km</title>
+  <title>Bromarvin paikallissää v19 – 30 km</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
   <style id="leaflet-critical-css">
@@ -215,6 +215,18 @@
     .marine-metric strong { font-size:16px; }
     .marine-note { margin-top:11px; padding:10px 11px; border-radius:11px; background:rgba(77,183,255,.08); border:1px solid rgba(77,183,255,.16); color:var(--muted); font-size:13px; line-height:1.4; }
 
+    .metric.optional { display:none; }
+    .metric.optional.visible { display:block; }
+    .wildfire-card { display:none; border-left:5px solid var(--yellow); }
+    .wildfire-card.visible { display:block; }
+    .wildfire-card.orange { border-left-color:#ff9f43; }
+    .wildfire-card.red { border-left-color:#ff4d4d; }
+    .wildfire-alert { display:flex; gap:12px; align-items:flex-start; }
+    .wildfire-icon { font-size:38px; line-height:1; }
+    .wildfire-title { font-size:20px; font-weight:800; margin-bottom:5px; }
+    .wildfire-text { color:var(--muted); line-height:1.45; }
+    .wildfire-link { display:inline-block; margin-top:9px; color:#77caff; font-weight:800; text-decoration:none; }
+
     @media (max-width: 980px) {
       main { grid-template-columns: 1fr; }
       .map-wrap { height: 570px; min-height: 570px; }
@@ -418,8 +430,20 @@
         <div class="metric"><small>Kastepiste</small><strong id="mainDewPoint">--</strong></div>
         <div class="metric"><small>Ilmanpaine</small><strong id="mainPressure">--</strong></div>
         <div class="metric"><small>Paineen muutos 6 h</small><strong id="mainPressureTrend">--</strong></div>
+        <div class="metric optional" id="snowMetric"><small>Lumen syvyys</small><strong id="mainSnowDepth">--</strong></div>
         <div class="metric uv" id="uvMetric"><small>UV-indeksi</small><strong id="mainUv">--</strong></div>
         <div class="pressure-explain" id="pressureExplain"><strong>Ilmanpaine:</strong> Haetaan tietoa…</div>
+      </div>
+    </section>
+
+    <section class="card wildfire-card wide" id="wildfireCard" aria-live="polite">
+      <div class="wildfire-alert">
+        <div class="wildfire-icon">🔥</div>
+        <div>
+          <div class="wildfire-title" id="wildfireTitle">Maastopalovaroitus</div>
+          <div class="wildfire-text" id="wildfireText"></div>
+          <a class="wildfire-link" href="https://www.ilmatieteenlaitos.fi/varoitukset" target="_blank" rel="noopener">Tarkista virallinen varoituskartta</a>
+        </div>
       </div>
     </section>
 
@@ -895,7 +919,7 @@ async function fetchWeather({ force = false } = {}) {
     const centerParams = new URLSearchParams({
       latitude: CENTER.lat,
       longitude: CENTER.lon,
-      current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day,uv_index,pressure_msl',
+      current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day,uv_index,pressure_msl,snow_depth',
       hourly: 'temperature_2m,relative_humidity_2m,dew_point_2m,cloud_cover,pressure_msl,precipitation_probability,precipitation,rain,showers,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m',
       forecast_hours: '18',
       past_hours: '6',
@@ -1038,6 +1062,15 @@ function renderCenter() {
   const trend = pressureTrend(hourly, currentIndex, pressure);
   document.getElementById('mainPressureTrend').textContent = trend.label;
   document.getElementById('pressureExplain').innerHTML = `<strong>Ilmanpaine:</strong> ${pressureMeaning(pressure)} ${trend.explain}`;
+  const snowDepthM = Number(c.snow_depth);
+  const snowMetric = document.getElementById('snowMetric');
+  if (Number.isFinite(snowDepthM) && snowDepthM > 0.001) {
+    const snowCm = snowDepthM * 100;
+    snowMetric.classList.add('visible');
+    document.getElementById('mainSnowDepth').textContent = snowCm < 1 ? `${snowCm.toFixed(1)} cm` : `${Math.round(snowCm)} cm`;
+  } else {
+    snowMetric.classList.remove('visible');
+  }
   const uv = Number(c.uv_index || 0);
   const uvMetric = document.getElementById('uvMetric');
   if (uv > 0.05) {
@@ -1049,6 +1082,44 @@ function renderCenter() {
 }
 
 
+
+async function fetchWildfireWarning() {
+  const card = document.getElementById('wildfireCard');
+  if (!card) return;
+  try {
+    const response = await fetch('https://alerts.fmi.fi/cap/feed/rss_fi-FI.rss', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Varoituspalvelu vastasi ${response.status}`);
+    const xmlText = await response.text();
+    const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
+    if (doc.querySelector('parsererror')) throw new Error('Varoitussyötettä ei voitu tulkita.');
+    const items = [...doc.querySelectorAll('item')];
+    const now = Date.now();
+    const matches = items.filter(item => {
+      const text = (item.textContent || '').toLowerCase();
+      const isWildfire = text.includes('maastopalo') || text.includes('metsäpalo') || text.includes('ruohikkopalo');
+      const isArea = text.includes('uusimaa') || text.includes('raasepori') || text.includes('raseborg');
+      const cancelled = text.includes('cancel') || text.includes('peruttu') || text.includes('poistettu');
+      const pub = item.querySelector('pubDate')?.textContent;
+      const fresh = !pub || !Number.isFinite(Date.parse(pub)) || now - Date.parse(pub) < 7 * 86400000;
+      return isWildfire && isArea && !cancelled && fresh;
+    });
+    if (!matches.length) {
+      card.className = 'card wildfire-card wide';
+      return;
+    }
+    const text = matches.map(item => item.textContent || '').join(' ').toLowerCase();
+    let level = 'yellow';
+    let levelFi = 'keltainen';
+    if (text.includes('punainen') || text.includes('red')) { level = 'red'; levelFi = 'punainen'; }
+    else if (text.includes('oranssi') || text.includes('orange')) { level = 'orange'; levelFi = 'oranssi'; }
+    card.className = `card wildfire-card wide visible ${level}`;
+    document.getElementById('wildfireTitle').textContent = `Maastopalovaroitus · ${levelFi}`;
+    document.getElementById('wildfireText').innerHTML = 'Ilmatieteen laitoksen maastopalovaroitus on voimassa Uudenmaan alueella. Avotulen teko on kielletty varoituksen aikana. Tarkista aina ajantasainen alue ja voimassaoloaika viralliselta varoituskartalta.';
+  } catch (err) {
+    console.warn('Maastopalovaroitusta ei voitu tarkistaa:', err);
+    card.className = 'card wildfire-card wide';
+  }
+}
 
 function pressureMeaning(hPa) {
   if (!Number.isFinite(hPa)) return 'Tietoa ei saatu sääpalvelusta.';
@@ -1266,12 +1337,14 @@ async function startApp() {
     }
   }
   await fetchMarine().catch(showMarineError);
+  await fetchWildfireWarning();
   setInterval(() => {
     fetchWeather().catch(err => {
       if (err.status !== 429) showError(err);
     });
     fetchMarine().catch(showMarineError);
   }, 15 * 60 * 1000);
+  setInterval(fetchWildfireWarning, 30 * 60 * 1000);
 }
 
 if (document.readyState === 'loading') {
