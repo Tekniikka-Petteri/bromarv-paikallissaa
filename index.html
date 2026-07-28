@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bromarvin paikallissää v24 – 30 km</title>
+  <title>Bromarvin paikallissää v25 – 30 km</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://unpkg.com">
@@ -1247,6 +1247,20 @@ function renderMoon() {
   document.getElementById('nextNewMoon').textContent = moon.nextNew.toLocaleDateString('fi-FI', opts);
 }
 
+
+function timelineWeatherIcon(code, isDay = 1) {
+  const c = Number(code);
+  const night = Number(isDay) === 0;
+  if (c === 0) return night ? '☾' : '☀';
+  if ([1, 2].includes(c)) return night ? '☾☁' : '☀☁';
+  if (c === 3) return '☁';
+  if ([45, 48].includes(c)) return '≋';
+  if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(c)) return '☂';
+  if ([71, 73, 75, 77, 85, 86].includes(c)) return '❄';
+  if ([95, 96, 99].includes(c)) return '⚡';
+  return '☁';
+}
+
 function renderTimeline() {
   const d = allWeather[0].data;
   const h = d.hourly;
@@ -1259,7 +1273,7 @@ function renderTimeline() {
     const isDay = date.getHours() >= 7 && date.getHours() < 22 ? 1 : 0;
     const w = weatherInfo(Number(h.weather_code[i]), isDay);
     return `<div class="hour"><strong>${date.toLocaleTimeString('fi-FI',{hour:'2-digit',minute:'2-digit'})}</strong>
-      <div class="hicon">${w.icon}</div><div>${Math.round(h.temperature_2m[i])} °C</div>
+      <div class="hicon" title="${w.label}" aria-label="${w.label}">${timelineWeatherIcon(h.weather_code[i], isDay)}</div><div>${Math.round(h.temperature_2m[i])} °C</div>
       <div class="rain">Saderiski ${Math.round(h.precipitation_probability[i] || 0)} %</div>
       <small>${Number(h.precipitation[i] || 0).toFixed(1)} mm</small>
       <small><span class="wind-arrow" style="transform:rotate(${(Number(h.wind_direction_10m[i])+180)%360}deg)">↑</span> ${Number(h.wind_speed_10m[i] || 0).toFixed(1)} m/s</small></div>`;
