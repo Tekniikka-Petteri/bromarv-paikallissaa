@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07111f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Bromarvin paikallissää v28 – mobiili</title>
+  <title>Bromarvin paikallissää v29 – mobiili</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://unpkg.com">
@@ -143,7 +143,7 @@
       background: rgba(7,17,31,.91); border: 1px solid rgba(255,255,255,.24); color: white;
       box-shadow: 0 5px 15px rgba(0,0,0,.35); text-align: center; white-space: nowrap;
     }
-    .marker-card.center { background: rgba(0,98,164,.95); border: 2px solid white; min-width: 106px; padding: 7px 8px; border-radius: 12px; font-size: 14px; }
+    .marker-card.center { background: rgba(0,98,164,.95); border: 2px solid white; min-width: 142px; padding: 7px 8px; border-radius: 12px; font-size: 14px; }
     .marker-top { display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 800; }
     .marker-sub { font-size: 9px; color: #d4e4f4; margin-top: 1px; }
     .marker-card.center .marker-sub { font-size: 11px; margin-top: 2px; }
@@ -601,7 +601,7 @@
         <div><span class="dot" style="background:#ff6b6b"></span>Sade</div>
         <div><span class="dot" style="background:#e53935"></span>Livekamera</div>
       </div>
-      <p class="weather-label">Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. V23 näyttää sääpisteenä Bromarvin. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen.</p>
+      <p class="weather-label">Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. V23 näyttää sääpisteenä Bromarvin. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen. Örön kamera auttaa vertaamaan lännen ja lounaan säätilannetta Bromarvin tuulensuuntaan.</p>
     </section>
 
     <div class="errorbox" id="errorBox"></div>
@@ -639,6 +639,13 @@ const CAMERA_LOCATIONS = [
     moving: true,
     cameras: [
       { title: 'Finferries Kemiönsaari M/S Jurmo', id: '0hkT6ZaZUQw', url: 'https://youtu.be/0hkT6ZaZUQw' }
+    ]
+  },
+  {
+    name: 'Örö Satama', lat: 59.81062587314443, lon: 22.336689587023226,
+    alwaysShow: true,
+    cameras: [
+      { title: 'Örö Satama', id: 'WJw9s3EdBKw', url: 'https://youtu.be/WJw9s3EdBKw' }
     ]
   }
 ];
@@ -750,7 +757,7 @@ function fitCameraView(animate = false) {
   if (!map) return;
   const visibleLocations = CAMERA_LOCATIONS.filter(location => {
     const distance = distanceKm(CENTER.lat, CENTER.lon, location.lat, location.lon);
-    return distance <= 30.01 || location.moving;
+    return distance <= 30.01 || location.moving || location.alwaysShow;
   });
   let latSpan = 0.12;
   let lonSpan = 0.20;
@@ -780,7 +787,7 @@ function addCameraMarkers() {
   });
   CAMERA_LOCATIONS.forEach(location => {
     const distance = distanceKm(CENTER.lat, CENTER.lon, location.lat, location.lon);
-    if (distance > 30.01 && !location.moving) return;
+    if (distance > 30.01 && !location.moving && !location.alwaysShow) return;
     const items = location.cameras.map(camera => `
       <div class="camera-popup-item">
         <img src="https://img.youtube.com/vi/${camera.id}/hqdefault.jpg" alt="${camera.title}">
@@ -1193,15 +1200,16 @@ function markerHTML(item) {
     main = `${Number(c.precipitation || 0).toFixed(1)} mm`;
     sub = `1 h riski ${Math.round(prob)} %`;
   }
+  const centerSub = `<strong>Bromarv</strong> · <span class="wind-arrow" style="transform:rotate(${(Number(c.wind_direction_10m)+180)%360}deg)">↑</span> ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s`;
   return `<div class="marker-card ${item.point.center ? 'center' : ''}" style="background:${markerBackground(item)};box-shadow:0 0 0 3px ${color}88,0 5px 15px rgba(0,0,0,.4)">
-    <div class="marker-top">${main}</div><div class="marker-sub">${item.point.center ? 'Bromarv' : sub}</div></div>`;
+    <div class="marker-top">${main}</div><div class="marker-sub">${item.point.center ? centerSub : sub}</div></div>`;
 }
 
 function renderMarkers() {
   weatherMarkers.forEach(m => map.removeLayer(m));
   weatherMarkers = [];
   allWeather.forEach(item => {
-    const icon = L.divIcon({ className: 'weather-marker', html: markerHTML(item), iconSize: item.point.center ? [106,58] : [72,44], iconAnchor: item.point.center ? [53,29] : [36,22] });
+    const icon = L.divIcon({ className: 'weather-marker', html: markerHTML(item), iconSize: item.point.center ? [142,64] : [72,44], iconAnchor: item.point.center ? [71,32] : [36,22] });
     const c = item.data.current;
     const w = weatherInfo(Number(c.weather_code), c.is_day);
     const prob1h = Number((item.data.hourly?.precipitation_probability || [0])[0] || 0);
