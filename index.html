@@ -2,8 +2,11 @@
 <html lang="fi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bromarvin paikallissää v26 – 30 km</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Bromarvin paikallissää v27 – mobiili</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://unpkg.com">
@@ -378,13 +381,91 @@
       .pressure-explain { grid-column: 1; }
       .moon-next { grid-template-columns: 1fr; }
     }
+
+
+    /* v27: puhelimelle suunniteltu yhden palstan käyttöliittymä */
+    html { background:#07111f; -webkit-text-size-adjust:100%; }
+    body {
+      width:100%; max-width:760px; margin:0 auto; overflow-x:hidden;
+      padding-bottom:calc(14px + env(safe-area-inset-bottom));
+    }
+    header {
+      position:sticky; top:0; z-index:1200; width:100%;
+      padding:calc(10px + env(safe-area-inset-top)) 12px 10px;
+      gap:10px; align-items:center; flex-direction:row;
+      background:rgba(9,28,47,.96); backdrop-filter:blur(14px);
+    }
+    .title { min-width:0; flex:1; }
+    .title h1 { font-size:20px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .title p { margin-top:3px; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .header-actions { width:auto; flex:0 0 auto; display:block; }
+    .header-actions button { min-height:44px; padding:9px 14px; font-size:14px; touch-action:manipulation; }
+
+    main { display:flex; flex-direction:column; width:100%; padding:8px; gap:10px; }
+    aside { display:contents; }
+    aside > * { width:100%; }
+    aside > section:nth-of-type(1) { order:1; }
+    #wildfireCard { order:2; }
+    aside > section:nth-of-type(3) { order:3; }
+    .map-wrap { order:4; }
+    #marineCard { order:5; }
+    #harvestCard { order:6; }
+    #moonCard { order:7; }
+    aside > section:nth-last-of-type(1) { order:8; }
+    #errorBox { order:9; }
+
+    .card { padding:14px; border-radius:15px; box-shadow:0 7px 18px rgba(0,0,0,.2); }
+    .card h2 { font-size:22px; margin-bottom:10px; }
+    .card h3 { font-size:19px; margin-bottom:10px; }
+    .hero-temp .temp { font-size:48px; }
+    .hero-temp .icon { font-size:46px; }
+    .weather-label { font-size:13px; line-height:1.38; }
+    .metrics, .marine-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .metric, .marine-metric { min-width:0; padding:10px 9px; }
+    .metric small, .marine-metric small { font-size:11px; }
+    .metric strong, .marine-metric strong { font-size:14px; overflow-wrap:anywhere; }
+    .pressure-explain { font-size:12px; line-height:1.35; }
+
+    .timeline { gap:7px; margin:0 -5px; padding:0 5px 8px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+    .hour { min-width:86px; padding:9px 6px; scroll-snap-align:start; }
+    .hour .hicon { font-size:27px; min-height:32px; }
+
+    .map-wrap { width:100%; height:58svh; min-height:430px; max-height:560px; border-radius:15px; }
+    .radar-panel { top:8px; left:8px; right:8px; width:auto; padding:8px; }
+    .radar-panel button { min-height:38px; padding:6px 8px; font-size:12px; touch-action:manipulation; }
+    .radar-time { font-size:11px; }
+    .radar-note { display:none; }
+    .radar-legend { font-size:10px; margin-top:4px; }
+    .radar-slider { height:30px; margin-top:3px; }
+    .map-status { left:8px; right:70px; bottom:8px; max-width:none; padding:7px 8px; font-size:10px; line-height:1.25; }
+    .leaflet-control a, .leaflet-control button { touch-action:manipulation; }
+    .leaflet-control-zoom a { width:36px; height:36px; line-height:36px; }
+    .leaflet-control-center-bromarv button { min-width:62px; height:36px; line-height:36px; }
+    .camera-popup { min-width:0; width:min(270px,75vw); }
+
+    .marine-status-text { font-size:18px; }
+    .marine-note { font-size:12px; }
+    .moon-next { grid-template-columns:1fr 1fr; }
+    .legend { font-size:12px; }
+
+    @media (max-width:380px) {
+      header { padding-left:9px; padding-right:9px; }
+      .title h1 { font-size:18px; }
+      .header-actions button { padding:8px 11px; }
+      main { padding:6px; gap:8px; }
+      .card { padding:12px; }
+      .metrics, .marine-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .metric strong, .marine-metric strong { font-size:13px; }
+      .map-wrap { height:55svh; min-height:400px; }
+      .hour { min-width:82px; }
+    }
   </style>
 </head>
 <body>
 <header>
   <div class="title">
     <h1>Bromarvin paikallissää</h1>
-    <p>30 km säde · keskipiste 59.988655, 23.030658 · päivittyvä sääennuste</p>
+    <p>Bromarv · paikallissää, sadetutka ja merisää</p>
   </div>
   <div class="header-actions">
     
