@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bromarvin paikallissää v20 – 30 km</title>
+  <title>Bromarvin paikallissää v21 – 30 km</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
   <style id="leaflet-critical-css">
@@ -857,10 +857,10 @@ function showMarineError(err) {
   document.getElementById('marineLight').className = 'marine-light caution';
 }
 
-const CENTER_CACHE_KEY = 'bromarv-center-v20';
-const AREA_CACHE_KEY = 'bromarv-area-v20';
-const CENTER_CACHE_MAX_AGE = 15 * 60 * 1000;
-const AREA_CACHE_MAX_AGE = 30 * 60 * 1000;
+const CENTER_CACHE_KEY = 'bromarv-center-v21';
+const AREA_CACHE_KEY = 'bromarv-area-v21';
+const CENTER_CACHE_MAX_AGE = 45 * 60 * 1000;
+const AREA_CACHE_MAX_AGE = 3 * 60 * 60 * 1000;
 let weatherRequestRunning = false;
 let lastWeatherRequestAt = 0;
 
@@ -894,34 +894,22 @@ async function fetchJson(url, label) {
 }
 
 function combineWeather(points, centerData, areaData) {
+  if (!centerData) return [];
+  if (!areaData) return [{ point: points[0], data: centerData }];
   const areaArray = Array.isArray(areaData) ? areaData : [areaData];
-  return points.map((point, i) => ({ point, data: i === 0 ? centerData : areaArray[i] }));
+  return points.map((point, i) => ({ point, data: i === 0 ? centerData : areaArray[i] })).filter(item => item.data);
 }
 
 async function fetchWeather({ force = false } = {}) {
   if (weatherRequestRunning) return;
   const now = Date.now();
-  if (!force && now - lastWeatherRequestAt < 5 * 60 * 1000) return;
+  if (!force && now - lastWeatherRequestAt < 20 * 60 * 1000) return;
   weatherRequestRunning = true;
   lastWeatherRequestAt = now;
   setStatus('Haetaan Bromarvin säätietoja…');
   document.getElementById('errorBox').style.display = 'none';
 
   const points = buildPoints();
-  const latitudes = points.map(p => p.lat.toFixed(5)).join(',');
-  const longitudes = points.map(p => p.lon.toFixed(5)).join(',');
-
-  const areaParams = new URLSearchParams({
-    latitude: latitudes,
-    longitude: longitudes,
-    current: 'temperature_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day',
-    hourly: 'precipitation_probability',
-    forecast_hours: '3',
-    timezone: 'Europe/Helsinki',
-    wind_speed_unit: 'ms',
-    precipitation_unit: 'mm'
-  });
-
   const centerParams = new URLSearchParams({
     latitude: CENTER.lat,
     longitude: CENTER.lon,
@@ -934,12 +922,13 @@ async function fetchWeather({ force = false } = {}) {
     precipitation_unit: 'mm'
   });
 
-  let centerData = loadCache(CENTER_CACHE_KEY)?.value || null;
-  let areaData = loadCache(AREA_CACHE_KEY)?.value || null;
+  let centerCache = loadCache(CENTER_CACHE_KEY);
+  let areaCache = loadCache(AREA_CACHE_KEY);
+  let centerData = centerCache?.value || null;
+  let areaData = areaCache?.value || null;
   let centerFresh = false;
   let areaFresh = false;
   let centerError = null;
-  let areaError = null;
 
   try {
     centerData = await fetchJson('https://api.open-meteo.com/v1/forecast?' + centerParams.toString(), 'Bromarvin sääpalvelin');
@@ -949,41 +938,51 @@ async function fetchWeather({ force = false } = {}) {
     centerError = err;
   }
 
-  // Pieni viive erottaa raskaat Open-Meteo-pyynnöt toisistaan.
-  await new Promise(resolve => setTimeout(resolve, 1200));
-
-  try {
-    areaData = await fetchJson('https://api.open-meteo.com/v1/forecast?' + areaParams.toString(), 'Karttapisteiden sääpalvelin');
-    saveCache(AREA_CACHE_KEY, areaData);
-    areaFresh = true;
-  } catch (err) {
-    areaError = err;
-  }
-
-  try {
-    if (!centerData || !areaData) {
-      const err = centerError || areaError || new Error('Säätietoja ei saatu eikä välimuistia ollut käytettävissä.');
-      throw err;
-    }
-
-    allWeather = combineWeather(points, centerData, areaData);
-    renderAll();
-
-    const pageStamp = new Date().toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
-    const modelTimeRaw = centerData?.current?.time;
-    const modelStamp = modelTimeRaw ? new Date(modelTimeRaw).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' }) : '--';
-
-    if (centerFresh && areaFresh) {
-      setStatus(`Säädata klo ${modelStamp} · sivu päivitetty klo ${pageStamp}<br>Kartalla Bromarv, 24 ympäröivää ennustepistettä ja vaikutusalueen livekamerat.`);
-    } else {
-      const parts = [];
-      if (!centerFresh) parts.push('Bromarvin tiedot välimuistista');
-      if (!areaFresh) parts.push('karttapisteet välimuistista');
-      setStatus(`${parts.join(' · ')}. Sivu päivitetty klo ${pageStamp}. Open-Meteo rajoitti osaa hausta.`);
-    }
-  } finally {
+  if (!centerData) {
     weatherRequestRunning = false;
+    throw centerError || new Error('Bromarvin säätietoja ei saatu eikä välimuistia ollut käytettävissä.');
   }
+
+  // Lähialueen 24 pistettä ovat raskas pyyntö. Ne päivitetään vain noin 3 tunnin välein.
+  const areaAge = areaCache ? Date.now() - areaCache.savedAt : Infinity;
+  const shouldFetchArea = !areaData || areaAge > AREA_CACHE_MAX_AGE;
+  if (shouldFetchArea) {
+    const latitudes = points.map(p => p.lat.toFixed(5)).join(',');
+    const longitudes = points.map(p => p.lon.toFixed(5)).join(',');
+    const areaParams = new URLSearchParams({
+      latitude: latitudes,
+      longitude: longitudes,
+      current: 'temperature_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day',
+      timezone: 'Europe/Helsinki',
+      wind_speed_unit: 'ms',
+      precipitation_unit: 'mm'
+    });
+    // Viive varmistaa, ettei kahta Open-Meteo-pyyntöä lähetetä peräkkäin.
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    try {
+      areaData = await fetchJson('https://api.open-meteo.com/v1/forecast?' + areaParams.toString(), 'Karttapisteiden sääpalvelin');
+      saveCache(AREA_CACHE_KEY, areaData);
+      areaFresh = true;
+    } catch (err) {
+      console.warn('Karttapisteiden päivitys epäonnistui, käytetään välimuistia tai näytetään vain Bromarv.', err);
+    }
+  }
+
+  allWeather = combineWeather(points, centerData, areaData);
+  renderAll();
+
+  const pageStamp = new Date().toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
+  const modelTimeRaw = centerData?.current?.time;
+  const modelStamp = modelTimeRaw ? new Date(modelTimeRaw).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' }) : '--';
+  const parts = [`Bromarv ${centerFresh ? 'päivitetty' : 'välimuistista'} klo ${modelStamp}`];
+  if (areaData) {
+    const areaStamp = areaFresh ? pageStamp : new Date(areaCache?.savedAt || Date.now()).toLocaleTimeString('fi-FI', { hour:'2-digit', minute:'2-digit' });
+    parts.push(`karttapisteet ${areaFresh ? 'päivitetty' : 'välimuistista'} klo ${areaStamp}`);
+  } else {
+    parts.push('lähialueen karttapisteitä ei saatu tällä kertaa');
+  }
+  setStatus(parts.join(' · '));
+  weatherRequestRunning = false;
 }
 
 function precipitationState(current) {
@@ -996,7 +995,7 @@ function precipitationState(current) {
 
 function markerColor(current, hourly) {
   const state = precipitationState(current);
-  const probs = (hourly.precipitation_probability || []).slice(0,3).map(Number);
+  const probs = (hourly?.precipitation_probability || []).slice(0,3).map(Number);
   const maxProb = probs.length ? Math.max(...probs) : 0;
   if (state === 'thunder') return '#b455e0';
   if (state === 'rain') return '#2389da';
@@ -1014,7 +1013,7 @@ function markerBackground(item) {
 
 function markerHTML(item) {
   const c = item.data.current;
-  const h = item.data.hourly;
+  const h = item.data.hourly || {};
   const w = weatherInfo(Number(c.weather_code), c.is_day);
   const color = markerColor(c, h);
   let main = `${Math.round(c.temperature_2m)}° ${w.icon}`;
@@ -1037,7 +1036,7 @@ function renderMarkers() {
     const icon = L.divIcon({ className: 'weather-marker', html: markerHTML(item), iconSize: item.point.center ? [106,58] : [72,44], iconAnchor: item.point.center ? [53,29] : [36,22] });
     const c = item.data.current;
     const w = weatherInfo(Number(c.weather_code), c.is_day);
-    const prob3h = Math.max(...(item.data.hourly.precipitation_probability || [0]).slice(0,3).map(Number));
+    const prob3h = Math.max(...(item.data.hourly?.precipitation_probability || [0]).slice(0,3).map(Number));
     const popup = `<strong>${item.point.name}</strong><br>${w.icon} ${w.label}, ${Number(c.temperature_2m).toFixed(1)} °C<br>
       Tuuli ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s, puuskat ${Number(c.wind_gusts_10m).toFixed(1)} m/s<br>
       Sade nyt ${Number(c.precipitation || 0).toFixed(1)} mm · 3 h saderiski ${Math.round(prob3h)} %`;
@@ -1053,7 +1052,10 @@ function renderNearbyAlert() {
   const thunder = inner.filter(item => precipitationState(item.data.current) === 'thunder');
   const rain = inner.filter(item => precipitationState(item.data.current) === 'rain');
   alert.className = 'nearby-alert visible';
-  if (thunder.length) {
+  if (!inner.length) {
+    alert.classList.add('clear');
+    alert.innerHTML = `ℹ️ <strong>Lähialueen ennustepisteitä ei saatu tällä päivityksellä</strong><br><span style="font-weight:600">Bromarvin oma sää ja sadetutka toimivat normaalisti.</span>`;
+  } else if (thunder.length) {
     const dirs = thunder.map(item => directionName(item.point.bearing)).join(', ');
     alert.classList.add('thunder');
     alert.innerHTML = `⛈️ <strong>Ukkosriskiä lähialueella</strong><br><span style="font-weight:600">Ukkosta ennustetaan noin 10 km etäisyydelle suunnassa ${dirs}. Seuraa tilannetta erityisen tarkasti.</span>`;
@@ -1113,41 +1115,10 @@ function renderCenter() {
 
 
 async function fetchWildfireWarning() {
+  // FMI:n CAP-syöte ei salli selaimen suoraa CORS-hakua GitHub Pagesista.
+  // Kortti pidetään piilossa, jotta konsoliin ei tule virhettä.
   const card = document.getElementById('wildfireCard');
-  if (!card) return;
-  try {
-    const response = await fetch('https://alerts.fmi.fi/cap/feed/rss_fi-FI.rss', { cache: 'no-store' });
-    if (!response.ok) throw new Error(`Varoituspalvelu vastasi ${response.status}`);
-    const xmlText = await response.text();
-    const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
-    if (doc.querySelector('parsererror')) throw new Error('Varoitussyötettä ei voitu tulkita.');
-    const items = [...doc.querySelectorAll('item')];
-    const now = Date.now();
-    const matches = items.filter(item => {
-      const text = (item.textContent || '').toLowerCase();
-      const isWildfire = text.includes('maastopalo') || text.includes('metsäpalo') || text.includes('ruohikkopalo');
-      const isArea = text.includes('uusimaa') || text.includes('raasepori') || text.includes('raseborg');
-      const cancelled = text.includes('cancel') || text.includes('peruttu') || text.includes('poistettu');
-      const pub = item.querySelector('pubDate')?.textContent;
-      const fresh = !pub || !Number.isFinite(Date.parse(pub)) || now - Date.parse(pub) < 7 * 86400000;
-      return isWildfire && isArea && !cancelled && fresh;
-    });
-    if (!matches.length) {
-      card.className = 'card wildfire-card wide';
-      return;
-    }
-    const text = matches.map(item => item.textContent || '').join(' ').toLowerCase();
-    let level = 'yellow';
-    let levelFi = 'keltainen';
-    if (text.includes('punainen') || text.includes('red')) { level = 'red'; levelFi = 'punainen'; }
-    else if (text.includes('oranssi') || text.includes('orange')) { level = 'orange'; levelFi = 'oranssi'; }
-    card.className = `card wildfire-card wide visible ${level}`;
-    document.getElementById('wildfireTitle').textContent = `Maastopalovaroitus · ${levelFi}`;
-    document.getElementById('wildfireText').innerHTML = 'Ilmatieteen laitoksen maastopalovaroitus on voimassa Uudenmaan alueella. Avotulen teko on kielletty varoituksen aikana. Tarkista aina ajantasainen alue ja voimassaoloaika viralliselta varoituskartalta.';
-  } catch (err) {
-    console.warn('Maastopalovaroitusta ei voitu tarkistaa:', err);
-    card.className = 'card wildfire-card wide';
-  }
+  if (card) card.className = 'card wildfire-card wide';
 }
 
 function pressureMeaning(hPa) {
@@ -1362,7 +1333,7 @@ async function startApp() {
     console.error(err);
     if (!allWeather.length) {
       if (err.status === 429) {
-        showError(new Error('Open-Meteo rajoittaa tilapäisesti pyyntöjä (429). Odota vähintään 15 minuuttia ennen uutta Päivitä-painallusta.'));
+        showError(new Error('Open-Meteo rajoittaa tilapäisesti pyyntöjä (429). Näytetään viimeksi tallennetut tiedot. Odota noin 30 minuuttia ennen uutta Päivitä-painallusta.'));
       } else {
         showError(err);
       }
@@ -1376,7 +1347,6 @@ async function startApp() {
     });
     fetchMarine().catch(showMarineError);
   }, 30 * 60 * 1000);
-  setInterval(fetchWildfireWarning, 30 * 60 * 1000);
 }
 
 if (document.readyState === 'loading') {
