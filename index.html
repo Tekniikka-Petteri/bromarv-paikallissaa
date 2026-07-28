@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#07111f" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Bromarvin paikallissää v27 – mobiili</title>
+  <title>Bromarvin paikallissää v28 – mobiili</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://unpkg.com">
@@ -408,11 +408,12 @@
     #wildfireCard { order:2; }
     aside > section:nth-of-type(3) { order:3; }
     .map-wrap { order:4; }
-    #marineCard { order:5; }
-    #harvestCard { order:6; }
-    #moonCard { order:7; }
-    aside > section:nth-last-of-type(1) { order:8; }
-    #errorBox { order:9; }
+    .radar-panel { order:5; }
+    #marineCard { order:6; }
+    #harvestCard { order:7; }
+    #moonCard { order:8; }
+    aside > section:nth-last-of-type(1) { order:9; }
+    #errorBox { order:10; }
 
     .card { padding:14px; border-radius:15px; box-shadow:0 7px 18px rgba(0,0,0,.2); }
     .card h2 { font-size:22px; margin-bottom:10px; }
@@ -431,10 +432,13 @@
     .hour .hicon { font-size:27px; min-height:32px; }
 
     .map-wrap { width:100%; height:58svh; min-height:430px; max-height:560px; border-radius:15px; }
-    .radar-panel { top:8px; left:8px; right:8px; width:auto; padding:8px; }
-    .radar-panel button { min-height:38px; padding:6px 8px; font-size:12px; touch-action:manipulation; }
-    .radar-time { font-size:11px; }
-    .radar-note { display:none; }
+    .radar-panel {
+      position:relative; inset:auto; width:100%; padding:11px; border-radius:15px;
+      background:var(--panel); box-shadow:0 7px 18px rgba(0,0,0,.2);
+    }
+    .radar-panel button { min-height:42px; padding:8px 10px; font-size:13px; touch-action:manipulation; }
+    .radar-time { font-size:12px; }
+    .radar-note { display:block; font-size:11px; }
     .radar-legend { font-size:10px; margin-top:4px; }
     .radar-slider { height:30px; margin-top:3px; }
     .map-status { left:8px; right:70px; bottom:8px; max-width:none; padding:7px 8px; font-size:10px; line-height:1.25; }
@@ -447,6 +451,10 @@
     .marine-note { font-size:12px; }
     .moon-next { grid-template-columns:1fr 1fr; }
     .legend { font-size:12px; }
+
+
+    /* v28: sadetutkan ohjaimet kartan alla */
+    .radar-panel { position:relative; top:auto; right:auto; left:auto; width:100%; }
 
     @media (max-width:380px) {
       header { padding-left:9px; padding-right:9px; }
@@ -476,22 +484,23 @@
 <main>
   <section class="map-wrap">
     <div id="map"></div>
-    <div class="radar-panel" id="radarPanel">
-      <div class="radar-row">
-        <button id="radarToggle" type="button">Sadetutka päälle</button>
-        <button id="radarPlay" type="button" disabled>▶ Toista</button>
-        <span class="radar-time" id="radarTime">Tutka pois päältä</span>
-      </div>
-      <input class="radar-slider" id="radarSlider" type="range" min="0" max="0" value="0" step="1" disabled>
-      <div class="radar-legend">
-        <span>Heikko</span><span class="radar-swatch" style="background:#5ac8fa"></span>
-        <span class="radar-swatch" style="background:#34c759"></span>
-        <span class="radar-swatch" style="background:#ffd60a"></span>
-        <span class="radar-swatch" style="background:#ff453a"></span><span>Voimakas</span>
-      </div>
-      <div class="radar-note">RainViewerin tutkakuva näyttää viimeisimmät sadehavainnot. Tutkadata ei ole sama asia kuin sääennuste.</div>
+    <div class="map-status" id="mapStatus">Haetaan Bromarvin säätietoja…</div>
+  </section>
+
+  <section class="radar-panel" id="radarPanel" aria-label="Sadetutkan ohjaimet">
+    <div class="radar-row">
+      <button id="radarToggle" type="button">Sadetutka päälle</button>
+      <button id="radarPlay" type="button" disabled>▶ Toista</button>
+      <span class="radar-time" id="radarTime">Tutka pois päältä</span>
     </div>
-    <div class="map-status" id="mapStatus">Haetaan Bromarvin ympäristön sääpisteitä…</div>
+    <input class="radar-slider" id="radarSlider" type="range" min="0" max="0" value="0" step="1" disabled aria-label="Sadetutkan ajankohta">
+    <div class="radar-legend">
+      <span>Heikko</span><span class="radar-swatch" style="background:#5ac8fa"></span>
+      <span class="radar-swatch" style="background:#34c759"></span>
+      <span class="radar-swatch" style="background:#ffd60a"></span>
+      <span class="radar-swatch" style="background:#ff453a"></span><span>Voimakas</span>
+    </div>
+    <div class="radar-note">RainViewerin tutkakuva näyttää viimeisimmät sadehavainnot. Tutkadata ei ole sama asia kuin sääennuste.</div>
   </section>
 
   <aside>
@@ -700,7 +709,7 @@ function initMap() {
       L.DomEvent.disableClickPropagation(container);
       L.DomEvent.disableScrollPropagation(container);
       L.DomEvent.on(button, 'click', () => {
-        map.setView([CENTER.lat, CENTER.lon], 10, { animate: true });
+        fitCameraView(true);
       });
       return container;
     }
@@ -714,14 +723,16 @@ function initMap() {
   rangeCircle = L.circle([CENTER.lat, CENTER.lon], {
     radius: 30000, color: '#4db7ff', weight: 2, fillColor: '#4db7ff', fillOpacity: 0.045, dashArray: '8 8'
   }).addTo(map);
-  // Kartta avautuu aina Bromarv täsmälleen keskellä.
-  map.setView([CENTER.lat, CENTER.lon], 10, { animate: false });
+  addCameraMarkers();
+  // Aloitusnäkymä näyttää kaikki kamerat, mutta säilyttää Bromarvin kartan keskellä.
   setTimeout(() => {
     map.invalidateSize(true);
-    map.setView([CENTER.lat, CENTER.lon], 10, { animate: false });
-  }, 150);
-  window.addEventListener('resize', () => map.invalidateSize(false));
-  addCameraMarkers();
+    fitCameraView(false);
+  }, 180);
+  window.addEventListener('resize', () => {
+    map.invalidateSize(false);
+    fitCameraView(false);
+  });
 }
 
 
@@ -733,6 +744,28 @@ function distanceKm(lat1, lon1, lat2, lon2) {
   const dl = (lon2 - lon1) * Math.PI / 180;
   const a = Math.sin(dp/2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl/2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function fitCameraView(animate = false) {
+  if (!map) return;
+  const visibleLocations = CAMERA_LOCATIONS.filter(location => {
+    const distance = distanceKm(CENTER.lat, CENTER.lon, location.lat, location.lon);
+    return distance <= 30.01 || location.moving;
+  });
+  let latSpan = 0.12;
+  let lonSpan = 0.20;
+  visibleLocations.forEach(location => {
+    latSpan = Math.max(latSpan, Math.abs(location.lat - CENTER.lat));
+    lonSpan = Math.max(lonSpan, Math.abs(location.lon - CENTER.lon));
+  });
+  // Symmetrinen rajaus pitää Bromarvin täsmälleen keskellä, vaikka kamerat ovat pääosin lännessä.
+  latSpan *= 1.18;
+  lonSpan *= 1.18;
+  const bounds = L.latLngBounds(
+    [CENTER.lat - latSpan, CENTER.lon - lonSpan],
+    [CENTER.lat + latSpan, CENTER.lon + lonSpan]
+  );
+  map.fitBounds(bounds, { padding: [18, 18], animate, maxZoom: 10 });
 }
 
 function addCameraMarkers() {
