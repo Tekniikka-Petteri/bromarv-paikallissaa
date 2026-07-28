@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bromarvin paikallissää v25 – 30 km</title>
+  <title>Bromarvin paikallissää v26 – 30 km</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://unpkg.com">
@@ -429,6 +429,9 @@
         <div class="metric"><small>Puuskat</small><strong id="mainGust">--</strong></div>
         <div class="metric"><small>Sade nyt</small><strong id="mainRain">--</strong></div>
         <div class="metric"><small>Saderiski 1 h</small><strong class="rain-risk-value" id="mainRainRisk">--</strong></div>
+        <div class="metric"><small>Auringonnousu</small><strong id="sunriseTime">--</strong></div>
+        <div class="metric"><small>Auringonlasku</small><strong id="sunsetTime">--</strong></div>
+        <div class="metric"><small>Päivän pituus</small><strong id="dayLength">--</strong></div>
         <div class="metric"><small>Ilmankosteus</small><strong id="mainHumidity">--</strong></div>
         <div class="metric"><small>Kastepiste</small><strong id="mainDewPoint">--</strong></div>
         <div class="metric"><small>Ilmanpaine</small><strong id="mainPressure">--</strong></div>
@@ -1072,9 +1075,9 @@ function markerHTML(item) {
   if (displayMode === 'temp') sub = `${w.label}`;
   if (displayMode === 'wind') main = `<span class="wind-arrow" style="transform:rotate(${(Number(c.wind_direction_10m)+180)%360}deg)">↑</span> ${Number(c.wind_speed_10m).toFixed(1)}`;
   if (displayMode === 'rain') {
-    const prob = Math.max(...(h.precipitation_probability || [0]).slice(0,3).map(Number));
+    const prob = Number((h.precipitation_probability || [0])[0] || 0);
     main = `${Number(c.precipitation || 0).toFixed(1)} mm`;
-    sub = `3 h riski ${Math.round(prob)} %`;
+    sub = `1 h riski ${Math.round(prob)} %`;
   }
   return `<div class="marker-card ${item.point.center ? 'center' : ''}" style="background:${markerBackground(item)};box-shadow:0 0 0 3px ${color}88,0 5px 15px rgba(0,0,0,.4)">
     <div class="marker-top">${main}</div><div class="marker-sub">${item.point.center ? 'Bromarv' : sub}</div></div>`;
@@ -1087,10 +1090,10 @@ function renderMarkers() {
     const icon = L.divIcon({ className: 'weather-marker', html: markerHTML(item), iconSize: item.point.center ? [106,58] : [72,44], iconAnchor: item.point.center ? [53,29] : [36,22] });
     const c = item.data.current;
     const w = weatherInfo(Number(c.weather_code), c.is_day);
-    const prob3h = Math.max(...(item.data.hourly?.precipitation_probability || [0]).slice(0,3).map(Number));
+    const prob1h = Number((item.data.hourly?.precipitation_probability || [0])[0] || 0);
     const popup = `<strong>${item.point.name}</strong><br>${w.icon} ${w.label}, ${Number(c.temperature_2m).toFixed(1)} °C<br>
       Tuuli ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s, puuskat ${Number(c.wind_gusts_10m).toFixed(1)} m/s<br>
-      Sade nyt ${Number(c.precipitation || 0).toFixed(1)} mm · 3 h saderiski ${Math.round(prob3h)} %`;
+      Sade nyt ${Number(c.precipitation || 0).toFixed(1)} mm · 1 h saderiski ${Math.round(prob1h)} %`;
     const marker = L.marker([item.point.lat, item.point.lon], { icon }).addTo(map).bindPopup(popup);
     weatherMarkers.push(marker);
   });
@@ -1121,6 +1124,56 @@ function renderNearbyAlert() {
   }
 }
 
+function solarTimesForDate(date, lat, lon) {
+  const rad = Math.PI / 180;
+  const dayMs = 86400000;
+  const J1970 = 2440588;
+  const J2000 = 2451545;
+  const toJulian = d => d.valueOf() / dayMs - 0.5 + J1970;
+  const fromJulian = j => new Date((j + 0.5 - J1970) * dayMs);
+  const toDays = d => toJulian(d) - J2000;
+  const rightAscension = (l, b) => Math.atan2(Math.sin(l) * Math.cos(23.4397 * rad) - Math.tan(b) * Math.sin(23.4397 * rad), Math.cos(l));
+  const declination = (l, b) => Math.asin(Math.sin(b) * Math.cos(23.4397 * rad) + Math.cos(b) * Math.sin(23.4397 * rad) * Math.sin(l));
+  const solarMeanAnomaly = d => rad * (357.5291 + 0.98560028 * d);
+  const eclipticLongitude = M => {
+    const C = rad * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M));
+    return M + C + rad * 102.9372 + Math.PI;
+  };
+  const julianCycle = (d, lw) => Math.round(d - 0.0009 - lw / (2 * Math.PI));
+  const approxTransit = (Ht, lw, n) => 0.0009 + (Ht + lw) / (2 * Math.PI) + n;
+  const solarTransitJ = (ds, M, L) => J2000 + ds + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+  const hourAngle = (h, phi, dec) => Math.acos((Math.sin(h) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec)));
+  const getSetJ = (h, lw, phi, dec, n, M, L) => solarTransitJ(approxTransit(hourAngle(h, phi, dec), lw, n), M, L);
+
+  const lw = -lon * rad;
+  const phi = lat * rad;
+  const d = toDays(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12)));
+  const n = julianCycle(d, lw);
+  const ds = approxTransit(0, lw, n);
+  const M = solarMeanAnomaly(ds);
+  const L = eclipticLongitude(M);
+  const dec = declination(L, 0);
+  const Jnoon = solarTransitJ(ds, M, L);
+  const h0 = -0.833 * rad;
+  const Jset = getSetJ(h0, lw, phi, dec, n, M, L);
+  if (!Number.isFinite(Jset)) return null;
+  const Jrise = Jnoon - (Jset - Jnoon);
+  return { sunrise: fromJulian(Jrise), sunset: fromJulian(Jset) };
+}
+
+function renderSunTimes() {
+  const result = solarTimesForDate(new Date(), CENTER.lat, CENTER.lon);
+  const riseEl = document.getElementById('sunriseTime');
+  const setEl = document.getElementById('sunsetTime');
+  const lengthEl = document.getElementById('dayLength');
+  if (!result || !riseEl || !setEl || !lengthEl) return;
+  const timeOpts = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Helsinki' };
+  riseEl.textContent = result.sunrise.toLocaleTimeString('fi-FI', timeOpts);
+  setEl.textContent = result.sunset.toLocaleTimeString('fi-FI', timeOpts);
+  const minutes = Math.max(0, Math.round((result.sunset - result.sunrise) / 60000));
+  lengthEl.textContent = `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
+}
+
 function renderCenter() {
   const d = allWeather[0].data;
   const c = d.current;
@@ -1130,6 +1183,7 @@ function renderCenter() {
   temp.textContent = `${Number(c.temperature_2m).toFixed(1)}°`;
   document.getElementById('mainIcon').textContent = w.icon;
   document.getElementById('mainLabel').textContent = w.label;
+  renderSunTimes();
   const windDir = Number(c.wind_direction_10m);
   const windSpeed = Number(c.wind_speed_10m);
   const arrowRotation = Number.isFinite(windDir) ? (windDir + 180) % 360 : 0;
