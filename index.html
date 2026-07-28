@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bromarvin paikallissää v21 – 30 km</title>
+  <title>Bromarvin paikallissää v22 – 30 km</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
   <style id="leaflet-critical-css">
@@ -857,8 +858,8 @@ function showMarineError(err) {
   document.getElementById('marineLight').className = 'marine-light caution';
 }
 
-const CENTER_CACHE_KEY = 'bromarv-center-v21';
-const AREA_CACHE_KEY = 'bromarv-area-v21';
+const CENTER_CACHE_KEY = 'bromarv-center-v22';
+const AREA_CACHE_KEY = 'bromarv-area-v22';
 const CENTER_CACHE_MAX_AGE = 45 * 60 * 1000;
 const AREA_CACHE_MAX_AGE = 3 * 60 * 60 * 1000;
 let weatherRequestRunning = false;
@@ -891,6 +892,103 @@ async function fetchJson(url, label) {
     throw err;
   }
   return response.json();
+}
+
+
+
+function metSymbolToWmo(symbol = '') {
+  const s = String(symbol).toLowerCase();
+  if (s.includes('thunder')) return 95;
+  if (s.includes('heavyrain')) return s.includes('showers') ? 82 : 65;
+  if (s.includes('rain')) return s.includes('showers') ? 80 : 61;
+  if (s.includes('heavysnow')) return 75;
+  if (s.includes('snow')) return s.includes('showers') ? 85 : 71;
+  if (s.includes('sleet')) return 67;
+  if (s.includes('fog')) return 45;
+  if (s.includes('cloudy')) return 3;
+  if (s.includes('partlycloudy')) return 2;
+  if (s.includes('fair')) return 1;
+  if (s.includes('clearsky')) return 0;
+  return 3;
+}
+
+function dewPointFromTempHumidity(tempC, humidity) {
+  const t = Number(tempC), rh = Number(humidity);
+  if (!Number.isFinite(t) || !Number.isFinite(rh) || rh <= 0) return NaN;
+  const a = 17.625, b = 243.04;
+  const gamma = Math.log(rh / 100) + (a * t) / (b + t);
+  return (b * gamma) / (a - gamma);
+}
+
+function convertMetNoToOpenMeteo(json) {
+  const series = json?.properties?.timeseries;
+  if (!Array.isArray(series) || !series.length) throw new Error('MET Norway -varasääpalvelu ei palauttanut ennustetta.');
+  const rows = series.slice(0, 30);
+  const hourly = {
+    time: [], temperature_2m: [], relative_humidity_2m: [], dew_point_2m: [], cloud_cover: [],
+    pressure_msl: [], precipitation_probability: [], precipitation: [], rain: [], showers: [],
+    weather_code: [], wind_speed_10m: [], wind_direction_10m: [], wind_gusts_10m: []
+  };
+  for (const row of rows) {
+    const instant = row?.data?.instant?.details || {};
+    const next1 = row?.data?.next_1_hours || row?.data?.next_6_hours || {};
+    const details = next1.details || {};
+    const symbol = next1.summary?.symbol_code || '';
+    const temp = Number(instant.air_temperature);
+    const humidity = Number(instant.relative_humidity);
+    const precip = Number(details.precipitation_amount || 0);
+    hourly.time.push(row.time);
+    hourly.temperature_2m.push(temp);
+    hourly.relative_humidity_2m.push(humidity);
+    hourly.dew_point_2m.push(dewPointFromTempHumidity(temp, humidity));
+    hourly.cloud_cover.push(Number(instant.cloud_area_fraction));
+    hourly.pressure_msl.push(Number(instant.air_pressure_at_sea_level));
+    hourly.precipitation_probability.push(Number(details.probability_of_precipitation || 0));
+    hourly.precipitation.push(precip);
+    hourly.rain.push(precip);
+    hourly.showers.push(0);
+    hourly.weather_code.push(metSymbolToWmo(symbol));
+    hourly.wind_speed_10m.push(Number(instant.wind_speed));
+    hourly.wind_direction_10m.push(Number(instant.wind_from_direction));
+    hourly.wind_gusts_10m.push(Number.isFinite(Number(instant.wind_speed_of_gust)) ? Number(instant.wind_speed_of_gust) : Number(instant.wind_speed));
+  }
+  const i = 0;
+  const first = rows[0];
+  const firstInstant = first.data.instant.details || {};
+  const firstPeriod = first.data.next_1_hours || first.data.next_6_hours || {};
+  const currentPrecip = Number(firstPeriod.details?.precipitation_amount || 0);
+  const hour = new Date(first.time).getHours();
+  return {
+    _source: 'MET Norway',
+    current: {
+      time: first.time,
+      temperature_2m: hourly.temperature_2m[i],
+      relative_humidity_2m: hourly.relative_humidity_2m[i],
+      apparent_temperature: hourly.temperature_2m[i],
+      precipitation: currentPrecip,
+      rain: currentPrecip,
+      showers: 0,
+      weather_code: hourly.weather_code[i],
+      cloud_cover: hourly.cloud_cover[i],
+      wind_speed_10m: hourly.wind_speed_10m[i],
+      wind_direction_10m: hourly.wind_direction_10m[i],
+      wind_gusts_10m: hourly.wind_gusts_10m[i],
+      is_day: hour >= 6 && hour < 22 ? 1 : 0,
+      uv_index: Number(firstInstant.ultraviolet_index_clear_sky || 0),
+      pressure_msl: hourly.pressure_msl[i],
+      snow_depth: null
+    },
+    hourly
+  };
+}
+
+async function fetchCenterFallback() {
+  const lat = CENTER.lat.toFixed(4);
+  const lon = CENTER.lon.toFixed(4);
+  const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+  const response = await fetch(url, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`MET Norway -varasääpalvelin vastasi virheellä ${response.status}`);
+  return convertMetNoToOpenMeteo(await response.json());
 }
 
 function combineWeather(points, centerData, areaData) {
@@ -936,6 +1034,16 @@ async function fetchWeather({ force = false } = {}) {
     centerFresh = true;
   } catch (err) {
     centerError = err;
+    console.warn('Open-Meteo ei vastannut, kokeillaan MET Norway -varasääpalvelua.', err);
+    try {
+      centerData = await fetchCenterFallback();
+      saveCache(CENTER_CACHE_KEY, centerData);
+      centerFresh = true;
+      centerError = null;
+    } catch (fallbackErr) {
+      console.warn('Myös MET Norway -varasääpalvelu epäonnistui.', fallbackErr);
+      centerError = fallbackErr;
+    }
   }
 
   if (!centerData) {
@@ -974,7 +1082,8 @@ async function fetchWeather({ force = false } = {}) {
   const pageStamp = new Date().toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
   const modelTimeRaw = centerData?.current?.time;
   const modelStamp = modelTimeRaw ? new Date(modelTimeRaw).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' }) : '--';
-  const parts = [`Bromarv ${centerFresh ? 'päivitetty' : 'välimuistista'} klo ${modelStamp}`];
+  const sourceName = centerData?._source || 'Open-Meteo';
+  const parts = [`Bromarv ${centerFresh ? 'päivitetty' : 'välimuistista'} klo ${modelStamp} · ${sourceName}`];
   if (areaData) {
     const areaStamp = areaFresh ? pageStamp : new Date(areaCache?.savedAt || Date.now()).toLocaleTimeString('fi-FI', { hour:'2-digit', minute:'2-digit' });
     parts.push(`karttapisteet ${areaFresh ? 'päivitetty' : 'välimuistista'} klo ${areaStamp}`);
@@ -1318,8 +1427,8 @@ async function startApp() {
     return;
   }
 
-  const centerCache = loadCache(CENTER_CACHE_KEY, CENTER_CACHE_MAX_AGE);
-  const areaCache = loadCache(AREA_CACHE_KEY, AREA_CACHE_MAX_AGE);
+  const centerCache = loadCache(CENTER_CACHE_KEY);
+  const areaCache = loadCache(AREA_CACHE_KEY);
   if (centerCache && areaCache) {
     allWeather = combineWeather(buildPoints(), centerCache.value, areaCache.value);
     renderAll();
