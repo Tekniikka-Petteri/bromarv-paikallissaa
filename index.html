@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bromarvin paikallissää v22 – 30 km</title>
+  <title>Bromarvin paikallissää v23 – 30 km</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
+  <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
   <style id="leaflet-critical-css">
@@ -383,10 +384,7 @@
     <p>30 km säde · keskipiste 59.988655, 23.030658 · päivittyvä sääennuste</p>
   </div>
   <div class="header-actions">
-    <button id="modeAll" class="active">Kaikki</button>
-    <button id="modeTemp">Lämpötila</button>
-    <button id="modeWind">Tuuli</button>
-    <button id="modeRain">Sade</button>
+    
     <button id="refreshBtn">Päivitä</button>
   </div>
 </header>
@@ -506,7 +504,7 @@
         <div><span class="dot" style="background:#ff6b6b"></span>Sade</div>
         <div><span class="dot" style="background:#e53935"></span>Livekamera</div>
       </div>
-      <p class="weather-label">Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. Sääpisteet sijaitsevat noin 10, 20 ja 30 kilometrin etäisyydellä Bromarvista. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen.</p>
+      <p class="weather-label">Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. V23 näyttää sääpisteenä Bromarvin. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen.</p>
     </section>
 
     <div class="errorbox" id="errorBox"></div>
@@ -858,10 +856,8 @@ function showMarineError(err) {
   document.getElementById('marineLight').className = 'marine-light caution';
 }
 
-const CENTER_CACHE_KEY = 'bromarv-center-v22';
-const AREA_CACHE_KEY = 'bromarv-area-v22';
-const CENTER_CACHE_MAX_AGE = 45 * 60 * 1000;
-const AREA_CACHE_MAX_AGE = 3 * 60 * 60 * 1000;
+const CENTER_CACHE_KEY = 'bromarv-center-v23-metno';
+const CENTER_CACHE_MAX_AGE = 60 * 60 * 1000;
 let weatherRequestRunning = false;
 let lastWeatherRequestAt = 0;
 
@@ -1004,96 +1000,38 @@ async function fetchWeather({ force = false } = {}) {
   if (!force && now - lastWeatherRequestAt < 20 * 60 * 1000) return;
   weatherRequestRunning = true;
   lastWeatherRequestAt = now;
-  setStatus('Haetaan Bromarvin säätietoja…');
+  setStatus('Haetaan Bromarvin säätietoja MET Norway -palvelusta…');
   document.getElementById('errorBox').style.display = 'none';
 
-  const points = buildPoints();
-  const centerParams = new URLSearchParams({
-    latitude: CENTER.lat,
-    longitude: CENTER.lon,
-    current: 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day,uv_index,pressure_msl,snow_depth',
-    hourly: 'temperature_2m,relative_humidity_2m,dew_point_2m,cloud_cover,pressure_msl,precipitation_probability,precipitation,rain,showers,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m',
-    forecast_hours: '18',
-    past_hours: '6',
-    timezone: 'Europe/Helsinki',
-    wind_speed_unit: 'ms',
-    precipitation_unit: 'mm'
-  });
-
-  let centerCache = loadCache(CENTER_CACHE_KEY);
-  let areaCache = loadCache(AREA_CACHE_KEY);
-  let centerData = centerCache?.value || null;
-  let areaData = areaCache?.value || null;
-  let centerFresh = false;
-  let areaFresh = false;
-  let centerError = null;
+  const point = buildPoints()[0];
+  const cached = loadCache(CENTER_CACHE_KEY);
+  let centerData = cached?.value || null;
+  let fresh = false;
 
   try {
-    centerData = await fetchJson('https://api.open-meteo.com/v1/forecast?' + centerParams.toString(), 'Bromarvin sääpalvelin');
+    centerData = await fetchCenterFallback();
     saveCache(CENTER_CACHE_KEY, centerData);
-    centerFresh = true;
+    fresh = true;
   } catch (err) {
-    centerError = err;
-    console.warn('Open-Meteo ei vastannut, kokeillaan MET Norway -varasääpalvelua.', err);
-    try {
-      centerData = await fetchCenterFallback();
-      saveCache(CENTER_CACHE_KEY, centerData);
-      centerFresh = true;
-      centerError = null;
-    } catch (fallbackErr) {
-      console.warn('Myös MET Norway -varasääpalvelu epäonnistui.', fallbackErr);
-      centerError = fallbackErr;
+    console.warn('MET Norway -säähaku epäonnistui, käytetään välimuistia.', err);
+    if (!centerData) {
+      weatherRequestRunning = false;
+      throw new Error('Bromarvin säätietoja ei saatu eikä välimuistia ollut käytettävissä.');
     }
   }
 
-  if (!centerData) {
-    weatherRequestRunning = false;
-    throw centerError || new Error('Bromarvin säätietoja ei saatu eikä välimuistia ollut käytettävissä.');
-  }
-
-  // Lähialueen 24 pistettä ovat raskas pyyntö. Ne päivitetään vain noin 3 tunnin välein.
-  const areaAge = areaCache ? Date.now() - areaCache.savedAt : Infinity;
-  const shouldFetchArea = !areaData || areaAge > AREA_CACHE_MAX_AGE;
-  if (shouldFetchArea) {
-    const latitudes = points.map(p => p.lat.toFixed(5)).join(',');
-    const longitudes = points.map(p => p.lon.toFixed(5)).join(',');
-    const areaParams = new URLSearchParams({
-      latitude: latitudes,
-      longitude: longitudes,
-      current: 'temperature_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day',
-      timezone: 'Europe/Helsinki',
-      wind_speed_unit: 'ms',
-      precipitation_unit: 'mm'
-    });
-    // Viive varmistaa, ettei kahta Open-Meteo-pyyntöä lähetetä peräkkäin.
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    try {
-      areaData = await fetchJson('https://api.open-meteo.com/v1/forecast?' + areaParams.toString(), 'Karttapisteiden sääpalvelin');
-      saveCache(AREA_CACHE_KEY, areaData);
-      areaFresh = true;
-    } catch (err) {
-      console.warn('Karttapisteiden päivitys epäonnistui, käytetään välimuistia tai näytetään vain Bromarv.', err);
-    }
-  }
-
-  allWeather = combineWeather(points, centerData, areaData);
+  // V23 käyttää vain Bromarvin yhtä sääpistettä. Näin Open-Meteon 429-rajoitus poistuu kokonaan.
+  allWeather = [{ point, data: centerData }];
   renderAll();
 
-  const pageStamp = new Date().toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
   const modelTimeRaw = centerData?.current?.time;
   const modelStamp = modelTimeRaw ? new Date(modelTimeRaw).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' }) : '--';
-  const sourceName = centerData?._source || 'Open-Meteo';
-  const parts = [`Bromarv ${centerFresh ? 'päivitetty' : 'välimuistista'} klo ${modelStamp} · ${sourceName}`];
-  if (areaData) {
-    const areaStamp = areaFresh ? pageStamp : new Date(areaCache?.savedAt || Date.now()).toLocaleTimeString('fi-FI', { hour:'2-digit', minute:'2-digit' });
-    parts.push(`karttapisteet ${areaFresh ? 'päivitetty' : 'välimuistista'} klo ${areaStamp}`);
-  } else {
-    parts.push('lähialueen karttapisteitä ei saatu tällä kertaa');
-  }
-  setStatus(parts.join(' · '));
+  const cacheStamp = cached?.savedAt ? new Date(cached.savedAt).toLocaleTimeString('fi-FI', { hour:'2-digit', minute:'2-digit' }) : '--';
+  setStatus(fresh
+    ? `Bromarvin sää päivitetty klo ${modelStamp} · MET Norway · kartalla sadetutka ja livekamerat.`
+    : `MET Norway ei vastannut. Näytetään viimeksi tallennetut tiedot klo ${cacheStamp}.`);
   weatherRequestRunning = false;
 }
-
 function precipitationState(current) {
   const code = Number(current.weather_code);
   const rainNow = Number(current.precipitation || 0);
@@ -1158,6 +1096,7 @@ function renderMarkers() {
 function renderNearbyAlert() {
   const alert = document.getElementById('nearbyAlert');
   const inner = allWeather.filter(item => !item.point.center && item.point.distance === 10);
+  if (!inner.length) { alert.className = 'nearby-alert'; alert.innerHTML = ''; return; }
   const thunder = inner.filter(item => precipitationState(item.data.current) === 'thunder');
   const rain = inner.filter(item => precipitationState(item.data.current) === 'rain');
   alert.className = 'nearby-alert visible';
@@ -1399,16 +1338,16 @@ function showError(err) {
 
 function setMode(mode) {
   displayMode = mode;
-  ['All','Temp','Wind','Rain'].forEach(x => document.getElementById('mode'+x).classList.remove('active'));
+  ['All','Temp','Wind','Rain'].forEach(x => document.getElementById('mode'+x)?.classList.remove('active'));
   const id = mode === 'all' ? 'modeAll' : mode === 'temp' ? 'modeTemp' : mode === 'wind' ? 'modeWind' : 'modeRain';
-  document.getElementById(id).classList.add('active');
+  document.getElementById(id)?.classList.add('active');
   if (allWeather.length) renderMarkers();
 }
 
-document.getElementById('modeAll').onclick = () => setMode('all');
-document.getElementById('modeTemp').onclick = () => setMode('temp');
-document.getElementById('modeWind').onclick = () => setMode('wind');
-document.getElementById('modeRain').onclick = () => setMode('rain');
+
+
+
+
 document.getElementById('refreshBtn').onclick = async () => {
   await Promise.allSettled([fetchWeather({ force: true }), fetchMarine().catch(showMarineError)]);
 };
@@ -1428,13 +1367,11 @@ async function startApp() {
   }
 
   const centerCache = loadCache(CENTER_CACHE_KEY);
-  const areaCache = loadCache(AREA_CACHE_KEY);
-  if (centerCache && areaCache) {
-    allWeather = combineWeather(buildPoints(), centerCache.value, areaCache.value);
+  if (centerCache) {
+    allWeather = [{ point: buildPoints()[0], data: centerCache.value }];
     renderAll();
     const centerTime = new Date(centerCache.savedAt).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
-    const areaTime = new Date(areaCache.savedAt).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
-    setStatus(`Näytetään välimuistista Bromarvin tiedot klo ${centerTime} ja karttapisteet klo ${areaTime}.`);
+    setStatus(`Näytetään välimuistista Bromarvin tiedot klo ${centerTime}. Uusi haku tehdään MET Norway -palvelusta.`);
   }
   try {
     await fetchWeather();
