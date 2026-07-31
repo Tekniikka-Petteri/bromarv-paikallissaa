@@ -56,7 +56,21 @@
     .leaflet-popup-close-button{position:absolute;top:0;right:0;border:0!important;text-align:center;width:24px;height:24px;font:16px/24px Tahoma,Verdana,sans-serif;color:#aaa;text-decoration:none;background:transparent}
     .leaflet-popup-close-button:hover{color:#777}.leaflet-popup-scrolled{overflow:auto}
     .leaflet-div-icon{background:#fff;border:1px solid #666}
-  </style>
+  
+  .uv-advice { margin-top:10px; padding:12px; border-radius:12px; background:#eef8ff; border:1px solid #b9def5; font-size:.95rem; line-height:1.4; display:none; }
+  .uv-advice.visible { display:block; }
+  .uv-advice.protect { background:#fff4d6; border-color:#f2c864; }
+  .uv-advice.strong { background:#ffe1df; border-color:#ef8a82; }
+  .pollen-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+  .pollen-item { background:#f5f8fb; border:1px solid #dce5ec; border-radius:12px; padding:10px; }
+  .pollen-item small { display:block; color:#526371; margin-bottom:4px; }
+  .pollen-item strong { font-size:1.05rem; }
+  .pollen-summary { margin-top:12px; padding:12px; border-radius:12px; background:#edf8ee; border:1px solid #b9dfbf; line-height:1.4; }
+  .pollen-summary.elevated { background:#fff4d6; border-color:#f2c864; }
+  .pollen-summary.high { background:#ffe1df; border-color:#ef8a82; }
+  .pollen-note { margin-top:10px; color:#5c6d79; font-size:.88rem; line-height:1.4; }
+
+</style>
   <style>
     :root {
       --bg: #07111f;
@@ -530,6 +544,7 @@
         <div class="metric uv" id="uvMetric"><small>UV-indeksi</small><strong id="mainUv">--</strong></div>
         <div class="pressure-explain" id="pressureExplain"><strong>Ilmanpaine:</strong> Haetaan tietoa…</div>
       </div>
+      <div class="uv-advice" id="uvAdvice" aria-live="polite"></div>
     </section>
 
     <section class="card wildfire-card wide" id="wildfireCard" aria-live="polite">
@@ -548,6 +563,20 @@
       <div class="timeline" id="timeline"><div class="hour loading">Ladataan…</div></div>
     </section>
 
+
+    <section class="card wide" id="pollenCard">
+      <h3>Siitepöly Bromarvissa</h3>
+      <div class="weather-label" id="pollenUpdated">Haetaan siitepölyennustetta…</div>
+      <div class="pollen-grid">
+        <div class="pollen-item"><small>Koivu</small><strong id="pollenBirch">--</strong></div>
+        <div class="pollen-item"><small>Leppä</small><strong id="pollenAlder">--</strong></div>
+        <div class="pollen-item"><small>Heinä</small><strong id="pollenGrass">--</strong></div>
+        <div class="pollen-item"><small>Pujo</small><strong id="pollenMugwort">--</strong></div>
+        <div class="pollen-item"><small>Tuoksukki</small><strong id="pollenRagweed">--</strong></div>
+      </div>
+      <div class="pollen-summary" id="pollenSummary" aria-live="polite">Odotetaan tietoja…</div>
+      <div class="pollen-note">Pitoisuudet ovat malliennusteita yksikössä siitepölyhiukkasta/m³. Paikallinen määrä voi vaihdella tuulen, sateen ja kasvillisuuden mukaan.</div>
+    </section>
 
     <section class="card marine-card wide" id="marineCard">
       <h3>Veneilijän sää</h3>
@@ -601,7 +630,7 @@
         <div><span class="dot" style="background:#ff6b6b"></span>Sade</div>
         <div><span class="dot" style="background:#e53935"></span>Livekamera</div>
       </div>
-      <p class="weather-label">Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. V23 näyttää sääpisteenä Bromarvin. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen. Örön kamera auttaa vertaamaan lännen ja lounaan säätilannetta Bromarvin tuulensuuntaan.</p>
+      <p class="weather-label">Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. Bromarv näkyy kartan ainoana sääpisteenä. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen. Örön kamera auttaa vertaamaan lännen ja lounaan säätilannetta Bromarvin tuulensuuntaan.</p>
     </section>
 
     <div class="errorbox" id="errorBox"></div>
@@ -618,6 +647,9 @@ const BEARINGS = [0, 45, 90, 135, 180, 225, 270, 315];
 let map, rangeCircle, weatherMarkers = [], cameraMarkers = [], allWeather = [], displayMode = 'all';
 let radarFrames = [], radarLayer = null, radarIndex = 0, radarTimer = null, radarEnabled = false, radarHost = 'https://tilecache.rainviewer.com';
 let marineData = null;
+let airQualityData = null;
+const AIR_CACHE_KEY = 'bromarv-air-pollen-v30';
+const AIR_CACHE_MAX_AGE = 3 * 60 * 60 * 1000;
 
 const CAMERA_LOCATIONS = [
   {
@@ -1335,17 +1367,97 @@ function renderCenter() {
   } else {
     snowMetric.classList.remove('visible');
   }
-  const uv = Number(c.uv_index || 0);
+  const fallbackUv = Number(c.uv_index || 0);
+  const aqUv = Number(airQualityData?.current?.uv_index);
+  const uv = Number.isFinite(aqUv) ? aqUv : fallbackUv;
   const uvMetric = document.getElementById('uvMetric');
-  if (uv > 0.05) {
-    uvMetric.classList.add('visible');
+  const uvAdvice = document.getElementById('uvAdvice');
+  uvMetric.classList.add('visible');
+  if (Number.isFinite(uv)) {
     document.getElementById('mainUv').textContent = `${uv.toFixed(1)} · ${uvLevel(uv)}`;
+    uvAdvice.className = 'uv-advice visible';
+    if (uv >= 6) {
+      uvAdvice.classList.add('strong');
+      uvAdvice.innerHTML = '<strong>Suojaa iho huolellisesti.</strong> Käytä peittävää vaatetusta, aurinkovoidetta, hattua ja aurinkolaseja. Vältä pitkää oleskelua suorassa auringossa keskipäivällä.';
+    } else if (uv >= 3) {
+      uvAdvice.classList.add('protect');
+      uvAdvice.innerHTML = '<strong>Ihon suojaaminen on tarpeen.</strong> Käytä aurinkovoidetta ja suojaavaa vaatetusta, etenkin keskipäivällä.';
+    } else {
+      uvAdvice.innerHTML = '<strong>UV-säteily on vähäistä.</strong> Tavallista erityistä ihonsuojausta ei yleensä tarvita.';
+    }
   } else {
-    uvMetric.classList.remove('visible');
+    document.getElementById('mainUv').textContent = 'Ei saatavilla';
+    uvAdvice.className = 'uv-advice';
+    uvAdvice.textContent = '';
   }
 }
 
 
+
+function pollenValue(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? `${n.toFixed(n < 10 ? 1 : 0)} /m³` : 'Ei saatavilla';
+}
+
+function pollenLevel(maxValue) {
+  if (!Number.isFinite(maxValue) || maxValue <= 0.1) return { text: 'Siitepölyä ei juuri ennusteta olevan ilmassa.', cls: '' };
+  if (maxValue < 10) return { text: 'Siitepölypitoisuus on tällä hetkellä vähäinen.', cls: '' };
+  if (maxValue < 50) return { text: 'Siitepölypitoisuus on koholla. Oireherkkien kannattaa seurata vointiaan.', cls: 'elevated' };
+  return { text: 'Siitepölypitoisuus on korkea. Allergisten kannattaa varautua oireisiin ja pitää lääkitys saatavilla lääkärin tai apteekin ohjeen mukaan.', cls: 'high' };
+}
+
+function renderAirQuality() {
+  if (!airQualityData?.current) return;
+  const c = airQualityData.current;
+  const values = {
+    birch: Number(c.birch_pollen),
+    alder: Number(c.alder_pollen),
+    grass: Number(c.grass_pollen),
+    mugwort: Number(c.mugwort_pollen),
+    ragweed: Number(c.ragweed_pollen)
+  };
+  document.getElementById('pollenBirch').textContent = pollenValue(values.birch);
+  document.getElementById('pollenAlder').textContent = pollenValue(values.alder);
+  document.getElementById('pollenGrass').textContent = pollenValue(values.grass);
+  document.getElementById('pollenMugwort').textContent = pollenValue(values.mugwort);
+  document.getElementById('pollenRagweed').textContent = pollenValue(values.ragweed);
+  const finite = Object.values(values).filter(Number.isFinite);
+  const max = finite.length ? Math.max(...finite) : NaN;
+  const level = pollenLevel(max);
+  const summary = document.getElementById('pollenSummary');
+  summary.className = `pollen-summary ${level.cls}`.trim();
+  summary.textContent = finite.length ? level.text : 'Siitepölytietoja ei ole tällä hetkellä saatavilla.';
+  const stamp = c.time ? new Date(c.time).toLocaleTimeString('fi-FI', { hour:'2-digit', minute:'2-digit' }) : '';
+  document.getElementById('pollenUpdated').textContent = stamp ? `Malliennuste päivitetty klo ${stamp}` : 'Malliennuste Bromarvin alueelle';
+  if (allWeather.length) renderCenter();
+}
+
+async function fetchAirQuality() {
+  const cached = loadCache(AIR_CACHE_KEY);
+  if (cached && Date.now() - cached.savedAt < AIR_CACHE_MAX_AGE) {
+    airQualityData = cached.value;
+    renderAirQuality();
+  }
+  const vars = 'uv_index,alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,ragweed_pollen';
+  const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${CENTER.lat.toFixed(4)}&longitude=${CENTER.lon.toFixed(4)}&current=${vars}&timezone=Europe%2FHelsinki`;
+  try {
+    const response = await fetch(url, { cache:'no-cache' });
+    if (!response.ok) throw new Error(`UV- ja siitepölypalvelin vastasi virheellä ${response.status}`);
+    airQualityData = await response.json();
+    saveCache(AIR_CACHE_KEY, airQualityData);
+    renderAirQuality();
+  } catch (err) {
+    console.warn('UV- ja siitepölytietojen haku epäonnistui.', err);
+    if (!airQualityData && cached) {
+      airQualityData = cached.value;
+      renderAirQuality();
+      document.getElementById('pollenUpdated').textContent = 'Näytetään viimeksi tallennetut siitepölytiedot';
+    } else if (!airQualityData) {
+      document.getElementById('pollenUpdated').textContent = 'Siitepölytietoja ei saatu';
+      document.getElementById('pollenSummary').textContent = 'Tarkista internet-yhteys ja päivitä sivu myöhemmin.';
+    }
+  }
+}
 
 async function fetchWildfireWarning() {
   // FMI:n CAP-syöte ei salli selaimen suoraa CORS-hakua GitHub Pagesista.
@@ -1549,7 +1661,7 @@ function setMode(mode) {
 
 
 document.getElementById('refreshBtn').onclick = async () => {
-  await Promise.allSettled([fetchWeather({ force: true }), fetchMarine().catch(showMarineError)]);
+  await Promise.allSettled([fetchWeather({ force: true }), fetchMarine().catch(showMarineError), fetchAirQuality()]);
 };
 document.getElementById('radarToggle').onclick = toggleRadar;
 document.getElementById('radarPlay').onclick = toggleRadarAnimation;
@@ -1585,13 +1697,14 @@ async function startApp() {
       }
     }
   }
-  await fetchMarine().catch(showMarineError);
+  await Promise.allSettled([fetchMarine().catch(showMarineError), fetchAirQuality()]);
   await fetchWildfireWarning();
   setInterval(() => {
     fetchWeather().catch(err => {
       if (err.status !== 429) showError(err);
     });
     fetchMarine().catch(showMarineError);
+    fetchAirQuality();
   }, 30 * 60 * 1000);
 }
 
