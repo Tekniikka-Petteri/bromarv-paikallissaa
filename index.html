@@ -4,13 +4,95 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#07111f" />
+  <meta name="color-scheme" content="dark" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Bromarvin paikallissää v29 – mobiili</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
-  <link rel="icon" href="data:,">
-  <link rel="preconnect" href="https://unpkg.com">
-  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <meta name="apple-mobile-web-app-title" content="Bromarvin sää" />
+
+  <title>Bromarvin paikallissää – sää, sadetutka, merisää ja livekamerat</title>
+  <meta name="description" content="Bromarvin paikallissää kokoaa sääennusteen, sadetutkan, merisään, tuulen, UV-indeksin, siitepölytiedot, kuun vaiheen ja alueen livekamerat yhdelle mobiiliystävälliselle sivulle." />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="author" content="Bromarvin paikallissää" />
+  <link rel="canonical" href="https://tekniikka-petteri.github.io/bromarv-paikallissaa/" />
+
+  <meta property="og:locale" content="fi_FI" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Bromarvin paikallissää" />
+  <meta property="og:title" content="Bromarvin paikallissää – sää, sadetutka ja merisää" />
+  <meta property="og:description" content="Ajantasainen sää, sadetutka, merisää, UV-indeksi, siitepöly, kuun vaihe ja livekamerat Bromarvin alueelta." />
+  <meta property="og:url" content="https://tekniikka-petteri.github.io/bromarv-paikallissaa/" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Bromarvin paikallissää" />
+  <meta name="twitter:description" content="Sää, sadetutka, merisää, UV-indeksi, siitepöly ja livekamerat Bromarvissa." />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%230b2944%22/><text x=%2250%22 y=%2268%22 text-anchor=%22middle%22 font-size=%2260%22>🌦️</text></svg>">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
+  <link rel="dns-prefetch" href="https://api.open-meteo.com">
+  <link rel="dns-prefetch" href="https://api.met.no">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/#website",
+        "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
+        "name": "Bromarvin paikallissää",
+        "description": "Bromarvin sää, sadetutka, merisää, UV-indeksi, siitepölytiedot ja livekamerat.",
+        "inLanguage": "fi"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/#webpage",
+        "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
+        "name": "Bromarvin paikallissää – sää, sadetutka, merisää ja livekamerat",
+        "isPartOf": { "@id": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/#website" },
+        "about": {
+          "@type": "Place",
+          "name": "Bromarv",
+          "containedInPlace": { "@type": "AdministrativeArea", "name": "Raasepori" },
+          "geo": { "@type": "GeoCoordinates", "latitude": 59.988655, "longitude": 23.030658 }
+        },
+        "description": "Paikallinen sääpalvelu Bromarviin: sääennuste, sadetutka, merisää, tuuli, UV-indeksi, siitepöly, kuun vaihe ja livekamerat.",
+        "inLanguage": "fi"
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Bromarvin paikallissää",
+        "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
+        "applicationCategory": "WeatherApplication",
+        "operatingSystem": "Any",
+        "isAccessibleForFree": true,
+        "browserRequirements": "Requires JavaScript and an internet connection",
+        "inLanguage": "fi"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Mitä tietoja Bromarvin paikallissää näyttää?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Sivu näyttää Bromarvin ajantasaisen sään, lähituntien ennusteen, sadetutkan, tuulen, merisään, UV-indeksin, siitepölytiedot, kuun vaiheen sekä alueen livekamerat." }
+          },
+          {
+            "@type": "Question",
+            "name": "Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Sivu tukee veneilyolosuhteiden arviointia, mutta malliennustetta ei pidä käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena. Tarkista aina myös viralliset varoitukset ja merisää." }
+          },
+          {
+            "@type": "Question",
+            "name": "Kuinka usein säätiedot päivittyvät?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Tiedot haetaan sivua avattaessa ja päivitetään automaattisesti noin 30 minuutin välein. Päivitä-painikkeella voi pyytää uuden haun." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   <style id="leaflet-critical-css">
     /* Leafletin karttatyylit on upotettu tiedostoon, jotta kartta toimii myös file://-osoitteesta. */
     .leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,
@@ -166,6 +248,16 @@
     .current-wind .wind-arrow { font-size:22px; font-weight:900; color:#77caff; }
     .rain-risk-value { color:#76c8ff; }
     .errorbox { color: #ffd2d2; background: rgba(150,25,25,.35); padding: 12px; border-radius: 10px; display: none; }
+    .seo-copy p { color:var(--muted); line-height:1.55; margin:0 0 12px; }
+    .seo-copy p:last-child { margin-bottom:0; }
+    .seo-features { display:grid; gap:10px; margin-top:12px; }
+    .seo-feature { padding:11px 12px; border-radius:11px; background:rgba(255,255,255,.05); }
+    .seo-feature h4 { margin:0 0 4px; font-size:15px; }
+    .seo-feature p { margin:0; font-size:13px; }
+    .faq-list details { padding:10px 0; border-top:1px solid var(--line); }
+    .faq-list details:first-child { border-top:0; padding-top:0; }
+    .faq-list summary { cursor:pointer; font-weight:800; line-height:1.4; }
+    .faq-list p { color:var(--muted); line-height:1.5; margin:8px 0 0; font-size:13px; }
     .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #0c1d31; color: white; }
     .leaflet-popup-content { margin: 13px 15px; line-height: 1.45; }
     .camera-marker { background: transparent; border: 0; }
@@ -427,8 +519,10 @@
     #harvestCard { order:7; }
     #moonCard { order:8; }
     #pollenCard { order:9; }
-    aside > section:nth-last-of-type(1) { order:10; }
-    #errorBox { order:11; }
+    #legendCard { order:10; }
+    #aboutCard { order:11; }
+    #faqCard { order:12; }
+    #errorBox { order:13; }
 
     .card { padding:14px; border-radius:15px; box-shadow:0 7px 18px rgba(0,0,0,.2); }
     .card h2 { font-size:22px; margin-bottom:10px; }
@@ -488,7 +582,7 @@
 <header>
   <div class="title">
     <h1>Bromarvin paikallissää</h1>
-    <p>Bromarv · paikallissää, sadetutka ja merisää</p>
+    <p>Sää · sadetutka · merisää · siitepöly · livekamerat</p>
   </div>
   <div class="header-actions">
     
@@ -565,20 +659,6 @@
     </section>
 
 
-    <section class="card wide" id="pollenCard">
-      <h3>Siitepöly Bromarvissa</h3>
-      <div class="weather-label" id="pollenUpdated">Haetaan siitepölyennustetta…</div>
-      <div class="pollen-grid">
-        <div class="pollen-item"><small>Koivu</small><strong id="pollenBirch">--</strong></div>
-        <div class="pollen-item"><small>Leppä</small><strong id="pollenAlder">--</strong></div>
-        <div class="pollen-item"><small>Heinä</small><strong id="pollenGrass">--</strong></div>
-        <div class="pollen-item"><small>Pujo</small><strong id="pollenMugwort">--</strong></div>
-        <div class="pollen-item"><small>Tuoksukki</small><strong id="pollenRagweed">--</strong></div>
-      </div>
-      <div class="pollen-summary" id="pollenSummary" aria-live="polite">Odotetaan tietoja…</div>
-      <div class="pollen-note">Pitoisuudet ovat malliennusteita yksikössä siitepölyhiukkasta/m³. Paikallinen määrä voi vaihdella tuulen, sateen ja kasvillisuuden mukaan.</div>
-    </section>
-
     <section class="card marine-card wide" id="marineCard">
       <h3>Veneilijän sää</h3>
       <div class="marine-status">
@@ -622,7 +702,21 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card wide" id="pollenCard">
+      <h3>Siitepöly Bromarvissa</h3>
+      <div class="weather-label" id="pollenUpdated">Haetaan siitepölyennustetta…</div>
+      <div class="pollen-grid">
+        <div class="pollen-item"><small>Koivu</small><strong id="pollenBirch">--</strong></div>
+        <div class="pollen-item"><small>Leppä</small><strong id="pollenAlder">--</strong></div>
+        <div class="pollen-item"><small>Heinä</small><strong id="pollenGrass">--</strong></div>
+        <div class="pollen-item"><small>Pujo</small><strong id="pollenMugwort">--</strong></div>
+        <div class="pollen-item"><small>Tuoksukki</small><strong id="pollenRagweed">--</strong></div>
+      </div>
+      <div class="pollen-summary" id="pollenSummary" aria-live="polite">Odotetaan tietoja…</div>
+      <div class="pollen-note">Pitoisuudet ovat malliennusteita yksikössä siitepölyhiukkasta/m³. Paikallinen määrä voi vaihdella tuulen, sateen ja kasvillisuuden mukaan.</div>
+    </section>
+
+    <section class="card" id="legendCard">
       <h3>Kartan merkinnät</h3>
       <div class="legend">
         <div><span class="dot" style="background:#188ed0"></span>Bromarv</div>
@@ -632,6 +726,36 @@
         <div><span class="dot" style="background:#e53935"></span>Livekamera</div>
       </div>
       <p class="weather-label">Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. Bromarv näkyy kartan ainoana sääpisteenä. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen. Örön kamera auttaa vertaamaan lännen ja lounaan säätilannetta Bromarvin tuulensuuntaan.</p>
+    </section>
+
+
+    <section class="card seo-copy" id="aboutCard">
+      <h3>Tietoa Bromarvin paikallissäästä</h3>
+      <p>Bromarvin paikallissää kokoaa yhdelle sivulle Bromarvin ja Raaseporin saariston tärkeimmät säätiedot. Palvelu auttaa seuraamaan paikallista sääennustetta, lähestyviä sateita, tuulta, merisäätä, UV-säteilyä, siitepölytilannetta ja alueen livekameroita.</p>
+      <p>Sivu on suunniteltu erityisesti veneilijöille, kalastajille, mökkiläisille, ulkoilijoille ja maatalouden tarpeisiin. Säätiedot ovat ennusteita ja mallilaskelmia, joten turvallisuuteen liittyvissä päätöksissä on tarkistettava myös viralliset varoitukset.</p>
+      <div class="seo-features" aria-label="Bromarvin sääpalvelun sisältö">
+        <div class="seo-feature"><h4>Bromarvin sää ja sääennuste</h4><p>Ajantasainen lämpötila, sade, tuuli, ilmankosteus, ilmanpaine sekä seuraavien tuntien ennuste.</p></div>
+        <div class="seo-feature"><h4>Bromarvin sadetutka</h4><p>Tutkakuva auttaa näkemään Bromarvia lähestyvät sadealueet ja niiden liikkeen.</p></div>
+        <div class="seo-feature"><h4>Bromarvin merisää</h4><p>Veneilijälle hyödylliset tiedot tuulesta, puuskista, aallokosta, meriveden lämpötilasta ja pintavirtauksesta.</p></div>
+        <div class="seo-feature"><h4>Siitepöly ja UV-indeksi</h4><p>Päivän siitepölyennuste sekä UV-indeksi ja tarvittaessa ihon suojaamista koskeva ohje.</p></div>
+        <div class="seo-feature"><h4>Bromarvin livekamerat</h4><p>Alueen kamerat täydentävät sääennustetta näyttämällä todellisia olosuhteita lähialueella.</p></div>
+      </div>
+    </section>
+
+    <section class="card faq-list" id="faqCard">
+      <h3>Usein kysyttyä</h3>
+      <details>
+        <summary>Mitä tietoja Bromarvin paikallissää näyttää?</summary>
+        <p>Sivu näyttää Bromarvin ajantasaisen sään, lähituntien ennusteen, sadetutkan, tuulen, merisään, UV-indeksin, siitepölytiedot, kuun vaiheen sekä alueen livekamerat.</p>
+      </details>
+      <details>
+        <summary>Kuinka usein säätiedot päivittyvät?</summary>
+        <p>Tiedot haetaan sivua avattaessa ja päivitetään automaattisesti noin 30 minuutin välein. Päivitä-painikkeella voi pyytää uuden haun.</p>
+      </details>
+      <details>
+        <summary>Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?</summary>
+        <p>Sivu auttaa arvioimaan olosuhteita, mutta malliennustetta ei pidä käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena. Tarkista aina myös viralliset varoitukset ja merisää.</p>
+      </details>
     </section>
 
     <div class="errorbox" id="errorBox"></div>
@@ -649,7 +773,7 @@ let map, rangeCircle, weatherMarkers = [], cameraMarkers = [], allWeather = [], 
 let radarFrames = [], radarLayer = null, radarIndex = 0, radarTimer = null, radarEnabled = false, radarHost = 'https://tilecache.rainviewer.com';
 let marineData = null;
 let airQualityData = null;
-const AIR_CACHE_KEY = 'bromarv-air-pollen-v30';
+const AIR_CACHE_KEY = 'bromarv-air-pollen-v32';
 const AIR_CACHE_MAX_AGE = 3 * 60 * 60 * 1000;
 
 const CAMERA_LOCATIONS = [
