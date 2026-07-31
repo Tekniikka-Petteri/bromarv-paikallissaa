@@ -1,9 +1,9 @@
-BROMARVIN PAIKALLISSÄÄ – VERSION 38 JULKAISU
+BROMARVIN PAIKALLISSÄÄ – VERSION 39 JULKAISU
 
 1. Pura ZIP-paketti.
 2. Avaa GitHub-repository tekniikka-petteri/bromarv-paikallissaa.
 3. Säilytä Googlen vahvistustiedosto, jonka nimi alkaa google ja päättyy .html.
 4. Valitse Add file > Upload files.
 5. Lataa kaikki tämän paketin tiedostot GitHubiin ja ylikirjoita samannimiset vanhat tiedostot.
-6. Tee commit esimerkiksi nimellä: Julkaisu 38 – ruotsinkielinen julkaisusarja korjattu.
+6. Tee commit esimerkiksi nimellä: Julkaisu 39 – ruotsinkielinen julkaisusarja korjattu.
 7. Odota GitHub Pagesin päivittymistä ja avaa sivu uudelleen.

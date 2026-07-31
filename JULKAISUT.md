@@ -1,6 +1,6 @@
 # Julkaisut
 
-## Versio 38 – 1.8.2026
+## Versio 39 – 1.8.2026
 
 - Korjattu ruotsinkielisen julkaisusarjan suomenkieliset tekstit.
 - Korjattu ruotsinkielinen alatunniste.

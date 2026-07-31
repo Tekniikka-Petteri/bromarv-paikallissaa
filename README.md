@@ -1,8 +1,8 @@
-# Bromarvin paikallissää – versio 38
+# Bromarvin paikallissää – versio 39
 
 Kaksikielinen paikallinen sääpalvelu Bromarviin. Ruotsi on oletuskieli ja suomi valittavissa Suomen lipusta.
 
-## Version 38 muutokset
+## Version 39 muutokset
 
 - Julkaisusarjan ja alatunnisteen kaikki tekstit vaihtuvat suomeksi tai ruotsiksi.
 - Livekamerakartan tekstit vaihtuvat valitun kielen mukaan.
