@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fi">
+<!-- Bromarvin paikallissää, versio 33 -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -522,7 +523,8 @@
     #legendCard { order:10; }
     #aboutCard { order:11; }
     #faqCard { order:12; }
-    #errorBox { order:13; }
+    #versionFooter { order:13; }
+    #errorBox { order:14; }
 
     .card { padding:14px; border-radius:15px; box-shadow:0 7px 18px rgba(0,0,0,.2); }
     .card h2 { font-size:22px; margin-bottom:10px; }
@@ -576,6 +578,16 @@
       .map-wrap { height:55svh; min-height:400px; }
       .hour { min-width:82px; }
     }
+
+    .version-footer {
+      order:13;
+      text-align:center;
+      padding:4px 10px 12px;
+      color:rgba(255,255,255,.72);
+      font-size:12px;
+      line-height:1.4;
+    }
+    .version-footer strong { color:#fff; font-weight:700; }
   </style>
 </head>
 <body>
@@ -757,6 +769,11 @@
         <p>Sivu auttaa arvioimaan olosuhteita, mutta malliennustetta ei pidä käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena. Tarkista aina myös viralliset varoitukset ja merisää.</p>
       </details>
     </section>
+
+
+    <footer class="version-footer" id="versionFooter" aria-label="Sivuston versiotieto">
+      Päivitetty 31.7.2026 · <strong>Versio 33</strong>
+    </footer>
 
     <div class="errorbox" id="errorBox"></div>
   </aside>
