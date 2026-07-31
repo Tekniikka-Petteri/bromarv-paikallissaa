@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tekniikka-petteri.github.io/bromarv-paikallissaa/sitemap.xml

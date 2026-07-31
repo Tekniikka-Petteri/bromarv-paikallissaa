@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Bromarvin paikallissää">
+  <rect width="100" height="100" rx="22" fill="#0b2944"/>
+  <circle cx="36" cy="34" r="15" fill="#ffd166"/>
+  <path d="M27 62c0-10 8-18 18-18 7 0 13 4 16 10 2-1 5-2 8-2 9 0 16 7 16 16H27z" fill="#e8f5ff"/>
+  <path d="M42 73l-5 12M58 73l-5 12M74 73l-5 12" stroke="#5ac8fa" stroke-width="5" stroke-linecap="round"/>
+</svg>
