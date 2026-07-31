@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="fi">
-<!-- Bromarvin paikallissää, versio 33 -->
+<html lang="sv">
+<!-- Bromarvs lokala väder / Bromarvin paikallissää, version 34 -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -8,32 +8,32 @@
   <meta name="color-scheme" content="dark" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Bromarvin sää" />
+  <meta name="apple-mobile-web-app-title" content="Bromarvs väder" />
 
-  <title>Bromarvin paikallissää – sää, sadetutka, merisää ja livekamerat</title>
-  <meta name="description" content="Bromarvin paikallissää kokoaa sääennusteen, sadetutkan, merisään, tuulen, UV-indeksin, siitepölytiedot, kuun vaiheen ja alueen livekamerat yhdelle mobiiliystävälliselle sivulle." />
+  <title>Bromarvs lokala väder – väder, nederbördsradar, havsväder och livekameror</title>
+  <meta name="description" content="Bromarvs lokala vädertjänst samlar väderprognos, nederbördsradar, havsväder, vind, UV-index, pollenprognos, månfas och livekameror på en mobilvänlig sida." />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="googlebot" content="index, follow" />
-  <meta name="author" content="Bromarvin paikallissää" />
+  <meta name="author" content="Bromarvs lokala väder" />
   <link rel="canonical" href="https://tekniikka-petteri.github.io/bromarv-paikallissaa/" />
   <link rel="manifest" href="site.webmanifest" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" href="social-preview.png" />
 
-  <meta property="og:locale" content="fi_FI" />
+  <meta property="og:locale" content="sv_FI" />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Bromarvin paikallissää" />
-  <meta property="og:title" content="Bromarvin paikallissää – sää, sadetutka ja merisää" />
-  <meta property="og:description" content="Ajantasainen sää, sadetutka, merisää, UV-indeksi, siitepöly, kuun vaihe ja livekamerat Bromarvin alueelta." />
+  <meta property="og:site_name" content="Bromarvs lokala väder" />
+  <meta property="og:title" content="Bromarvs lokala väder – väder, nederbördsradar och havsväder" />
+  <meta property="og:description" content="Aktuellt väder, nederbördsradar, havsväder, UV-index, pollen, månfas och livekameror i Bromarv." />
   <meta property="og:url" content="https://tekniikka-petteri.github.io/bromarv-paikallissaa/" />
   <meta property="og:image" content="https://tekniikka-petteri.github.io/bromarv-paikallissaa/social-preview.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Bromarvin paikallissää – sää, sadetutka ja merisää" />
+  <meta property="og:image:alt" content="Bromarvs lokala väder – väder, nederbördsradar och havsväder" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Bromarvin paikallissää" />
-  <meta name="twitter:description" content="Sää, sadetutka, merisää, UV-indeksi, siitepöly ja livekamerat Bromarvissa." />
+  <meta name="twitter:title" content="Bromarvs lokala väder" />
+  <meta name="twitter:description" content="Väder, nederbördsradar, havsväder, UV-index, pollen och livekameror i Bromarv." />
   <meta name="twitter:image" content="https://tekniikka-petteri.github.io/bromarv-paikallissaa/social-preview.png" />
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
@@ -50,7 +50,7 @@
         "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
         "name": "Bromarvin paikallissää",
         "description": "Bromarvin sää, sadetutka, merisää, UV-indeksi, siitepölytiedot ja livekamerat.",
-        "inLanguage": "fi"
+        "inLanguage": ["sv", "fi"]
       },
       {
         "@type": "WebPage",
@@ -65,19 +65,19 @@
           "geo": { "@type": "GeoCoordinates", "latitude": 59.988655, "longitude": 23.030658 }
         },
         "description": "Paikallinen sääpalvelu Bromarviin: sääennuste, sadetutka, merisää, tuuli, UV-indeksi, siitepöly, kuun vaihe ja livekamerat.",
-        "inLanguage": "fi"
+        "inLanguage": ["sv", "fi"]
       },
       {
         "@type": "WebApplication",
         "name": "Bromarvin paikallissää",
         "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
         "dateModified": "2026-07-31",
-        "version": "33",
+        "version": "34",
         "applicationCategory": "WeatherApplication",
         "operatingSystem": "Any",
         "isAccessibleForFree": true,
         "browserRequirements": "Requires JavaScript and an internet connection",
-        "inLanguage": "fi"
+        "inLanguage": ["sv", "fi"]
       },
       {
         "@type": "FAQPage",
@@ -611,6 +611,13 @@
       line-height:1.4;
     }
     .version-footer strong { color:#fff; font-weight:700; }
+
+    /* Versio 34: graafinen kielivalitsin */
+    .language-switcher{display:flex;gap:7px;align-items:center;margin-right:7px}
+    .lang-flag{width:44px;height:38px;padding:3px;border-radius:11px;border:2px solid transparent;background:rgba(255,255,255,.08);font-size:25px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .lang-flag[aria-pressed="true"]{border-color:#66c7ff;background:rgba(102,199,255,.18);box-shadow:0 0 0 2px rgba(102,199,255,.08)}
+    .lang-flag:focus-visible{outline:3px solid #fff;outline-offset:2px}
+    @media(max-width:520px){.header-actions{gap:5px}.language-switcher{gap:4px;margin-right:2px}.lang-flag{width:39px;height:36px;font-size:23px}#refreshBtn{padding-left:13px;padding-right:13px}}
   </style>
 </head>
 <body>
@@ -620,7 +627,10 @@
     <p>Sää · sadetutka · merisää · siitepöly · livekamerat</p>
   </div>
   <div class="header-actions">
-    
+    <div class="language-switcher" role="group" aria-label="Välj språk / Valitse kieli">
+      <button class="lang-flag" id="langSv" type="button" aria-label="Svenska" title="Svenska">🇸🇪</button>
+      <button class="lang-flag" id="langFi" type="button" aria-label="Suomi" title="Suomi">🇫🇮</button>
+    </div>
     <button id="refreshBtn">Päivitä</button>
   </div>
 </header>
@@ -800,21 +810,21 @@
           <h3 id="releaseTitle">Julkaisusarja</h3>
           <div class="release-meta">Bromarvin paikallissää · julkaistu 31.7.2026</div>
         </div>
-        <span class="release-badge">Versio 33</span>
+        <span class="release-badge">Versio 34</span>
       </div>
-      <p>Tämä on Bromarvin paikallissään vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen <strong>JULKAISUT.md</strong>-tiedostoon.</p>
-      <strong>Version 33 tärkeimmät muutokset</strong>
+      <p>Tämä on Bromarvin paikallissään kaksikielinen vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen <strong>JULKAISUT.md</strong>-tiedostoon.</p>
+      <strong>Versio 34 viktigaste ändringar</strong>
       <ul class="release-list">
-        <li>Hakukoneoptimointi, sivukartta ja robots.txt.</li>
-        <li>Siitepölytiedot sijoitettu heti kuun vaiheen jälkeen.</li>
-        <li>Siitepöly- ja ilmanpainetietojen näkyvyyttä korjattu.</li>
-        <li>Näkyvä versionumero ja yhtenäinen julkaisusarja lisätty.</li>
+        <li>Ruotsi lisätty oletuskieleksi ja suomi vaihtoehdoksi.</li>
+        <li>Graafinen kielivalinta Ruotsin ja Suomen lipuilla.</li>
+        <li>Kielivalinta muistetaan samalla laitteella.</li>
+        <li>Otsikot, säätiedot, ohjeet ja ilmoitukset vaihtuvat kielen mukana.</li>
       </ul>
       <div class="release-note">Säätiedot ovat ennusteita ja mallilaskelmia. Tarkista turvallisuuteen liittyvät tiedot aina myös virallisista lähteistä.</div>
     </section>
 
     <footer class="version-footer" id="versionFooter" aria-label="Sivuston versiotieto">
-      Päivitetty 31.7.2026 · <strong>Versio 33</strong> · Julkaisusarja
+      Päivitetty 31.7.2026 · <strong>Versio 34</strong> · Julkaisusarja
     </footer>
 
     <div class="errorbox" id="errorBox"></div>
@@ -1904,5 +1914,115 @@ if (document.readyState === 'loading') {
   startApp();
 }
 </script>
+
+<script id="bilingual-v34">
+(() => {
+  'use strict';
+  const STORAGE_KEY = 'bromarv-language-v34';
+  const chosen = localStorage.getItem(STORAGE_KEY);
+  const lang = chosen === 'fi' ? 'fi' : 'sv';
+
+  const exact = new Map(Object.entries({
+    'Bromarvin paikallissää':'Bromarvs lokala väder',
+    'Sää · sadetutka · merisää · siitepöly · livekamerat':'Väder · nederbördsradar · havsväder · pollen · livekameror',
+    'Päivitä':'Uppdatera','Haetaan Bromarvin säätietoja…':'Hämtar väderdata för Bromarv…',
+    'Sadetutka päälle':'Slå på nederbördsradarn','Sadetutka pois':'Stäng av nederbördsradarn','▶ Toista':'▶ Spela','⏸ Pysäytä':'⏸ Pausa','Tutka pois päältä':'Radarn är avstängd',
+    'Heikko':'Svag','Voimakas':'Kraftig','Bromarv nyt':'Bromarv just nu','Haetaan säätä…':'Hämtar väder…',
+    'Tuuli':'Vind','Puuskat':'Vindbyar','Sade nyt':'Nederbörd nu','Saderiski 1 h':'Regnrisk 1 h','Auringonnousu':'Soluppgång','Auringonlasku':'Solnedgång','Päivän pituus':'Dagens längd','Ilmankosteus':'Luftfuktighet','Kastepiste':'Daggpunkt','Ilmanpaine':'Lufttryck','Paineen muutos 6 h':'Tryckförändring 6 h','Lumen syvyys':'Snödjup','UV-indeksi':'UV-index',
+    'Ilmanpaine:':'Lufttryck:','Haetaan tietoa…':'Hämtar information…','Maastopalovaroitus':'Varning för terrängbrand','Tarkista virallinen varoituskartta':'Kontrollera den officiella varningskartan',
+    'Seuraavat 8 tuntia Bromarvissa':'De kommande 8 timmarna i Bromarv','Ladataan…':'Laddar…','Veneilijän sää':'Väder för båtförare','Haetaan merisäätä…':'Hämtar havsväder…','Lasketaan lähimeren aallokko- ja tuuliolosuhteita.':'Beräknar våg- och vindförhållanden på närliggande havsområde.',
+    'Aallonkorkeus':'Våghöjd','Aallon suunta':'Vågriktning','Aallon jakso':'Vågperiod','Meriveden lämpötila':'Havsvattnets temperatur','Pintavirtaus':'Ytström','Meridatan aika':'Tid för havsdata',
+    'Heinänkorjuuarvio':'Bedömning av höskördsvädret','Lasketaan…':'Beräknar…','Analysoidaan seuraavien tuntien sadetta ja tuulta.':'Analyserar regn och vind under de kommande timmarna.',
+    'Kuun vaihe':'Månfas','Kuun valaistus ja ikä.':'Månens belysning och ålder.','Seuraava täysikuu':'Nästa fullmåne','Seuraava uusikuu':'Nästa nymåne',
+    'Siitepöly Bromarvissa':'Pollen i Bromarv','Haetaan siitepölyennustetta…':'Hämtar pollenprognos…','Koivu':'Björk','Leppä':'Al','Heinä':'Gräs','Pujo':'Gråbo','Tuoksukki':'Ambrosia','Odotetaan tietoja…':'Väntar på data…',
+    'Kartan merkinnät':'Kartförklaring','Ei sadetta':'Inget regn','Saderiski':'Risk för regn','Sade':'Regn','Livekamera':'Livekamera',
+    'Tietoa Bromarvin paikallissäästä':'Om Bromarvs lokala väder','Bromarvin sää ja sääennuste':'Väder och väderprognos för Bromarv','Bromarvin sadetutka':'Nederbördsradar för Bromarv','Bromarvin merisää':'Havsväder för Bromarv','Siitepöly ja UV-indeksi':'Pollen och UV-index','Bromarvin livekamerat':'Livekameror i Bromarv','Usein kysyttyä':'Vanliga frågor',
+    'Mitä tietoja Bromarvin paikallissää näyttää?':'Vilken information visar Bromarvs lokala väder?','Kuinka usein säätiedot päivittyvät?':'Hur ofta uppdateras väderinformationen?','Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?':'Kan sidan användas som grund för säkerhetsbeslut vid båtfärder?',
+    'Julkaisusarja':'Utgivningsserie','Versio 33':'Versio 34','Version 33 tärkeimmät muutokset':'Versio 34 viktigaste ändringar','· Julkaisusarja':'· Utgivningsserie',
+    'Aurinkoista':'Soligt','Selkeää':'Klart','Pääosin selkeää':'Mestadels klart','Puolipilvistä':'Halvklart','Pilvistä':'Molnigt','Sumua':'Dimma','Tihkusadetta':'Duggregn','Heikko sade':'Lätt regn','Sadetta':'Regn','Voimakas sade':'Kraftigt regn','Lumisadetta':'Snöfall','Ukkosta':'Åska','Ei tietoa':'Ingen information','matala':'låg','kohtalainen':'måttlig','korkea':'hög','erittäin korkea':'mycket hög','äärimmäinen':'extrem','vakaa':'stabilt','nousee':'stiger','laskee':'sjunker'
+  }));
+
+  const paragraphs = [
+    ['RainViewerin tutkakuva näyttää viimeisimmät sadehavainnot. Tutkadata ei ole sama asia kuin sääennuste.','RainViewers radarbild visar de senaste nederbördsobservationerna. Radardata är inte samma sak som en väderprognos.'],
+    ['Aallokko on malliennuste lähimmälle meriruudulle. Bromarvin suojaisessa satamassa aallokko voi olla selvästi tätä pienempää. Tietoa ei saa käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena.','Våghöjden är en modellprognos för närmaste havsruta. I Bromarvs skyddade hamn kan vågorna vara betydligt lägre. Informationen får inte användas som enda grund för navigation eller säkerhetsbeslut.'],
+    ['Pitoisuudet ovat malliennusteita yksikössä siitepölyhiukkasta/m³. Paikallinen määrä voi vaihdella tuulen, sateen ja kasvillisuuden mukaan.','Halterna är modellprognoser i enheten pollenpartiklar/m³. Den lokala mängden kan variera beroende på vind, regn och växtlighet.'],
+    ['Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. Bromarv näkyy kartan ainoana sääpisteenä. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen. Örön kamera auttaa vertaamaan lännen ja lounaan säätilannetta Bromarvin tuulensuuntaan.','Vindpilen visar den riktning som luften rör sig mot. Bromarv visas som kartans enda väderpunkt. Regn i närområdet syns på nederbördsradarn. De röda kameramarkörerna öppnar områdets livekameror. M/S Jurmo är en färja i rörelse, så dess kartposition är ungefärlig. Kameran på Örö hjälper till att jämföra vädret väster och sydväst om Bromarv.'],
+    ['Bromarvin paikallissää kokoaa yhdelle sivulle Bromarvin ja Raaseporin saariston tärkeimmät säätiedot. Palvelu auttaa seuraamaan paikallista sääennustetta, lähestyviä sateita, tuulta, merisäätä, UV-säteilyä, siitepölytilannetta ja alueen livekameroita.','Bromarvs lokala väder samlar den viktigaste väderinformationen för Bromarv och Raseborgs skärgård på en sida. Tjänsten hjälper dig att följa den lokala prognosen, annalkande regn, vind, havsväder, UV-strålning, pollenläget och områdets livekameror.'],
+    ['Sivu on suunniteltu erityisesti veneilijöille, kalastajille, mökkiläisille, ulkoilijoille ja maatalouden tarpeisiin. Säätiedot ovat ennusteita ja mallilaskelmia, joten turvallisuuteen liittyvissä päätöksissä on tarkistettava myös viralliset varoitukset.','Sidan är särskilt utformad för båtförare, fiskare, stugägare, friluftsmänniskor och jordbrukets behov. Väderuppgifterna är prognoser och modellberäkningar, så kontrollera även officiella varningar när säkerheten berörs.'],
+    ['Ajantasainen lämpötila, sade, tuuli, ilmankosteus, ilmanpaine sekä seuraavien tuntien ennuste.','Aktuell temperatur, nederbörd, vind, luftfuktighet, lufttryck och prognos för de kommande timmarna.'],
+    ['Tutkakuva auttaa näkemään Bromarvia lähestyvät sadealueet ja niiden liikkeen.','Radarbilden visar nederbördsområden som närmar sig Bromarv och hur de rör sig.'],
+    ['Veneilijälle hyödylliset tiedot tuulesta, puuskista, aallokosta, meriveden lämpötilasta ja pintavirtauksesta.','Nyttig information för båtförare om vind, vindbyar, vågor, havsvattnets temperatur och ytströmmar.'],
+    ['Päivän siitepölyennuste sekä UV-indeksi ja tarvittaessa ihon suojaamista koskeva ohje.','Dagens pollenprognos samt UV-index och vid behov råd om att skydda huden.'],
+    ['Alueen kamerat täydentävät sääennustetta näyttämällä todellisia olosuhteita lähialueella.','Områdets kameror kompletterar prognosen genom att visa de verkliga förhållandena i närområdet.'],
+    ['Sivu näyttää Bromarvin ajantasaisen sään, lähituntien ennusteen, sadetutkan, tuulen, merisään, UV-indeksin, siitepölytiedot, kuun vaiheen sekä alueen livekamerat.','Sidan visar aktuellt väder i Bromarv, prognosen för de närmaste timmarna, nederbördsradar, vind, havsväder, UV-index, pollenprognos, månfas och områdets livekameror.'],
+    ['Tiedot haetaan sivua avattaessa ja päivitetään automaattisesti noin 30 minuutin välein. Päivitä-painikkeella voi pyytää uuden haun.','Uppgifterna hämtas när sidan öppnas och uppdateras automatiskt ungefär var 30:e minut. Med knappen Uppdatera kan du begära en ny hämtning.'],
+    ['Sivu auttaa arvioimaan olosuhteita, mutta malliennustetta ei pidä käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena. Tarkista aina myös viralliset varoitukset ja merisää.','Sidan hjälper till att bedöma förhållandena, men modellprognosen får inte användas som enda grund för navigation eller säkerhetsbeslut. Kontrollera alltid även officiella varningar och havsväder.'],
+    ['Säätiedot ovat ennusteita ja mallilaskelmia. Tarkista turvallisuuteen liittyvät tiedot aina myös virallisista lähteistä.','Väderuppgifterna är prognoser och modellberäkningar. Kontrollera alltid säkerhetsrelaterad information även från officiella källor.']
+  ];
+
+  function svText(value){
+    let t=value;
+    if(exact.has(t.trim())){
+      const lead=t.match(/^\s*/)[0], trail=t.match(/\s*$/)[0];
+      return lead+exact.get(t.trim())+trail;
+    }
+    for(const [fi,sv] of paragraphs) t=t.split(fi).join(sv);
+    const parts=[
+      [/Siitepölytietoja ei ole tällä hetkellä saatavilla\./g,'Polleninformation är inte tillgänglig just nu.'],
+      [/Siitepölypitoisuus on tällä hetkellä vähäinen\./g,'Pollenhalten är för närvarande låg.'],
+      [/Siitepölyä ei juuri ennusteta olevan ilmassa\./g,'Nästan inget pollen förväntas i luften.'],
+      [/Siitepölypitoisuus on koholla\./g,'Pollenhalten är förhöjd.'],
+      [/Siitepölypitoisuus on korkea\./g,'Pollenhalten är hög.'],
+      [/UV-säteily on vähäistä\./g,'UV-strålningen är låg.'],
+      [/Tavallista erityistä ihonsuojausta ei yleensä tarvita\./g,'Särskilt hudskydd behövs vanligtvis inte.'],
+      [/Hyvä korjuusää/g,'Bra skördeväder'],[/Kohtalainen korjuusää/g,'Måttligt skördeväder'],[/Huono korjuusää/g,'Dåligt skördeväder'],
+      [/Sateen riski on pieni/g,'Risken för regn är liten'],[/seuraavien tuntien aikana/g,'under de kommande timmarna'],
+      [/Haetaan/g,'Hämtar'],[/Ladataan/g,'Laddar'],[/Ei saatavilla/g,'Inte tillgänglig'],[/Ei tietoa/g,'Ingen information']
+    ];
+    for(const [a,b] of parts)t=t.replace(a,b);
+    return t;
+  }
+
+  function translateNode(root=document.body){
+    if(lang!=='sv')return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){
+      if(!n.nodeValue.trim())return NodeFilter.FILTER_REJECT;
+      const p=n.parentElement;if(!p||['SCRIPT','STYLE','NOSCRIPT'].includes(p.tagName))return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }});
+    const nodes=[]; while(walker.nextNode())nodes.push(walker.currentNode);
+    for(const n of nodes){const x=svText(n.nodeValue);if(x!==n.nodeValue)n.nodeValue=x;}
+    root.querySelectorAll?.('[aria-label],[title]').forEach(el=>{
+      for(const a of ['aria-label','title']){const v=el.getAttribute(a);if(v)el.setAttribute(a,svText(v));}
+    });
+  }
+
+  function setMeta(){
+    if(lang==='sv'){
+      document.documentElement.lang='sv';
+      document.title='Bromarvs lokala väder – väder, nederbördsradar, havsväder och livekameror';
+    }else{
+      document.documentElement.lang='fi';
+      document.title='Bromarvin paikallissää – sää, sadetutka, merisää ja livekamerat';
+      const d=document.querySelector('meta[name="description"]'); if(d)d.content='Bromarvin paikallissää kokoaa sääennusteen, sadetutkan, merisään, tuulen, UV-indeksin, siitepölytiedot, kuun vaiheen ja alueen livekamerat yhdelle mobiiliystävälliselle sivulle.';
+    }
+  }
+
+  function choose(next){localStorage.setItem(STORAGE_KEY,next);location.reload();}
+  function init(){
+    setMeta();
+    const sv=document.getElementById('langSv'),fi=document.getElementById('langFi');
+    sv?.setAttribute('aria-pressed',String(lang==='sv'));fi?.setAttribute('aria-pressed',String(lang==='fi'));
+    sv?.addEventListener('click',()=>choose('sv'));fi?.addEventListener('click',()=>choose('fi'));
+    if(lang==='sv'){
+      translateNode(document.body);
+      const observer=new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData'){const v=svText(m.target.nodeValue);if(v!==m.target.nodeValue)m.target.nodeValue=v;}for(const n of m.addedNodes){if(n.nodeType===1)translateNode(n);else if(n.nodeType===3){const v=svText(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;}}}});
+      observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
 </body>
 </html>

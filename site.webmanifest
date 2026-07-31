@@ -1,19 +1,10 @@
 {
-  "name": "Bromarvin paikallissää",
-  "short_name": "Bromarvin sää",
-  "description": "Sää, sadetutka, merisää, siitepöly ja livekamerat Bromarvissa.",
+  "name": "Bromarvs lokala väder / Bromarvin paikallissää",
+  "short_name": "Bromarv väder",
   "start_url": "./",
-  "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
-  "lang": "fi",
-  "icons": [
-    {
-      "src": "favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+  "lang": "sv",
+  "icons": [{"src":"favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]
 }

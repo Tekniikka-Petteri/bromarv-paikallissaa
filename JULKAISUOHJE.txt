@@ -1,47 +1,9 @@
-BROMARVIN PAIKALLISSÄÄ – VERSION 33 JULKAISUOHJE
+BROMARVIN PAIKALLISSÄÄ – VERSION 34 JULKAISU
 
-VAIHTOEHTO A: GITHUBIN SELAIMEN UPLOAD FILES
-1. Avaa GitHubissa repository tekniikka-petteri/bromarv-paikallissaa.
-2. Avaa Code-välilehti.
-3. Valitse Add file > Upload files.
-4. Pura ZIP-paketti ensin omalle tietokoneelle.
-5. Vedä kaikki puretun kansion tiedostot GitHubin latausalueelle.
-6. Varmista, että index.html tulee repositorion juureen eikä alikansioon.
-7. Kirjoita commit-viestiksi esimerkiksi: Julkaisu 33.
-8. Valitse Commit changes.
-
-VAIHTOEHTO B: GITHUB DESKTOP (HELPPO, JOS SELAIMEN LATAUS EI TOIMI)
-1. Asenna GitHub Desktop ja kirjaudu GitHub-tilillesi.
-2. Valitse File > Clone repository.
-3. Valitse tekniikka-petteri/bromarv-paikallissaa ja kloonaa se koneelle.
-4. Avaa koneelta kloonattu kansio.
-5. Kopioi tämän paketin tiedostot kansioon ja hyväksy index.html:n korvaaminen.
-6. Palaa GitHub Desktopiin.
-7. Kirjoita Summary-kenttään Julkaisu 33.
-8. Valitse Commit to main ja sen jälkeen Push origin.
-
-VAIHTOEHTO C: GIT-KOMENNOT
-Avaa Git Bash tai PowerShell ja suorita:
-
-git clone https://github.com/tekniikka-petteri/bromarv-paikallissaa.git
-cd bromarv-paikallissaa
-
-Kopioi tämän jälkeen paketin tiedostot tähän kansioon. Suorita sitten:
-
-git add .
-git commit -m "Julkaisu 33"
-git push origin main
-
-GITHUB PAGES -ASETUS
-Repository > Settings > Pages
-- Source: Deploy from a branch
-- Branch: main
-- Folder: /(root)
-Tallenna asetus tarvittaessa.
-
-TARKISTUS JULKAISUN JÄLKEEN
-https://tekniikka-petteri.github.io/bromarv-paikallissaa/
-https://tekniikka-petteri.github.io/bromarv-paikallissaa/robots.txt
-https://tekniikka-petteri.github.io/bromarv-paikallissaa/sitemap.xml
-
-Huomio: Älä julkaise salasanoja, API-avaimia tai muita salaisia tietoja GitHub-repositoryyn.
+1. Pura ZIP-paketti.
+2. Vie GitHub-repositorion juureen kaikki tämän kansion tiedostot.
+3. Korvaa vanhat samannimiset tiedostot, kuten index.html, 404.html, sitemap.xml ja site.webmanifest.
+4. ÄLÄ poista Googlen vahvistustiedostoa, jonka nimi alkaa sanalla google ja päättyy .html. Se ei ole tässä paketissa, koska tiedosto on henkilökohtainen Search Console -vahvistuksesi.
+5. Tee GitHubissa commit esimerkiksi nimellä: Julkaisu 34 – kaksikielinen versio.
+6. Odota GitHub Pagesin päivittymistä 1–5 minuuttia.
+7. Testaa ruotsin ja suomen lippupainikkeet puhelimella.
