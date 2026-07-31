@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="sv">
+<!-- Bromarvs lokala väder / Bromarvin paikallissää, version 34 -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bromarvs väder" />
+
+  <title>Bromarvs lokala väder – väder, nederbördsradar, havsväder och livekameror</title>
+  <meta name="description" content="Bromarvs lokala vädertjänst samlar väderprognos, nederbördsradar, havsväder, vind, UV-index, pollenprognos, månfas och livekameror på en mobilvänlig sida." />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="author" content="Bromarvs lokala väder" />
+  <link rel="canonical" href="https://tekniikka-petteri.github.io/bromarv-paikallissaa/" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="social-preview.png" />
+
+  <meta property="og:locale" content="sv_FI" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Bromarvs lokala väder" />
+  <meta property="og:title" content="Bromarvs lokala väder – väder, nederbördsradar och havsväder" />
+  <meta property="og:description" content="Aktuellt väder, nederbördsradar, havsväder, UV-index, pollen, månfas och livekameror i Bromarv." />
+  <meta property="og:url" content="https://tekniikka-petteri.github.io/bromarv-paikallissaa/" />
+  <meta property="og:image" content="https://tekniikka-petteri.github.io/bromarv-paikallissaa/social-preview.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Bromarvs lokala väder – väder, nederbördsradar och havsväder" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Bromarvs lokala väder" />
+  <meta name="twitter:description" content="Väder, nederbördsradar, havsväder, UV-index, pollen och livekameror i Bromarv." />
+  <meta name="twitter:image" content="https://tekniikka-petteri.github.io/bromarv-paikallissaa/social-preview.png" />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
+  <link rel="dns-prefetch" href="https://api.open-meteo.com">
+  <link rel="dns-prefetch" href="https://api.met.no">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/#website",
+        "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
+        "name": "Bromarvin paikallissää",
+        "description": "Bromarvin sää, sadetutka, merisää, UV-indeksi, siitepölytiedot ja livekamerat.",
+        "inLanguage": ["sv", "fi"]
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/#webpage",
+        "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
+        "name": "Bromarvin paikallissää – sää, sadetutka, merisää ja livekamerat",
+        "isPartOf": { "@id": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/#website" },
+        "about": {
+          "@type": "Place",
+          "name": "Bromarv",
+          "containedInPlace": { "@type": "AdministrativeArea", "name": "Raasepori" },
+          "geo": { "@type": "GeoCoordinates", "latitude": 59.988655, "longitude": 23.030658 }
+        },
+        "description": "Paikallinen sääpalvelu Bromarviin: sääennuste, sadetutka, merisää, tuuli, UV-indeksi, siitepöly, kuun vaihe ja livekamerat.",
+        "inLanguage": ["sv", "fi"]
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Bromarvin paikallissää",
+        "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
+        "dateModified": "2026-07-31",
+        "version": "34",
+        "applicationCategory": "WeatherApplication",
+        "operatingSystem": "Any",
+        "isAccessibleForFree": true,
+        "browserRequirements": "Requires JavaScript and an internet connection",
+        "inLanguage": ["sv", "fi"]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Mitä tietoja Bromarvin paikallissää näyttää?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Sivu näyttää Bromarvin ajantasaisen sään, lähituntien ennusteen, sadetutkan, tuulen, merisään, UV-indeksin, siitepölytiedot, kuun vaiheen sekä alueen livekamerat." }
+          },
+          {
+            "@type": "Question",
+            "name": "Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Sivu tukee veneilyolosuhteiden arviointia, mutta malliennustetta ei pidä käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena. Tarkista aina myös viralliset varoitukset ja merisää." }
+          },
+          {
+            "@type": "Question",
+            "name": "Kuinka usein säätiedot päivittyvät?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Tiedot haetaan sivua avattaessa ja päivitetään automaattisesti noin 30 minuutin välein. Päivitä-painikkeella voi pyytää uuden haun." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+  <style id="leaflet-critical-css">
+    /* Leafletin karttatyylit on upotettu tiedostoon, jotta kartta toimii myös file://-osoitteesta. */
+    .leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,
+    .leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box{position:absolute;left:0;top:0}
+    .leaflet-container{overflow:hidden;position:relative;outline:0;-webkit-tap-highlight-color:transparent}
+    .leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow{-webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-user-drag:none}
+    .leaflet-tile::selection{background:transparent}
+    .leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}
+    .leaflet-safari .leaflet-tile-container{width:1600px;height:1600px;-webkit-transform-origin:0 0}
+    .leaflet-marker-icon,.leaflet-marker-shadow{display:block}
+    .leaflet-container .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}
+    .leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,
+    .leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer,
+    .leaflet-container .leaflet-tile{max-width:none!important;max-height:none!important;width:auto;padding:0}
+    .leaflet-container.leaflet-touch-zoom{touch-action:pan-x pan-y}
+    .leaflet-container.leaflet-touch-drag{touch-action:none;touch-action:pinch-zoom}
+    .leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{touch-action:none}
+    .leaflet-container{-webkit-tap-highlight-color:transparent}
+    .leaflet-tile{filter:inherit;visibility:hidden}
+    .leaflet-tile-loaded{visibility:inherit}
+    .leaflet-zoom-box{width:0;height:0;box-sizing:border-box;z-index:800}
+    .leaflet-overlay-pane svg{-moz-user-select:none}
+    .leaflet-pane{z-index:400}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}
+    .leaflet-shadow-pane{z-index:500}.leaflet-marker-pane{z-index:600}.leaflet-tooltip-pane{z-index:650}.leaflet-popup-pane{z-index:700}
+    .leaflet-map-pane canvas{z-index:100}.leaflet-map-pane svg{z-index:200}
+    .leaflet-vml-shape{width:1px;height:1px}.lvml{behavior:url(#default#VML);display:inline-block;position:absolute}
+    .leaflet-control{position:relative;z-index:800;pointer-events:auto;float:left;clear:both}
+    .leaflet-top,.leaflet-bottom{position:absolute;z-index:1000;pointer-events:none}
+    .leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}
+    .leaflet-right .leaflet-control{float:right}.leaflet-top .leaflet-control{margin-top:10px}
+    .leaflet-bottom .leaflet-control{margin-bottom:10px}.leaflet-left .leaflet-control{margin-left:10px}.leaflet-right .leaflet-control{margin-right:10px}
+    .leaflet-fade-anim .leaflet-popup{opacity:0;transition:opacity .2s linear}.leaflet-fade-anim .leaflet-map-pane .leaflet-popup{opacity:1}
+    .leaflet-zoom-animated{transform-origin:0 0}.leaflet-zoom-anim .leaflet-zoom-animated{transition:transform .25s cubic-bezier(0,0,.25,1)}
+    .leaflet-zoom-anim .leaflet-tile,.leaflet-pan-anim .leaflet-tile{transition:none}.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}
+    .leaflet-control-zoom a{display:block;text-align:center;text-decoration:none;width:30px;height:30px;line-height:30px;background:#fff;color:#111;font:bold 20px Arial;border-bottom:1px solid #ccc}
+    .leaflet-control-zoom a:first-child{border-radius:4px 4px 0 0}.leaflet-control-zoom a:last-child{border-radius:0 0 4px 4px;border-bottom:0}
+    .leaflet-control-attribution{padding:2px 6px;background:rgba(255,255,255,.8);color:#333;font-size:11px}.leaflet-control-attribution a{color:#0078a8}
+    .leaflet-popup{position:absolute;text-align:center;margin-bottom:20px}.leaflet-popup-content-wrapper{padding:1px;text-align:left;border-radius:12px}
+    .leaflet-popup-content{margin:13px 24px 13px 20px;line-height:1.3;font-size:13px;min-height:1px}
+    .leaflet-popup-tip-container{width:40px;height:20px;position:absolute;left:50%;margin-top:-1px;margin-left:-20px;overflow:hidden;pointer-events:none}
+    .leaflet-popup-tip{width:17px;height:17px;padding:1px;margin:-10px auto 0;transform:rotate(45deg)}
+    .leaflet-popup-content-wrapper,.leaflet-popup-tip{box-shadow:0 3px 14px rgba(0,0,0,.4)}
+    .leaflet-popup-close-button{position:absolute;top:0;right:0;border:0!important;text-align:center;width:24px;height:24px;font:16px/24px Tahoma,Verdana,sans-serif;color:#aaa;text-decoration:none;background:transparent}
+    .leaflet-popup-close-button:hover{color:#777}.leaflet-popup-scrolled{overflow:auto}
+    .leaflet-div-icon{background:#fff;border:1px solid #666}
+  
+  .uv-advice { margin-top:10px; padding:12px; border-radius:12px; background:#eef8ff; border:1px solid #b9def5; color:#183247; font-size:.95rem; line-height:1.4; display:none; }
+  .uv-advice.visible { display:block; }
+  .uv-advice.protect { background:#fff4d6; border-color:#f2c864; }
+  .uv-advice.strong { background:#ffe1df; border-color:#ef8a82; }
+  .pollen-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+  .pollen-item { background:#f5f8fb; border:1px solid #dce5ec; border-radius:12px; padding:10px; color:#183247; }
+  .pollen-item small { display:block; color:#526371; margin-bottom:4px; }
+  .pollen-item strong { font-size:1.05rem; color:#183247; }
+  .pollen-reading { display:flex; flex-wrap:wrap; align-items:center; gap:7px; }
+  .pollen-level { display:inline-flex; align-items:center; gap:6px; font-size:.82rem; font-weight:800; line-height:1; padding:6px 8px; border-radius:999px; background:#e7eef4; color:#344b5d; }
+  .pollen-dots { display:inline-flex; gap:3px; }
+  .pollen-dot { width:9px; height:9px; border-radius:50%; background:#aeb8c0; opacity:.32; }
+  .pollen-dot.on { opacity:1; }
+  .pollen-level.none { background:#edf3f6; color:#506270; }
+  .pollen-level.low { background:#edf8ee; color:#1f5b2d; }
+  .pollen-level.moderate { background:#fff4d6; color:#6a4c0d; }
+  .pollen-level.high { background:#ffe1df; color:#7a2923; }
+  .pollen-scale { margin-top:12px; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.1); color:#aebdca; font-size:.84rem; line-height:1.45; }
+  .pollen-scale-row { display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:7px; }
+  .pollen-scale-item { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+  .pollen-summary { margin-top:12px; padding:12px; border-radius:12px; background:#edf8ee; border:1px solid #b9dfbf; color:#183b24; line-height:1.4; }
+  .pollen-summary.elevated { background:#fff4d6; border-color:#f2c864; color:#5a4210; }
+  .pollen-summary.high { background:#ffe1df; border-color:#ef8a82; color:#68231f; }
+  .pollen-note { margin-top:10px; color:#5c6d79; font-size:.88rem; line-height:1.4; }
+
+</style>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: rgba(11, 25, 43, 0.94);
+      --panel2: rgba(17, 36, 59, 0.95);
+      --line: rgba(255,255,255,.12);
+      --text: #f5f9ff;
+      --muted: #a9bbcf;
+      --accent: #4db7ff;
+      --green: #55d98b;
+      --yellow: #ffd166;
+      --red: #ff6b6b;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: "Segoe UI", Arial, sans-serif; }
+    body { overflow-x: hidden; }
+    header {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+      padding: 16px 22px; border-bottom: 1px solid var(--line);
+      background: linear-gradient(135deg, #0a1a2d, #102d47); position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 8px 28px rgba(0,0,0,.25);
+    }
+    .title h1 { margin: 0; font-size: clamp(21px, 2.2vw, 34px); }
+    .title p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    button {
+      border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.09); color: white;
+      border-radius: 10px; padding: 10px 14px; cursor: pointer; font: inherit; font-weight: 700;
+    }
+    button:hover { background: rgba(255,255,255,.16); }
+    button.active { background: var(--accent); color: #06101c; border-color: transparent; }
+    main { padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 16px; }
+    .map-wrap { position: relative; height: calc(100vh - 156px); min-height: 560px; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 14px 35px rgba(0,0,0,.32); }
+    #map { height: 100%; width: 100%; background: #16324a; }
+    .map-status {
+      position: absolute; left: 12px; bottom: 12px; z-index: 800; max-width: 430px;
+      padding: 10px 12px; border-radius: 12px; color: white; background: rgba(6,16,28,.88);
+      border: 1px solid rgba(255,255,255,.16); backdrop-filter: blur(8px); font-size: 13px; line-height: 1.4;
+    }
+    aside { display: flex; flex-direction: column; gap: 14px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: 0 12px 28px rgba(0,0,0,.22); }
+    .card h2, .card h3 { margin: 0 0 12px; }
+    .hero-temp { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .hero-temp .temp { font-size: 48px; font-weight: 800; line-height: 1; }
+    .hero-temp .icon { font-size: 52px; }
+    .weather-label { color: var(--muted); margin-top: 6px; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 15px; }
+    .metric { padding: 10px; border-radius: 11px; background: rgba(255,255,255,.055); }
+    .metric small { display: block; color: var(--muted); margin-bottom: 3px; }
+    .metric strong { font-size: 16px; }
+    .metric.uv { display: none; }
+    .metric.uv.visible { display: block; }
+    .pressure-explain { grid-column: 1 / -1; padding: 10px 11px; border-radius: 11px; background: rgba(75,179,255,.08); border: 1px solid rgba(75,179,255,.16); color: var(--muted); line-height: 1.38; font-size: 14px; }
+    .pressure-explain strong { color: var(--text); }
+    .moon-row { display: flex; align-items: center; gap: 16px; }
+    .moon-icon { font-size: 58px; line-height: 1; width: 70px; text-align: center; }
+    .moon-details { flex: 1; }
+    .moon-phase { font-size: 21px; font-weight: 800; margin-bottom: 5px; }
+    .moon-meta { color: var(--muted); line-height: 1.45; }
+    .moon-next { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .moon-next > div { padding: 9px 10px; border-radius: 11px; background: rgba(255,255,255,.055); }
+    .moon-next small { display:block; color:var(--muted); margin-bottom:3px; }
+    .harvest { border-left: 5px solid var(--green); }
+    .harvest.warn { border-left-color: var(--yellow); }
+    .harvest.danger { border-left-color: var(--red); }
+    .harvest .status { font-size: 22px; font-weight: 800; margin-bottom: 7px; }
+    .timeline { display: flex; gap: 9px; overflow-x: auto; padding-bottom: 6px; }
+    .hour { min-width: 88px; text-align: center; padding: 10px 8px; border-radius: 12px; background: rgba(255,255,255,.055); }
+    .hour .hicon { font-size: 27px; margin: 5px 0; }
+    .hour .rain { color: #76c8ff; font-weight: 700; }
+    .legend { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 7px; font-size: 13px; color: var(--muted); }
+    .dot { width: 12px; height: 12px; display: inline-block; border-radius: 50%; margin-right: 6px; }
+    .loading { animation: pulse 1.3s infinite; }
+    @keyframes pulse { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
+
+    .nearby-alert { display:none; margin-top:12px; padding:11px 13px; border-radius:12px; font-weight:800; line-height:1.35; }
+    .nearby-alert.visible { display:block; }
+    .nearby-alert.rain { background:rgba(33,150,243,.20); border:1px solid rgba(105,190,255,.65); color:#d9f1ff; }
+    .nearby-alert.thunder { background:rgba(156,39,176,.24); border:1px solid rgba(225,130,255,.75); color:#f7dcff; }
+    .nearby-alert.clear { background:rgba(45,180,105,.14); border:1px solid rgba(85,217,139,.38); color:#d9ffe8; }
+    .weather-marker { background: transparent; border: none; }
+    .marker-card {
+      min-width: 68px; transform: translate(-2px,-2px); padding: 5px 6px; border-radius: 10px; font-size: 12px;
+      background: rgba(7,17,31,.91); border: 1px solid rgba(255,255,255,.24); color: white;
+      box-shadow: 0 5px 15px rgba(0,0,0,.35); text-align: center; white-space: nowrap;
+    }
+    .marker-card.center { background: rgba(0,98,164,.95); border: 2px solid white; min-width: 142px; padding: 7px 8px; border-radius: 12px; font-size: 14px; }
+    .marker-top { display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 800; }
+    .marker-sub { font-size: 9px; color: #d4e4f4; margin-top: 1px; }
+    .marker-card.center .marker-sub { font-size: 11px; margin-top: 2px; }
+    .wind-arrow { display: inline-block; font-size: 17px; transform-origin: 50% 55%; }
+    .current-wind { display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
+    .current-wind .wind-arrow { font-size:22px; font-weight:900; color:#77caff; }
+    .rain-risk-value { color:#76c8ff; }
+    .errorbox { color: #ffd2d2; background: rgba(150,25,25,.35); padding: 12px; border-radius: 10px; display: none; }
+    .seo-copy p { color:var(--muted); line-height:1.55; margin:0 0 12px; }
+    .seo-copy p:last-child { margin-bottom:0; }
+    .seo-features { display:grid; gap:10px; margin-top:12px; }
+    .seo-feature { padding:11px 12px; border-radius:11px; background:rgba(255,255,255,.05); }
+    .seo-feature h4 { margin:0 0 4px; font-size:15px; }
+    .seo-feature p { margin:0; font-size:13px; }
+    .faq-list details { padding:10px 0; border-top:1px solid var(--line); }
+    .faq-list details:first-child { border-top:0; padding-top:0; }
+    .faq-list summary { cursor:pointer; font-weight:800; line-height:1.4; }
+    .faq-list p { color:var(--muted); line-height:1.5; margin:8px 0 0; font-size:13px; }
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #0c1d31; color: white; }
+    .leaflet-popup-content { margin: 13px 15px; line-height: 1.45; }
+    .camera-marker { background: transparent; border: 0; }
+    .camera-pin {
+      width: 34px; height: 34px; border-radius: 50% 50% 50% 8px; transform: rotate(-45deg);
+      display: grid; place-items: center; background: #e53935; color: #fff; border: 2px solid #fff;
+      box-shadow: 0 5px 14px rgba(0,0,0,.45);
+    }
+    .camera-pin span { transform: rotate(45deg); font-size: 17px; line-height: 1; }
+    .camera-popup { min-width: 250px; }
+    .camera-popup h3 { margin: 0 0 8px; font-size: 17px; }
+    .camera-popup-item { display: grid; grid-template-columns: 92px 1fr; gap: 9px; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.12); }
+    .camera-popup-item:first-of-type { border-top: 0; }
+    .camera-popup-item img { width: 92px; height: 52px; object-fit: cover; border-radius: 7px; background: #15263a; }
+    .camera-popup-item a { color: #71c7ff; font-weight: 800; text-decoration: none; }
+    .camera-popup-item a:hover { text-decoration: underline; }
+    .camera-popup-distance { color: #a9bbcf; font-size: 12px; margin-top: 2px; }
+
+    .leaflet-control-center-bromarv {
+      margin-bottom: 6px !important;
+    }
+    .leaflet-control-center-bromarv button {
+      display: block;
+      min-width: 62px;
+      height: 34px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 5px;
+      background: #fff;
+      color: #172230;
+      font: 700 13px/34px system-ui, -apple-system, "Segoe UI", sans-serif;
+      cursor: pointer;
+      box-shadow: 0 1px 5px rgba(0,0,0,.45);
+    }
+    .leaflet-control-center-bromarv button:hover,
+    .leaflet-control-center-bromarv button:focus-visible {
+      background: #f0f5fa;
+      outline: 2px solid #4db7ff;
+      outline-offset: 1px;
+    }
+
+    .radar-panel {
+      position:absolute; right:12px; top:12px; z-index:900;
+      width:min(360px, calc(100% - 24px)); padding:10px 11px;
+      border-radius:12px; background:rgba(6,16,28,.9); color:#fff;
+      border:1px solid rgba(255,255,255,.16); backdrop-filter:blur(8px);
+      box-shadow:0 6px 18px rgba(0,0,0,.3);
+    }
+    .radar-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .radar-panel button { padding:7px 10px; border-radius:8px; font-size:13px; }
+    .radar-time { color:#d6e8f8; font-size:13px; font-weight:700; }
+    .radar-slider { width:100%; margin-top:8px; }
+    .radar-note { margin-top:6px; color:#a9bbcf; font-size:12px; line-height:1.35; }
+    .radar-legend { display:flex; align-items:center; gap:6px; margin-top:7px; font-size:11px; color:#c7d9e8; flex-wrap:wrap; }
+    .radar-swatch { width:18px; height:8px; border-radius:4px; display:inline-block; }
+    @media (max-width:650px){ .radar-panel{ top:8px; right:8px; left:auto; width:calc(100% - 16px);} }
+
+
+    .marine-card { border-left: 5px solid var(--accent); }
+    .marine-status { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+    .marine-light { width:16px; height:16px; border-radius:50%; flex:0 0 auto; background:#8aa0b5; box-shadow:0 0 0 4px rgba(138,160,181,.15); }
+    .marine-light.good { background:#55d98b; box-shadow:0 0 0 4px rgba(85,217,139,.15); }
+    .marine-light.caution { background:#ffd166; box-shadow:0 0 0 4px rgba(255,209,102,.15); }
+    .marine-light.danger { background:#ff6b6b; box-shadow:0 0 0 4px rgba(255,107,107,.15); }
+    .marine-status-text { font-size:20px; font-weight:800; }
+    .marine-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+    .marine-metric { padding:10px; border-radius:11px; background:rgba(255,255,255,.055); }
+    .marine-metric small { display:block; color:var(--muted); margin-bottom:3px; }
+    .marine-metric strong { font-size:16px; }
+    .marine-note { margin-top:11px; padding:10px 11px; border-radius:11px; background:rgba(77,183,255,.08); border:1px solid rgba(77,183,255,.16); color:var(--muted); font-size:13px; line-height:1.4; }
+
+    .metric.optional { display:none; }
+    .metric.optional.visible { display:block; }
+    .wildfire-card { display:none; border-left:5px solid var(--yellow); }
+    .wildfire-card.visible { display:block; }
+    .wildfire-card.orange { border-left-color:#ff9f43; }
+    .wildfire-card.red { border-left-color:#ff4d4d; }
+    .wildfire-alert { display:flex; gap:12px; align-items:flex-start; }
+    .wildfire-icon { font-size:38px; line-height:1; }
+    .wildfire-title { font-size:20px; font-weight:800; margin-bottom:5px; }
+    .wildfire-text { color:var(--muted); line-height:1.45; }
+    .wildfire-link { display:inline-block; margin-top:9px; color:#77caff; font-weight:800; text-decoration:none; }
+
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr; }
+      .map-wrap { height: 570px; min-height: 570px; }
+      #map { height: 100%; }
+      aside { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); }
+      aside .wide { grid-column: 1 / -1; }
+    }
+    @media (max-width: 650px) {
+      header { align-items: flex-start; flex-direction: column; }
+      .header-actions { justify-content: flex-start; }
+      main { padding: 8px; }
+      aside { display: flex; }
+      .map-wrap { height: 510px; min-height: 510px; }
+      #map { height: 100%; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+    }
+
+
+    /* v18: mobiilioptimointi */
+    @media (max-width: 650px) {
+      html { -webkit-text-size-adjust: 100%; }
+      body { width: 100%; overflow-x: clip; }
+
+      header {
+        position: relative;
+        top: auto;
+        width: 100%;
+        padding: 14px 12px 12px;
+        gap: 12px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.22);
+      }
+      .title { width: 100%; min-width: 0; }
+      .title h1 { font-size: 22px; line-height: 1.15; }
+      .title p { font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; }
+      .header-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .header-actions button {
+        min-width: 0;
+        width: 100%;
+        padding: 10px 5px;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+
+      main {
+        width: 100%;
+        padding: 8px;
+        gap: 10px;
+      }
+      .map-wrap {
+        width: 100%;
+        height: min(68svh, 560px);
+        min-height: 460px;
+        border-radius: 14px;
+      }
+      .radar-panel {
+        top: 8px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+        padding: 8px;
+        border-radius: 10px;
+      }
+      .radar-row { gap: 6px; }
+      .radar-panel button { padding: 7px 8px; font-size: 12px; }
+      .radar-time { font-size: 12px; }
+      .radar-slider { margin-top: 6px; }
+      .radar-legend { margin-top: 5px; gap: 4px; font-size: 10px; }
+      .radar-swatch { width: 14px; }
+      .radar-note { margin-top: 4px; font-size: 10px; line-height: 1.25; }
+
+      .map-status {
+        left: 8px;
+        right: 72px;
+        bottom: 8px;
+        max-width: none;
+        padding: 7px 9px;
+        font-size: 10px;
+        line-height: 1.3;
+        border-radius: 9px;
+      }
+      .leaflet-bottom.leaflet-right { bottom: 3px; right: 0; }
+      .leaflet-control-center-bromarv button { min-width: 58px; height: 32px; font-size: 12px; line-height: 32px; }
+
+      aside { width: 100%; gap: 10px; }
+      .card {
+        width: 100%;
+        min-width: 0;
+        padding: 14px;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(0,0,0,.18);
+      }
+      .card h2 { font-size: 23px; }
+      .card h3 { font-size: 21px; }
+      .hero-temp .temp { font-size: 44px; }
+      .hero-temp .icon { font-size: 44px; }
+      .nearby-alert { padding: 10px 11px; font-size: 14px; }
+      .metrics, .marine-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .metric, .marine-metric { min-width: 0; padding: 9px; }
+      .metric small, .marine-metric small { font-size: 12px; }
+      .metric strong, .marine-metric strong { font-size: 14px; overflow-wrap: anywhere; }
+      .pressure-explain, .marine-note { font-size: 13px; line-height: 1.35; }
+      .marine-status { align-items: flex-start; }
+      .marine-status-text { font-size: 18px; }
+
+      .timeline {
+        gap: 7px;
+        margin: 0 -4px;
+        padding: 0 4px 8px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+      }
+      .hour {
+        min-width: 82px;
+        padding: 9px 6px;
+        scroll-snap-align: start;
+      }
+      .hour .hicon { font-size: 25px; }
+
+      .moon-row { gap: 10px; }
+      .moon-icon { width: 58px; font-size: 48px; }
+      .moon-phase { font-size: 18px; }
+      .moon-meta { font-size: 13px; }
+      .moon-next { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .moon-next > div { padding: 8px; min-width: 0; }
+      .legend { font-size: 12px; }
+      .weather-label { font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
+
+      .camera-popup { min-width: 0; width: min(260px, 72vw); }
+      .camera-popup-item { grid-template-columns: 76px minmax(0,1fr); }
+      .camera-popup-item img { width: 76px; height: 44px; }
+      .leaflet-popup-content { margin: 11px 12px; }
+    }
+
+    @media (max-width: 380px) {
+      .header-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .map-wrap { min-height: 430px; height: 64svh; }
+      .metrics, .marine-grid { grid-template-columns: 1fr; }
+      .pressure-explain { grid-column: 1; }
+      .moon-next { grid-template-columns: 1fr; }
+    }
+
+
+    /* v27: puhelimelle suunniteltu yhden palstan käyttöliittymä */
+    html { background:#07111f; -webkit-text-size-adjust:100%; }
+    body {
+      width:100%; max-width:760px; margin:0 auto; overflow-x:hidden;
+      padding-bottom:calc(14px + env(safe-area-inset-bottom));
+    }
+    header {
+      position:sticky; top:0; z-index:1200; width:100%;
+      padding:calc(10px + env(safe-area-inset-top)) 12px 10px;
+      gap:10px; align-items:center; flex-direction:row;
+      background:rgba(9,28,47,.96); backdrop-filter:blur(14px);
+    }
+    .title { min-width:0; flex:1; }
+    .title h1 { font-size:20px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .title p { margin-top:3px; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .header-actions { width:auto; flex:0 0 auto; display:block; }
+    .header-actions button { min-height:44px; padding:9px 14px; font-size:14px; touch-action:manipulation; }
+
+    main { display:flex; flex-direction:column; width:100%; padding:8px; gap:10px; }
+    aside { display:contents; }
+    aside > * { width:100%; }
+    aside > section:nth-of-type(1) { order:1; }
+    #wildfireCard { order:2; }
+    aside > section:nth-of-type(3) { order:3; }
+    .map-wrap { order:4; }
+    .radar-panel { order:5; }
+    #marineCard { order:6; }
+    #harvestCard { order:7; }
+    #moonCard { order:8; }
+    #pollenCard { order:9; }
+    #legendCard { order:10; }
+    #aboutCard { order:11; }
+    #faqCard { order:12; }
+    #versionFooter { order:13; }
+    #errorBox { order:14; }
+
+    .card { padding:14px; border-radius:15px; box-shadow:0 7px 18px rgba(0,0,0,.2); }
+    .card h2 { font-size:22px; margin-bottom:10px; }
+    .card h3 { font-size:19px; margin-bottom:10px; }
+    .hero-temp .temp { font-size:48px; }
+    .hero-temp .icon { font-size:46px; }
+    .weather-label { font-size:13px; line-height:1.38; }
+    .metrics, .marine-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .metric, .marine-metric { min-width:0; padding:10px 9px; }
+    .metric small, .marine-metric small { font-size:11px; }
+    .metric strong, .marine-metric strong { font-size:14px; overflow-wrap:anywhere; }
+    .pressure-explain { font-size:12px; line-height:1.35; }
+
+    .timeline { gap:7px; margin:0 -5px; padding:0 5px 8px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; }
+    .hour { min-width:86px; padding:9px 6px; scroll-snap-align:start; }
+    .hour .hicon { font-size:27px; min-height:32px; }
+
+    .map-wrap { width:100%; height:58svh; min-height:430px; max-height:560px; border-radius:15px; }
+    .radar-panel {
+      position:relative; inset:auto; width:100%; padding:11px; border-radius:15px;
+      background:var(--panel); box-shadow:0 7px 18px rgba(0,0,0,.2);
+    }
+    .radar-panel button { min-height:42px; padding:8px 10px; font-size:13px; touch-action:manipulation; }
+    .radar-time { font-size:12px; }
+    .radar-note { display:block; font-size:11px; }
+    .radar-legend { font-size:10px; margin-top:4px; }
+    .radar-slider { height:30px; margin-top:3px; }
+    .map-status { left:8px; right:70px; bottom:8px; max-width:none; padding:7px 8px; font-size:10px; line-height:1.25; }
+    .leaflet-control a, .leaflet-control button { touch-action:manipulation; }
+    .leaflet-control-zoom a { width:36px; height:36px; line-height:36px; }
+    .leaflet-control-center-bromarv button { min-width:62px; height:36px; line-height:36px; }
+    .camera-popup { min-width:0; width:min(270px,75vw); }
+
+    .marine-status-text { font-size:18px; }
+    .marine-note { font-size:12px; }
+    .moon-next { grid-template-columns:1fr 1fr; }
+    .legend { font-size:12px; }
+
+
+    /* v28: sadetutkan ohjaimet kartan alla */
+    .radar-panel { position:relative; top:auto; right:auto; left:auto; width:100%; }
+
+    @media (max-width:380px) {
+      header { padding-left:9px; padding-right:9px; }
+      .title h1 { font-size:18px; }
+      .header-actions button { padding:8px 11px; }
+      main { padding:6px; gap:8px; }
+      .card { padding:12px; }
+      .metrics, .marine-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .metric strong, .marine-metric strong { font-size:13px; }
+      .map-wrap { height:55svh; min-height:400px; }
+      .hour { min-width:82px; }
+    }
+
+    .release-card { order:13; }
+    .release-head {
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px;
+    }
+    .release-badge {
+      flex:0 0 auto; padding:6px 10px; border-radius:999px; background:rgba(85,217,139,.15);
+      border:1px solid rgba(85,217,139,.35); color:#bdf8d2; font-size:12px; font-weight:800;
+    }
+    .release-meta { color:var(--muted); font-size:12px; margin-top:3px; }
+    .release-list { margin:10px 0 0; padding-left:20px; color:rgba(255,255,255,.86); }
+    .release-list li { margin:6px 0; line-height:1.4; }
+    .release-note {
+      margin-top:12px; padding:10px 11px; border-radius:12px; background:rgba(24,142,208,.10);
+      border:1px solid rgba(24,142,208,.22); color:rgba(255,255,255,.78); font-size:12px; line-height:1.45;
+    }
+    .version-footer {
+      order:14;
+      text-align:center;
+      padding:4px 10px 12px;
+      color:rgba(255,255,255,.72);
+      font-size:12px;
+      line-height:1.4;
+    }
+    .version-footer strong { color:#fff; font-weight:700; }
+
+    /* Versio 36: graafinen kielivalitsin */
+    .language-switcher{display:flex;gap:7px;align-items:center;margin-right:7px}
+    .lang-flag{width:44px;height:38px;padding:3px;border-radius:11px;border:2px solid transparent;background:rgba(255,255,255,.08);font-size:25px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .lang-flag[aria-pressed="true"]{border-color:#66c7ff;background:rgba(102,199,255,.18);box-shadow:0 0 0 2px rgba(102,199,255,.08)}
+    .lang-flag:focus-visible{outline:3px solid #fff;outline-offset:2px}
+    @media(max-width:520px){.header-actions{gap:5px}.language-switcher{gap:4px;margin-right:2px}.lang-flag{width:39px;height:36px;font-size:23px}#refreshBtn{padding-left:13px;padding-right:13px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="title">
+    <h1>Bromarvin paikallissää</h1>
+    <p>Sää · sadetutka · merisää · siitepöly · livekamerat</p>
+  </div>
+  <div class="header-actions">
+    <div class="language-switcher" role="group" aria-label="Välj språk / Valitse kieli">
+      <button class="lang-flag" id="langSv" type="button" aria-label="Svenska" title="Svenska">🇸🇪</button>
+      <button class="lang-flag" id="langFi" type="button" aria-label="Suomi" title="Suomi">🇫🇮</button>
+    </div>
+    <button id="refreshBtn">Päivitä</button>
+  </div>
+</header>
+
+<main>
+  <section class="map-wrap">
+    <div id="map"></div>
+    <div class="map-status" id="mapStatus">Haetaan Bromarvin säätietoja…</div>
+  </section>
+
+  <section class="radar-panel" id="radarPanel" aria-label="Sadetutkan ohjaimet">
+    <div class="radar-row">
+      <button id="radarToggle" type="button">Sadetutka päälle</button>
+      <button id="radarPlay" type="button" disabled>▶ Toista</button>
+      <span class="radar-time" id="radarTime">Tutka pois päältä</span>
+    </div>
+    <input class="radar-slider" id="radarSlider" type="range" min="0" max="0" value="0" step="1" disabled aria-label="Sadetutkan ajankohta">
+    <div class="radar-legend">
+      <span>Heikko</span><span class="radar-swatch" style="background:#5ac8fa"></span>
+      <span class="radar-swatch" style="background:#34c759"></span>
+      <span class="radar-swatch" style="background:#ffd60a"></span>
+      <span class="radar-swatch" style="background:#ff453a"></span><span>Voimakas</span>
+    </div>
+    <div class="radar-note">RainViewerin tutkakuva näyttää viimeisimmät sadehavainnot. Tutkadata ei ole sama asia kuin sääennuste.</div>
+  </section>
+
+  <aside>
+    <section class="card">
+      <h2>Bromarv nyt</h2>
+      <div class="hero-temp">
+        <div>
+          <div class="temp loading" id="mainTemp">--°</div>
+          <div class="weather-label" id="mainLabel">Haetaan säätä…</div>
+        </div>
+        <div class="icon" id="mainIcon">⌛</div>
+      </div>
+      <div class="nearby-alert" id="nearbyAlert" aria-live="polite"></div>
+      <div class="metrics">
+        <div class="metric"><small>Tuuli</small><strong id="mainWind">--</strong></div>
+        <div class="metric"><small>Puuskat</small><strong id="mainGust">--</strong></div>
+        <div class="metric"><small>Sade nyt</small><strong id="mainRain">--</strong></div>
+        <div class="metric"><small>Saderiski 1 h</small><strong class="rain-risk-value" id="mainRainRisk">--</strong></div>
+        <div class="metric"><small>Auringonnousu</small><strong id="sunriseTime">--</strong></div>
+        <div class="metric"><small>Auringonlasku</small><strong id="sunsetTime">--</strong></div>
+        <div class="metric"><small>Päivän pituus</small><strong id="dayLength">--</strong></div>
+        <div class="metric"><small>Ilmankosteus</small><strong id="mainHumidity">--</strong></div>
+        <div class="metric"><small>Kastepiste</small><strong id="mainDewPoint">--</strong></div>
+        <div class="metric"><small>Ilmanpaine</small><strong id="mainPressure">--</strong></div>
+        <div class="metric"><small>Paineen muutos 6 h</small><strong id="mainPressureTrend">--</strong></div>
+        <div class="metric optional" id="snowMetric"><small>Lumen syvyys</small><strong id="mainSnowDepth">--</strong></div>
+        <div class="metric uv" id="uvMetric"><small>UV-indeksi</small><strong id="mainUv">--</strong></div>
+        <div class="pressure-explain" id="pressureExplain"><strong>Ilmanpaine:</strong> Haetaan tietoa…</div>
+      </div>
+      <div class="uv-advice" id="uvAdvice" aria-live="polite"></div>
+    </section>
+
+    <section class="card wildfire-card wide" id="wildfireCard" aria-live="polite">
+      <div class="wildfire-alert">
+        <div class="wildfire-icon">🔥</div>
+        <div>
+          <div class="wildfire-title" id="wildfireTitle">Maastopalovaroitus</div>
+          <div class="wildfire-text" id="wildfireText"></div>
+          <a class="wildfire-link" href="https://www.ilmatieteenlaitos.fi/varoitukset" target="_blank" rel="noopener">Tarkista virallinen varoituskartta</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="card wide">
+      <h3>Seuraavat 8 tuntia Bromarvissa</h3>
+      <div class="timeline" id="timeline"><div class="hour loading">Ladataan…</div></div>
+    </section>
+
+
+    <section class="card marine-card wide" id="marineCard">
+      <h3>Veneilijän sää</h3>
+      <div class="marine-status">
+        <span class="marine-light" id="marineLight"></span>
+        <div>
+          <div class="marine-status-text" id="marineStatus">Haetaan merisäätä…</div>
+          <div class="weather-label" id="marineStatusText">Lasketaan lähimeren aallokko- ja tuuliolosuhteita.</div>
+        </div>
+      </div>
+      <div class="marine-grid">
+        <div class="marine-metric"><small>Aallonkorkeus</small><strong id="marineWaveHeight">--</strong></div>
+        <div class="marine-metric"><small>Aallon suunta</small><strong id="marineWaveDirection">--</strong></div>
+        <div class="marine-metric"><small>Aallon jakso</small><strong id="marineWavePeriod">--</strong></div>
+        <div class="marine-metric"><small>Meriveden lämpötila</small><strong id="marineSeaTemp">--</strong></div>
+        <div class="marine-metric"><small>Tuuli</small><strong id="marineWind">--</strong></div>
+        <div class="marine-metric"><small>Puuskat</small><strong id="marineGust">--</strong></div>
+        <div class="marine-metric"><small>Pintavirtaus</small><strong id="marineCurrent">--</strong></div>
+        <div class="marine-metric"><small>Meridatan aika</small><strong id="marineTime">--</strong></div>
+      </div>
+      <div class="marine-note" id="marineNote">Aallokko on malliennuste lähimmälle meriruudulle. Bromarvin suojaisessa satamassa aallokko voi olla selvästi tätä pienempää. Tietoa ei saa käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena.</div>
+    </section>
+
+    <section class="card harvest" id="harvestCard">
+      <h3>Heinänkorjuuarvio</h3>
+      <div class="status" id="harvestStatus">Lasketaan…</div>
+      <div id="harvestText" class="weather-label">Analysoidaan seuraavien tuntien sadetta ja tuulta.</div>
+    </section>
+
+    <section class="card" id="moonCard">
+      <h3>Kuun vaihe</h3>
+      <div class="moon-row">
+        <div class="moon-icon" id="moonIcon">🌙</div>
+        <div class="moon-details">
+          <div class="moon-phase" id="moonPhase">Lasketaan…</div>
+          <div class="moon-meta" id="moonMeta">Kuun valaistus ja ikä.</div>
+        </div>
+      </div>
+      <div class="moon-next">
+        <div><small>Seuraava täysikuu</small><strong id="nextFullMoon">--</strong></div>
+        <div><small>Seuraava uusikuu</small><strong id="nextNewMoon">--</strong></div>
+      </div>
+    </section>
+
+    <section class="card wide" id="pollenCard">
+      <h3>Siitepöly Bromarvissa</h3>
+      <div class="weather-label" id="pollenUpdated">Haetaan siitepölyennustetta…</div>
+      <div class="pollen-grid">
+        <div class="pollen-item"><small>Koivu</small><strong id="pollenBirch">--</strong></div>
+        <div class="pollen-item"><small>Leppä</small><strong id="pollenAlder">--</strong></div>
+        <div class="pollen-item"><small>Heinä</small><strong id="pollenGrass">--</strong></div>
+        <div class="pollen-item"><small>Pujo</small><strong id="pollenMugwort">--</strong></div>
+        <div class="pollen-item"><small>Tuoksukki</small><strong id="pollenRagweed">--</strong></div>
+      </div>
+      <div class="pollen-summary" id="pollenSummary" aria-live="polite">Odotetaan tietoja…</div>
+      <div class="pollen-scale">
+        <strong>Arvion asteikko</strong>
+        <div class="pollen-scale-row">
+          <span class="pollen-scale-item"><span class="pollen-dots"><i class="pollen-dot on"></i><i class="pollen-dot"></i><i class="pollen-dot"></i></span> Vähän</span>
+          <span class="pollen-scale-item"><span class="pollen-dots"><i class="pollen-dot on"></i><i class="pollen-dot on"></i><i class="pollen-dot"></i></span> Kohtalaisesti</span>
+          <span class="pollen-scale-item"><span class="pollen-dots"><i class="pollen-dot on"></i><i class="pollen-dot on"></i><i class="pollen-dot on"></i></span> Runsaasti</span>
+        </div>
+      </div>
+      <div class="pollen-note">Jokaisessa laatikossa näkyvät sekä mallin ennustama määrä että sanallinen arvio. Pitoisuudet ilmoitetaan siitepölyhiukkasina/m³. Paikallinen määrä voi vaihdella tuulen, sateen ja kasvillisuuden mukaan.</div>
+    </section>
+
+    <section class="card" id="legendCard">
+      <h3>Kartan merkinnät</h3>
+      <div class="legend">
+        <div><span class="dot" style="background:#188ed0"></span>Bromarv</div>
+        <div><span class="dot" style="background:#55d98b"></span>Ei sadetta</div>
+        <div><span class="dot" style="background:#ffd166"></span>Saderiski</div>
+        <div><span class="dot" style="background:#ff6b6b"></span>Sade</div>
+        <div><span class="dot" style="background:#e53935"></span>Livekamera</div>
+      </div>
+      <p class="weather-label">Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. Bromarv näkyy kartan ainoana sääpisteenä. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen. Örön kamera auttaa vertaamaan lännen ja lounaan säätilannetta Bromarvin tuulensuuntaan.</p>
+    </section>
+
+
+    <section class="card seo-copy" id="aboutCard">
+      <h3>Tietoa Bromarvin paikallissäästä</h3>
+      <p>Bromarvin paikallissää kokoaa yhdelle sivulle Bromarvin ja Raaseporin saariston tärkeimmät säätiedot. Palvelu auttaa seuraamaan paikallista sääennustetta, lähestyviä sateita, tuulta, merisäätä, UV-säteilyä, siitepölytilannetta ja alueen livekameroita.</p>
+      <p>Sivu on suunniteltu erityisesti veneilijöille, kalastajille, mökkiläisille, ulkoilijoille ja maatalouden tarpeisiin. Säätiedot ovat ennusteita ja mallilaskelmia, joten turvallisuuteen liittyvissä päätöksissä on tarkistettava myös viralliset varoitukset.</p>
+      <div class="seo-features" aria-label="Bromarvin sääpalvelun sisältö">
+        <div class="seo-feature"><h4>Bromarvin sää ja sääennuste</h4><p>Ajantasainen lämpötila, sade, tuuli, ilmankosteus, ilmanpaine sekä seuraavien tuntien ennuste.</p></div>
+        <div class="seo-feature"><h4>Bromarvin sadetutka</h4><p>Tutkakuva auttaa näkemään Bromarvia lähestyvät sadealueet ja niiden liikkeen.</p></div>
+        <div class="seo-feature"><h4>Bromarvin merisää</h4><p>Veneilijälle hyödylliset tiedot tuulesta, puuskista, aallokosta, meriveden lämpötilasta ja pintavirtauksesta.</p></div>
+        <div class="seo-feature"><h4>Siitepöly ja UV-indeksi</h4><p>Päivän siitepölyennuste sekä UV-indeksi ja tarvittaessa ihon suojaamista koskeva ohje.</p></div>
+        <div class="seo-feature"><h4>Bromarvin livekamerat</h4><p>Alueen kamerat täydentävät sääennustetta näyttämällä todellisia olosuhteita lähialueella.</p></div>
+      </div>
+    </section>
+
+    <section class="card faq-list" id="faqCard">
+      <h3>Usein kysyttyä</h3>
+      <details>
+        <summary>Mitä tietoja Bromarvin paikallissää näyttää?</summary>
+        <p>Sivu näyttää Bromarvin ajantasaisen sään, lähituntien ennusteen, sadetutkan, tuulen, merisään, UV-indeksin, siitepölytiedot, kuun vaiheen sekä alueen livekamerat.</p>
+      </details>
+      <details>
+        <summary>Kuinka usein säätiedot päivittyvät?</summary>
+        <p>Tiedot haetaan sivua avattaessa ja päivitetään automaattisesti noin 30 minuutin välein. Päivitä-painikkeella voi pyytää uuden haun.</p>
+      </details>
+      <details>
+        <summary>Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?</summary>
+        <p>Sivu auttaa arvioimaan olosuhteita, mutta malliennustetta ei pidä käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena. Tarkista aina myös viralliset varoitukset ja merisää.</p>
+      </details>
+    </section>
+
+
+    <section class="card release-card" id="releaseCard" aria-labelledby="releaseTitle">
+      <div class="release-head">
+        <div>
+          <h3 id="releaseTitle">Julkaisusarja</h3>
+          <div class="release-meta">Bromarvin paikallissää · julkaistu 31.7.2026</div>
+        </div>
+        <span class="release-badge">Versio 36</span>
+      </div>
+      <p>Tämä on Bromarvin paikallissään kaksikielinen vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen <strong>JULKAISUT.md</strong>-tiedostoon.</p>
+      <strong>Versio 36 viktigaste ändringar</strong>
+      <ul class="release-list">
+        <li>Ruotsi lisätty oletuskieleksi ja suomi vaihtoehdoksi.</li>
+        <li>Graafinen kielivalinta Ruotsin ja Suomen lipuilla.</li>
+        <li>Kielivalinta muistetaan samalla laitteella.</li>
+        <li>Otsikot, säätiedot, ohjeet ja ilmoitukset vaihtuvat kielen mukana.</li>
+      </ul>
+      <div class="release-note">Säätiedot ovat ennusteita ja mallilaskelmia. Tarkista turvallisuuteen liittyvät tiedot aina myös virallisista lähteistä.</div>
+    </section>
+
+    <footer class="version-footer" id="versionFooter" aria-label="Sivuston versiotieto">
+      Päivitetty 31.7.2026 · <strong>Versio 36</strong> · Julkaisusarja
+    </footer>
+
+    <div class="errorbox" id="errorBox"></div>
+  </aside>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+'use strict';
+
+const CENTER = { lat: 59.98865518652084, lon: 23.03065759214128 };
+const RINGS_KM = [10, 20, 30];
+const BEARINGS = [0, 45, 90, 135, 180, 225, 270, 315];
+let map, rangeCircle, weatherMarkers = [], cameraMarkers = [], allWeather = [], displayMode = 'all';
+let radarFrames = [], radarLayer = null, radarIndex = 0, radarTimer = null, radarEnabled = false, radarHost = 'https://tilecache.rainviewer.com';
+let marineData = null;
+let airQualityData = null;
+const AIR_CACHE_KEY = 'bromarv-air-pollen-v33';
+const AIR_CACHE_MAX_AGE = 3 * 60 * 60 * 1000;
+
+const CAMERA_LOCATIONS = [
+  {
+    name: 'Hanko', lat: 59.8230, lon: 22.9680,
+    cameras: [
+      { title: 'Hanko Satama', id: '-uDcwo7l3Wc', url: 'https://youtu.be/-uDcwo7l3Wc' }
+    ]
+  },
+  {
+    name: 'Taalintehdas', lat: 60.0190, lon: 22.5090,
+    cameras: [
+      { title: 'Taalintehtaan Livekamera', id: 'QsrMR701KEg', url: 'https://youtu.be/QsrMR701KEg' },
+      { title: 'Villa Bergholmen 1', id: 'uanqTM9-2vg', url: 'https://youtu.be/uanqTM9-2vg' },
+      { title: 'Villa Bergholmen 2', id: 'utKYLf3ZjfA', url: 'https://youtu.be/utKYLf3ZjfA' }
+    ]
+  },
+  {
+    name: 'Kemiönsaari – M/S Jurmo', lat: 59.92095691994556, lon: 22.407844656348736,
+    moving: true,
+    cameras: [
+      { title: 'Finferries Kemiönsaari M/S Jurmo', id: '0hkT6ZaZUQw', url: 'https://youtu.be/0hkT6ZaZUQw' }
+    ]
+  },
+  {
+    name: 'Örö Satama', lat: 59.81062587314443, lon: 22.336689587023226,
+    alwaysShow: true,
+    cameras: [
+      { title: 'Örö Satama', id: 'WJw9s3EdBKw', url: 'https://youtu.be/WJw9s3EdBKw' }
+    ]
+  }
+];
+
+function destinationPoint(lat, lon, distanceKm, bearingDeg) {
+  const R = 6371;
+  const brng = bearingDeg * Math.PI / 180;
+  const phi1 = lat * Math.PI / 180;
+  const lambda1 = lon * Math.PI / 180;
+  const delta = distanceKm / R;
+  const phi2 = Math.asin(Math.sin(phi1) * Math.cos(delta) + Math.cos(phi1) * Math.sin(delta) * Math.cos(brng));
+  const lambda2 = lambda1 + Math.atan2(Math.sin(brng) * Math.sin(delta) * Math.cos(phi1), Math.cos(delta) - Math.sin(phi1) * Math.sin(phi2));
+  return { lat: phi2 * 180 / Math.PI, lon: ((lambda2 * 180 / Math.PI + 540) % 360) - 180 };
+}
+
+function buildPoints() {
+  const points = [{ name: 'Bromarv', lat: CENTER.lat, lon: CENTER.lon, distance: 0, bearing: 0, center: true }];
+  RINGS_KM.forEach(distance => {
+    BEARINGS.forEach(bearing => {
+      const p = destinationPoint(CENTER.lat, CENTER.lon, distance, bearing);
+      points.push({ name: `${distance} km ${directionName(bearing)}`, ...p, distance, bearing, center: false });
+    });
+  });
+  return points;
+}
+
+function directionName(deg) {
+  const names = ['P','KO','I','KA','E','LO','L','LU'];
+  return names[Math.round((((deg % 360) + 360) % 360) / 45) % 8];
+}
+
+function windFromName(deg) {
+  const names = ['P','KO','I','KA','E','LO','L','LU'];
+  return names[Math.round((((deg % 360) + 360) % 360) / 45) % 8];
+}
+
+function weatherInfo(code, isDay = 1) {
+  const night = Number(isDay) === 0;
+  if (code === 0) return { icon: night ? '🌙' : '☀️', label: 'Selkeää' };
+  if ([1,2].includes(code)) return { icon: night ? '☁️' : '🌤️', label: code === 1 ? 'Melko selkeää' : 'Puolipilvistä' };
+  if (code === 3) return { icon: '☁️', label: 'Pilvistä' };
+  if ([45,48].includes(code)) return { icon: '🌫️', label: 'Sumua' };
+  if ([51,53,55,56,57].includes(code)) return { icon: '🌦️', label: 'Tihkusadetta' };
+  if ([61,63,65,66,67].includes(code)) return { icon: '🌧️', label: 'Sadetta' };
+  if ([71,73,75,77].includes(code)) return { icon: '🌨️', label: 'Lumisadetta' };
+  if ([80,81,82].includes(code)) return { icon: '🌦️', label: 'Sadekuuroja' };
+  if ([85,86].includes(code)) return { icon: '🌨️', label: 'Lumikuuroja' };
+  if ([95,96,99].includes(code)) return { icon: '⛈️', label: 'Ukkosta' };
+  return { icon: '🌡️', label: 'Säätieto' };
+}
+
+function initMap() {
+  if (typeof L === 'undefined') throw new Error('Karttakirjastoa ei voitu ladata. Tarkista internet-yhteys.');
+  map = L.map('map', { zoomControl: false }).setView([CENTER.lat, CENTER.lon], 10);
+  map.createPane('radarPane');
+  map.getPane('radarPane').style.zIndex = 350;
+  map.getPane('radarPane').style.pointerEvents = 'none';
+
+  const CenterControl = L.Control.extend({
+    options: { position: 'bottomright' },
+    onAdd() {
+      const container = L.DomUtil.create('div', 'leaflet-control leaflet-control-center-bromarv');
+      const button = L.DomUtil.create('button', '', container);
+      button.type = 'button';
+      button.textContent = 'Keskitä';
+      button.title = 'Keskitä kartta Bromarviin';
+      button.setAttribute('aria-label', 'Keskitä kartta Bromarviin');
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+      L.DomEvent.on(button, 'click', () => {
+        fitCameraView(true);
+      });
+      return container;
+    }
+  });
+  new CenterControl().addTo(map);
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMapin tekijät'
+  }).addTo(map);
+  rangeCircle = L.circle([CENTER.lat, CENTER.lon], {
+    radius: 30000, color: '#4db7ff', weight: 2, fillColor: '#4db7ff', fillOpacity: 0.045, dashArray: '8 8'
+  }).addTo(map);
+  addCameraMarkers();
+  // Aloitusnäkymä näyttää kaikki kamerat, mutta säilyttää Bromarvin kartan keskellä.
+  setTimeout(() => {
+    map.invalidateSize(true);
+    fitCameraView(false);
+  }, 180);
+  window.addEventListener('resize', () => {
+    map.invalidateSize(false);
+    fitCameraView(false);
+  });
+}
+
+
+function distanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const p1 = lat1 * Math.PI / 180;
+  const p2 = lat2 * Math.PI / 180;
+  const dp = (lat2 - lat1) * Math.PI / 180;
+  const dl = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dp/2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl/2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function fitCameraView(animate = false) {
+  if (!map) return;
+  const visibleLocations = CAMERA_LOCATIONS.filter(location => {
+    const distance = distanceKm(CENTER.lat, CENTER.lon, location.lat, location.lon);
+    return distance <= 30.01 || location.moving || location.alwaysShow;
+  });
+  let latSpan = 0.12;
+  let lonSpan = 0.20;
+  visibleLocations.forEach(location => {
+    latSpan = Math.max(latSpan, Math.abs(location.lat - CENTER.lat));
+    lonSpan = Math.max(lonSpan, Math.abs(location.lon - CENTER.lon));
+  });
+  // Symmetrinen rajaus pitää Bromarvin täsmälleen keskellä, vaikka kamerat ovat pääosin lännessä.
+  latSpan *= 1.18;
+  lonSpan *= 1.18;
+  const bounds = L.latLngBounds(
+    [CENTER.lat - latSpan, CENTER.lon - lonSpan],
+    [CENTER.lat + latSpan, CENTER.lon + lonSpan]
+  );
+  map.fitBounds(bounds, { padding: [18, 18], animate, maxZoom: 10 });
+}
+
+function addCameraMarkers() {
+  cameraMarkers.forEach(marker => map.removeLayer(marker));
+  cameraMarkers = [];
+  const icon = L.divIcon({
+    className: 'camera-marker',
+    html: '<div class="camera-pin"><span>📹</span></div>',
+    iconSize: [36, 40],
+    iconAnchor: [18, 38],
+    popupAnchor: [0, -36]
+  });
+  CAMERA_LOCATIONS.forEach(location => {
+    const distance = distanceKm(CENTER.lat, CENTER.lon, location.lat, location.lon);
+    if (distance > 30.01 && !location.moving && !location.alwaysShow) return;
+    const items = location.cameras.map(camera => `
+      <div class="camera-popup-item">
+        <img src="https://img.youtube.com/vi/${camera.id}/hqdefault.jpg" alt="${camera.title}">
+        <div><a href="${camera.url}" target="_blank" rel="noopener">${camera.title}</a><div class="camera-popup-distance">Avaa livekamera</div></div>
+      </div>`).join('');
+    const locationText = location.moving ? 'Liikkuva lautta – merkki näyttää reitin viitteellisen sijainnin' : `Noin ${distance.toFixed(1)} km Bromarvista`;
+    const popup = `<div class="camera-popup"><h3>📹 ${location.name}</h3><div class="camera-popup-distance">${locationText}</div>${items}</div>`;
+    const marker = L.marker([location.lat, location.lon], { icon, zIndexOffset: 1200 })
+      .addTo(map).bindPopup(popup, { maxWidth: 330 });
+    cameraMarkers.push(marker);
+  });
+}
+
+async function loadRadarFrames() {
+  const res = await fetch('https://api.rainviewer.com/public/weather-maps.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Sadetutkapalvelin vastasi virheellä ${res.status}`);
+  const json = await res.json();
+  radarHost = String(json?.host || 'https://tilecache.rainviewer.com').replace(/\/$/, '');
+  const past = Array.isArray(json?.radar?.past) ? json.radar.past : [];
+  if (!past.length) throw new Error('Sadetutkan kuvia ei saatu.');
+  radarFrames = past.slice(-12);
+  radarIndex = radarFrames.length - 1;
+  const slider = document.getElementById('radarSlider');
+  slider.max = String(radarFrames.length - 1);
+  slider.value = String(radarIndex);
+  slider.disabled = false;
+  document.getElementById('radarPlay').disabled = false;
+}
+
+function radarTileUrl(frame) {
+  return `${radarHost}${frame.path}/256/{z}/{x}/{y}/2/1_1.png`;
+}
+
+
+function showRadarFrame(index) {
+  if (!radarFrames.length) return;
+  radarIndex = Math.max(0, Math.min(index, radarFrames.length - 1));
+  const frame = radarFrames[radarIndex];
+  if (radarLayer) map.removeLayer(radarLayer);
+  radarLayer = L.tileLayer(radarTileUrl(frame), {
+    opacity: 0.72,
+    pane: 'radarPane',
+    tileSize: 256,
+    maxNativeZoom: 7,
+    maxZoom: 18,
+    attribution: 'Tutka: RainViewer',
+    crossOrigin: true,
+    errorTileUrl: ''
+  }).addTo(map);
+  let radarTileLoaded = false;
+  radarLayer.once('tileload', () => { radarTileLoaded = true; });
+  radarLayer.once('tileerror', () => {
+    if (!radarTileLoaded) document.getElementById('radarTime').textContent = 'Tutkakuvaa ei voitu ladata';
+  });
+  document.getElementById('radarSlider').value = String(radarIndex);
+  const t = new Date(frame.time * 1000);
+  document.getElementById('radarTime').textContent = `Tutka ${t.toLocaleTimeString('fi-FI',{hour:'2-digit',minute:'2-digit'})}`;
+}
+
+function stopRadarAnimation() {
+  if (radarTimer) clearInterval(radarTimer);
+  radarTimer = null;
+  document.getElementById('radarPlay').textContent = '▶ Toista';
+}
+
+function toggleRadarAnimation() {
+  if (!radarEnabled || !radarFrames.length) return;
+  if (radarTimer) { stopRadarAnimation(); return; }
+  document.getElementById('radarPlay').textContent = '⏸ Pysäytä';
+  radarTimer = setInterval(() => {
+    const next = (radarIndex + 1) % radarFrames.length;
+    showRadarFrame(next);
+  }, 700);
+}
+
+async function toggleRadar() {
+  const btn = document.getElementById('radarToggle');
+  if (radarEnabled) {
+    radarEnabled = false;
+    stopRadarAnimation();
+    if (radarLayer) { map.removeLayer(radarLayer); radarLayer = null; }
+    btn.textContent = 'Sadetutka päälle';
+    document.getElementById('radarTime').textContent = 'Tutka pois päältä';
+    document.getElementById('radarSlider').disabled = true;
+    document.getElementById('radarPlay').disabled = true;
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Ladataan tutkaa…';
+  try {
+    if (!radarFrames.length) await loadRadarFrames();
+    radarEnabled = true;
+    showRadarFrame(radarIndex);
+    btn.textContent = 'Sadetutka pois';
+    document.getElementById('radarSlider').disabled = false;
+    document.getElementById('radarPlay').disabled = false;
+  } catch (err) {
+    console.error(err);
+    document.getElementById('radarTime').textContent = 'Tutkaa ei voitu ladata';
+    btn.textContent = 'Yritä sadetutkaa uudelleen';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+
+async function fetchMarine() {
+  const params = new URLSearchParams({
+    latitude: CENTER.lat,
+    longitude: CENTER.lon,
+    current: 'wave_height,wave_direction,wave_period,sea_surface_temperature,ocean_current_velocity,ocean_current_direction',
+    hourly: 'wave_height,wave_direction,wave_period,sea_surface_temperature,ocean_current_velocity,ocean_current_direction',
+    forecast_hours: '12',
+    timezone: 'Europe/Helsinki',
+    cell_selection: 'sea',
+    velocity_unit: 'kn'
+  });
+  const response = await fetch('https://marine-api.open-meteo.com/v1/marine?' + params.toString(), { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Merisääpalvelin vastasi virheellä ${response.status}`);
+  marineData = await response.json();
+  renderMarine();
+}
+
+function compassName(deg) {
+  if (!Number.isFinite(Number(deg))) return '--';
+  return directionName(Number(deg));
+}
+
+function firstFinite(...values) {
+  for (const value of values) {
+    const n = Number(value);
+    if (Number.isFinite(n)) return n;
+  }
+  return NaN;
+}
+
+function marineCurrentValue(name) {
+  const current = marineData?.current || {};
+  const hourly = marineData?.hourly || {};
+  const now = Date.now();
+  let index = Array.isArray(hourly.time) ? hourly.time.findIndex(t => new Date(t).getTime() >= now - 30 * 60 * 1000) : -1;
+  if (index < 0) index = 0;
+  return firstFinite(current[name], Array.isArray(hourly[name]) ? hourly[name][index] : NaN);
+}
+
+function renderMarine() {
+  if (!marineData) return;
+  const wave = marineCurrentValue('wave_height');
+  const waveDir = marineCurrentValue('wave_direction');
+  const period = marineCurrentValue('wave_period');
+  const seaTemp = marineCurrentValue('sea_surface_temperature');
+  const currentSpeed = marineCurrentValue('ocean_current_velocity');
+  const currentDir = marineCurrentValue('ocean_current_direction');
+  const center = allWeather[0]?.data?.current || {};
+  const wind = Number(center.wind_speed_10m);
+  const gust = Number(center.wind_gusts_10m);
+  const windKn = Number.isFinite(wind) ? wind * 1.94384 : NaN;
+  const gustKn = Number.isFinite(gust) ? gust * 1.94384 : NaN;
+
+  document.getElementById('marineWaveHeight').textContent = Number.isFinite(wave) ? `${wave.toFixed(1)} m` : 'Ei saatavilla';
+  document.getElementById('marineWaveDirection').textContent = Number.isFinite(waveDir) ? `${compassName(waveDir)} · ${Math.round(waveDir)}° (mistä)` : 'Ei saatavilla';
+  document.getElementById('marineWavePeriod').textContent = Number.isFinite(period) ? `${period.toFixed(1)} s` : 'Ei saatavilla';
+  document.getElementById('marineSeaTemp').textContent = Number.isFinite(seaTemp) ? `${seaTemp.toFixed(1)} °C` : 'Ei saatavilla';
+  document.getElementById('marineWind').textContent = Number.isFinite(windKn) ? `${windKn.toFixed(1)} kn · ${wind.toFixed(1)} m/s` : '--';
+  document.getElementById('marineGust').textContent = Number.isFinite(gustKn) ? `${gustKn.toFixed(1)} kn · ${gust.toFixed(1)} m/s` : '--';
+  document.getElementById('marineCurrent').textContent = Number.isFinite(currentSpeed) ? `${currentSpeed.toFixed(1)} kn ${compassName(currentDir)} →` : 'Ei saatavilla';
+  const dataTime = marineData.current?.time || marineData.hourly?.time?.[0];
+  document.getElementById('marineTime').textContent = dataTime ? new Date(dataTime).toLocaleTimeString('fi-FI',{hour:'2-digit',minute:'2-digit'}) : '--';
+
+  const innerThunder = allWeather.some(item => !item.point.center && item.point.distance === 10 && precipitationState(item.data.current) === 'thunder');
+  let level = 'good';
+  let status = 'Rauhalliset olosuhteet';
+  let text = 'Malliennusteen perusteella lähimeren aallokko ja tuuli ovat pienveneilylle melko rauhallisia.';
+  if (innerThunder || (Number.isFinite(gust) && gust >= 15) || (Number.isFinite(wave) && wave >= 1.5)) {
+    level = 'danger';
+    status = 'Haastavat olosuhteet';
+    text = innerThunder ? 'Lähialueella on ukkosriskiä. Vältä vesille lähtöä ja seuraa tutkakuvaa.' : 'Voimakkaat puuskat tai korkea lähimeren aallokko voivat tehdä pienveneilyolosuhteista haastavat.';
+  } else if ((Number.isFinite(gust) && gust >= 10) || (Number.isFinite(wind) && wind >= 7) || (Number.isFinite(wave) && wave >= 0.8)) {
+    level = 'caution';
+    status = 'Huomioi tuuli ja aallokko';
+    text = 'Olosuhteissa on pienveneellä huomioitavaa. Tarkista tuulen suunta, puuskat ja oma reitti ennen lähtöä.';
+  }
+  const light = document.getElementById('marineLight');
+  light.className = `marine-light ${level}`;
+  document.getElementById('marineStatus').textContent = status;
+  document.getElementById('marineStatusText').textContent = text;
+}
+
+function showMarineError(err) {
+  console.error(err);
+  marineData = null;
+  document.getElementById('marineStatus').textContent = 'Merisäätietoa ei saatu';
+  document.getElementById('marineStatusText').textContent = 'Sääsivu toimii muuten normaalisti. Merisäätä yritetään uudelleen seuraavassa päivityksessä.';
+  document.getElementById('marineLight').className = 'marine-light caution';
+}
+
+const CENTER_CACHE_KEY = 'bromarv-center-v23-metno';
+const CENTER_CACHE_MAX_AGE = 60 * 60 * 1000;
+let weatherRequestRunning = false;
+let lastWeatherRequestAt = 0;
+
+function saveCache(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), value }));
+  } catch (err) { console.warn('Välimuistia ei voitu tallentaa.', err); }
+}
+
+function loadCache(key, maxAge = Infinity) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (!cached?.savedAt || cached.value == null) return null;
+    if (Date.now() - cached.savedAt > maxAge) return null;
+    return cached;
+  } catch (err) { return null; }
+}
+
+async function fetchJson(url, label) {
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) {
+    const err = new Error(`${label} vastasi virheellä ${response.status}`);
+    err.status = response.status;
+    const retryAfter = response.headers.get('Retry-After');
+    if (retryAfter) err.retryAfter = retryAfter;
+    throw err;
+  }
+  return response.json();
+}
+
+
+
+function metSymbolToWmo(symbol = '') {
+  const s = String(symbol).toLowerCase();
+  if (s.includes('thunder')) return 95;
+  if (s.includes('heavyrain')) return s.includes('showers') ? 82 : 65;
+  if (s.includes('rain')) return s.includes('showers') ? 80 : 61;
+  if (s.includes('heavysnow')) return 75;
+  if (s.includes('snow')) return s.includes('showers') ? 85 : 71;
+  if (s.includes('sleet')) return 67;
+  if (s.includes('fog')) return 45;
+  if (s.includes('cloudy')) return 3;
+  if (s.includes('partlycloudy')) return 2;
+  if (s.includes('fair')) return 1;
+  if (s.includes('clearsky')) return 0;
+  return 3;
+}
+
+function dewPointFromTempHumidity(tempC, humidity) {
+  const t = Number(tempC), rh = Number(humidity);
+  if (!Number.isFinite(t) || !Number.isFinite(rh) || rh <= 0) return NaN;
+  const a = 17.625, b = 243.04;
+  const gamma = Math.log(rh / 100) + (a * t) / (b + t);
+  return (b * gamma) / (a - gamma);
+}
+
+function convertMetNoToOpenMeteo(json) {
+  const series = json?.properties?.timeseries;
+  if (!Array.isArray(series) || !series.length) throw new Error('MET Norway -varasääpalvelu ei palauttanut ennustetta.');
+  const rows = series.slice(0, 30);
+  const hourly = {
+    time: [], temperature_2m: [], relative_humidity_2m: [], dew_point_2m: [], cloud_cover: [],
+    pressure_msl: [], precipitation_probability: [], precipitation: [], rain: [], showers: [],
+    weather_code: [], wind_speed_10m: [], wind_direction_10m: [], wind_gusts_10m: []
+  };
+  for (const row of rows) {
+    const instant = row?.data?.instant?.details || {};
+    const next1 = row?.data?.next_1_hours || row?.data?.next_6_hours || {};
+    const details = next1.details || {};
+    const symbol = next1.summary?.symbol_code || '';
+    const temp = Number(instant.air_temperature);
+    const humidity = Number(instant.relative_humidity);
+    const precip = Number(details.precipitation_amount || 0);
+    hourly.time.push(row.time);
+    hourly.temperature_2m.push(temp);
+    hourly.relative_humidity_2m.push(humidity);
+    hourly.dew_point_2m.push(dewPointFromTempHumidity(temp, humidity));
+    hourly.cloud_cover.push(Number(instant.cloud_area_fraction));
+    hourly.pressure_msl.push(Number(instant.air_pressure_at_sea_level));
+    hourly.precipitation_probability.push(Number(details.probability_of_precipitation || 0));
+    hourly.precipitation.push(precip);
+    hourly.rain.push(precip);
+    hourly.showers.push(0);
+    hourly.weather_code.push(metSymbolToWmo(symbol));
+    hourly.wind_speed_10m.push(Number(instant.wind_speed));
+    hourly.wind_direction_10m.push(Number(instant.wind_from_direction));
+    hourly.wind_gusts_10m.push(Number.isFinite(Number(instant.wind_speed_of_gust)) ? Number(instant.wind_speed_of_gust) : Number(instant.wind_speed));
+  }
+  const i = 0;
+  const first = rows[0];
+  const firstInstant = first.data.instant.details || {};
+  const firstPeriod = first.data.next_1_hours || first.data.next_6_hours || {};
+  const currentPrecip = Number(firstPeriod.details?.precipitation_amount || 0);
+  const hour = new Date(first.time).getHours();
+  return {
+    _source: 'MET Norway',
+    current: {
+      time: first.time,
+      temperature_2m: hourly.temperature_2m[i],
+      relative_humidity_2m: hourly.relative_humidity_2m[i],
+      apparent_temperature: hourly.temperature_2m[i],
+      precipitation: currentPrecip,
+      rain: currentPrecip,
+      showers: 0,
+      weather_code: hourly.weather_code[i],
+      cloud_cover: hourly.cloud_cover[i],
+      wind_speed_10m: hourly.wind_speed_10m[i],
+      wind_direction_10m: hourly.wind_direction_10m[i],
+      wind_gusts_10m: hourly.wind_gusts_10m[i],
+      is_day: hour >= 6 && hour < 22 ? 1 : 0,
+      uv_index: Number(firstInstant.ultraviolet_index_clear_sky || 0),
+      pressure_msl: hourly.pressure_msl[i],
+      snow_depth: null
+    },
+    hourly
+  };
+}
+
+async function fetchCenterFallback() {
+  const lat = CENTER.lat.toFixed(4);
+  const lon = CENTER.lon.toFixed(4);
+  const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+  const response = await fetch(url, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`MET Norway -varasääpalvelin vastasi virheellä ${response.status}`);
+  return convertMetNoToOpenMeteo(await response.json());
+}
+
+function combineWeather(points, centerData, areaData) {
+  if (!centerData) return [];
+  if (!areaData) return [{ point: points[0], data: centerData }];
+  const areaArray = Array.isArray(areaData) ? areaData : [areaData];
+  return points.map((point, i) => ({ point, data: i === 0 ? centerData : areaArray[i] })).filter(item => item.data);
+}
+
+async function fetchWeather({ force = false } = {}) {
+  if (weatherRequestRunning) return;
+  const now = Date.now();
+  if (!force && now - lastWeatherRequestAt < 20 * 60 * 1000) return;
+  weatherRequestRunning = true;
+  lastWeatherRequestAt = now;
+  setStatus('Haetaan Bromarvin säätietoja MET Norway -palvelusta…');
+  document.getElementById('errorBox').style.display = 'none';
+
+  const point = buildPoints()[0];
+  const cached = loadCache(CENTER_CACHE_KEY);
+  let centerData = cached?.value || null;
+  let fresh = false;
+
+  try {
+    centerData = await fetchCenterFallback();
+    saveCache(CENTER_CACHE_KEY, centerData);
+    fresh = true;
+  } catch (err) {
+    console.warn('MET Norway -säähaku epäonnistui, käytetään välimuistia.', err);
+    if (!centerData) {
+      weatherRequestRunning = false;
+      throw new Error('Bromarvin säätietoja ei saatu eikä välimuistia ollut käytettävissä.');
+    }
+  }
+
+  // V24 käyttää vain Bromarvin yhtä sääpistettä. Näin Open-Meteon 429-rajoitus poistuu kokonaan.
+  allWeather = [{ point, data: centerData }];
+  renderAll();
+
+  const modelTimeRaw = centerData?.current?.time;
+  const modelStamp = modelTimeRaw ? new Date(modelTimeRaw).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' }) : '--';
+  const cacheStamp = cached?.savedAt ? new Date(cached.savedAt).toLocaleTimeString('fi-FI', { hour:'2-digit', minute:'2-digit' }) : '--';
+  setStatus(fresh
+    ? `Bromarvin sää päivitetty klo ${modelStamp} · MET Norway · kartalla sadetutka ja livekamerat.`
+    : `MET Norway ei vastannut. Näytetään viimeksi tallennetut tiedot klo ${cacheStamp}.`);
+  weatherRequestRunning = false;
+}
+function precipitationState(current) {
+  const code = Number(current.weather_code);
+  const rainNow = Number(current.precipitation || 0);
+  if ([95,96,99].includes(code)) return 'thunder';
+  if (rainNow >= 0.1 || [51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code)) return 'rain';
+  return 'dry';
+}
+
+function markerColor(current, hourly) {
+  const state = precipitationState(current);
+  const probs = (hourly?.precipitation_probability || []).slice(0,3).map(Number);
+  const maxProb = probs.length ? Math.max(...probs) : 0;
+  if (state === 'thunder') return '#b455e0';
+  if (state === 'rain') return '#2389da';
+  if (maxProb >= 45) return '#ffd166';
+  return '#55d98b';
+}
+
+function markerBackground(item) {
+  if (item.point.center) return 'rgba(0,98,164,.95)';
+  const state = precipitationState(item.data.current);
+  if (state === 'thunder') return 'rgba(104,38,135,.96)';
+  if (state === 'rain') return 'rgba(14,102,170,.96)';
+  return 'rgba(7,17,31,.91)';
+}
+
+function markerHTML(item) {
+  const c = item.data.current;
+  const h = item.data.hourly || {};
+  const w = weatherInfo(Number(c.weather_code), c.is_day);
+  const color = markerColor(c, h);
+  let main = `${Math.round(c.temperature_2m)}° ${w.icon}`;
+  let sub = `<span class="wind-arrow" style="transform:rotate(${(Number(c.wind_direction_10m)+180)%360}deg)">↑</span> ${Number(c.wind_speed_10m).toFixed(1)} m/s`;
+  if (displayMode === 'temp') sub = `${w.label}`;
+  if (displayMode === 'wind') main = `<span class="wind-arrow" style="transform:rotate(${(Number(c.wind_direction_10m)+180)%360}deg)">↑</span> ${Number(c.wind_speed_10m).toFixed(1)}`;
+  if (displayMode === 'rain') {
+    const prob = Number((h.precipitation_probability || [0])[0] || 0);
+    main = `${Number(c.precipitation || 0).toFixed(1)} mm`;
+    sub = `1 h riski ${Math.round(prob)} %`;
+  }
+  const centerSub = `<strong>Bromarv</strong> · <span class="wind-arrow" style="transform:rotate(${(Number(c.wind_direction_10m)+180)%360}deg)">↑</span> ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s`;
+  return `<div class="marker-card ${item.point.center ? 'center' : ''}" style="background:${markerBackground(item)};box-shadow:0 0 0 3px ${color}88,0 5px 15px rgba(0,0,0,.4)">
+    <div class="marker-top">${main}</div><div class="marker-sub">${item.point.center ? centerSub : sub}</div></div>`;
+}
+
+function renderMarkers() {
+  weatherMarkers.forEach(m => map.removeLayer(m));
+  weatherMarkers = [];
+  allWeather.forEach(item => {
+    const icon = L.divIcon({ className: 'weather-marker', html: markerHTML(item), iconSize: item.point.center ? [142,64] : [72,44], iconAnchor: item.point.center ? [71,32] : [36,22] });
+    const c = item.data.current;
+    const w = weatherInfo(Number(c.weather_code), c.is_day);
+    const prob1h = Number((item.data.hourly?.precipitation_probability || [0])[0] || 0);
+    const popup = `<strong>${item.point.name}</strong><br>${w.icon} ${w.label}, ${Number(c.temperature_2m).toFixed(1)} °C<br>
+      Tuuli ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s, puuskat ${Number(c.wind_gusts_10m).toFixed(1)} m/s<br>
+      Sade nyt ${Number(c.precipitation || 0).toFixed(1)} mm · 1 h saderiski ${Math.round(prob1h)} %`;
+    const marker = L.marker([item.point.lat, item.point.lon], { icon }).addTo(map).bindPopup(popup);
+    weatherMarkers.push(marker);
+  });
+}
+
+
+function renderNearbyAlert() {
+  const alert = document.getElementById('nearbyAlert');
+  const inner = allWeather.filter(item => !item.point.center && item.point.distance === 10);
+  if (!inner.length) { alert.className = 'nearby-alert'; alert.innerHTML = ''; return; }
+  const thunder = inner.filter(item => precipitationState(item.data.current) === 'thunder');
+  const rain = inner.filter(item => precipitationState(item.data.current) === 'rain');
+  alert.className = 'nearby-alert visible';
+  if (!inner.length) {
+    alert.classList.add('clear');
+    alert.innerHTML = `ℹ️ <strong>Lähialueen ennustepisteitä ei saatu tällä päivityksellä</strong><br><span style="font-weight:600">Bromarvin oma sää ja sadetutka toimivat normaalisti.</span>`;
+  } else if (thunder.length) {
+    const dirs = thunder.map(item => directionName(item.point.bearing)).join(', ');
+    alert.classList.add('thunder');
+    alert.innerHTML = `⛈️ <strong>Ukkosriskiä lähialueella</strong><br><span style="font-weight:600">Ukkosta ennustetaan noin 10 km etäisyydelle suunnassa ${dirs}. Seuraa tilannetta erityisen tarkasti.</span>`;
+  } else if (rain.length) {
+    const dirs = rain.map(item => directionName(item.point.bearing)).join(', ');
+    alert.classList.add('rain');
+    alert.innerHTML = `🌧️ <strong>Sadetta ennustetaan lähialueelle</strong><br><span style="font-weight:600">Sadetta ennustetaan noin 10 km etäisyydelle suunnassa ${dirs}. Tarkista myös tuulen suunta ennen ulkotöitä.</span>`;
+  } else {
+    alert.classList.add('clear');
+    alert.innerHTML = `✓ <strong>Ei sadetta 10 km lähiennusteessa juuri nyt</strong>`;
+  }
+}
+
+function solarTimesForDate(date, lat, lon) {
+  const rad = Math.PI / 180;
+  const dayMs = 86400000;
+  const J1970 = 2440588;
+  const J2000 = 2451545;
+  const toJulian = d => d.valueOf() / dayMs - 0.5 + J1970;
+  const fromJulian = j => new Date((j + 0.5 - J1970) * dayMs);
+  const toDays = d => toJulian(d) - J2000;
+  const rightAscension = (l, b) => Math.atan2(Math.sin(l) * Math.cos(23.4397 * rad) - Math.tan(b) * Math.sin(23.4397 * rad), Math.cos(l));
+  const declination = (l, b) => Math.asin(Math.sin(b) * Math.cos(23.4397 * rad) + Math.cos(b) * Math.sin(23.4397 * rad) * Math.sin(l));
+  const solarMeanAnomaly = d => rad * (357.5291 + 0.98560028 * d);
+  const eclipticLongitude = M => {
+    const C = rad * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M));
+    return M + C + rad * 102.9372 + Math.PI;
+  };
+  const julianCycle = (d, lw) => Math.round(d - 0.0009 - lw / (2 * Math.PI));
+  const approxTransit = (Ht, lw, n) => 0.0009 + (Ht + lw) / (2 * Math.PI) + n;
+  const solarTransitJ = (ds, M, L) => J2000 + ds + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+  const hourAngle = (h, phi, dec) => Math.acos((Math.sin(h) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec)));
+  const getSetJ = (h, lw, phi, dec, n, M, L) => solarTransitJ(approxTransit(hourAngle(h, phi, dec), lw, n), M, L);
+
+  const lw = -lon * rad;
+  const phi = lat * rad;
+  const d = toDays(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12)));
+  const n = julianCycle(d, lw);
+  const ds = approxTransit(0, lw, n);
+  const M = solarMeanAnomaly(ds);
+  const L = eclipticLongitude(M);
+  const dec = declination(L, 0);
+  const Jnoon = solarTransitJ(ds, M, L);
+  const h0 = -0.833 * rad;
+  const Jset = getSetJ(h0, lw, phi, dec, n, M, L);
+  if (!Number.isFinite(Jset)) return null;
+  const Jrise = Jnoon - (Jset - Jnoon);
+  return { sunrise: fromJulian(Jrise), sunset: fromJulian(Jset) };
+}
+
+function renderSunTimes() {
+  const result = solarTimesForDate(new Date(), CENTER.lat, CENTER.lon);
+  const riseEl = document.getElementById('sunriseTime');
+  const setEl = document.getElementById('sunsetTime');
+  const lengthEl = document.getElementById('dayLength');
+  if (!result || !riseEl || !setEl || !lengthEl) return;
+  const timeOpts = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Helsinki' };
+  riseEl.textContent = result.sunrise.toLocaleTimeString('fi-FI', timeOpts);
+  setEl.textContent = result.sunset.toLocaleTimeString('fi-FI', timeOpts);
+  const minutes = Math.max(0, Math.round((result.sunset - result.sunrise) / 60000));
+  lengthEl.textContent = `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
+}
+
+function renderCenter() {
+  const d = allWeather[0].data;
+  const c = d.current;
+  const w = weatherInfo(Number(c.weather_code), c.is_day);
+  const temp = document.getElementById('mainTemp');
+  temp.classList.remove('loading');
+  temp.textContent = `${Number(c.temperature_2m).toFixed(1)}°`;
+  document.getElementById('mainIcon').textContent = w.icon;
+  document.getElementById('mainLabel').textContent = w.label;
+  renderSunTimes();
+  const windDir = Number(c.wind_direction_10m);
+  const windSpeed = Number(c.wind_speed_10m);
+  const arrowRotation = Number.isFinite(windDir) ? (windDir + 180) % 360 : 0;
+  document.getElementById('mainWind').innerHTML = `<span class="current-wind"><span class="wind-arrow" style="transform:rotate(${arrowRotation}deg)">↑</span><span>${windFromName(windDir)} ${windSpeed.toFixed(1)} m/s</span></span>`;
+  document.getElementById('mainGust').textContent = `${Number(c.wind_gusts_10m).toFixed(1)} m/s`;
+  document.getElementById('mainRain').textContent = `${Number(c.precipitation || 0).toFixed(1)} mm`;
+  document.getElementById('mainHumidity').textContent = `${Math.round(c.relative_humidity_2m)} %`;
+  const hourly = d.hourly || {};
+  const currentTime = new Date(c.time).getTime();
+  let currentIndex = (hourly.time || []).findIndex(t => new Date(t).getTime() >= currentTime);
+  if (currentIndex < 0) currentIndex = 0;
+  const rainRisk = Number((hourly.precipitation_probability || [])[currentIndex]);
+  document.getElementById('mainRainRisk').textContent = Number.isFinite(rainRisk) ? `${Math.round(rainRisk)} %` : 'Ei saatavilla';
+  const dew = Number((hourly.dew_point_2m || [])[currentIndex]);
+  document.getElementById('mainDewPoint').textContent = Number.isFinite(dew) ? `${dew.toFixed(1)} °C` : '--';
+  const pressure = Number(c.pressure_msl);
+  document.getElementById('mainPressure').textContent = Number.isFinite(pressure) ? `${Math.round(pressure)} hPa` : '--';
+  const trend = pressureTrend(hourly, currentIndex, pressure);
+  document.getElementById('mainPressureTrend').textContent = trend.label;
+  document.getElementById('pressureExplain').innerHTML = `<strong>Ilmanpaine:</strong> ${pressureMeaning(pressure)} ${trend.explain}`;
+  const snowDepthM = Number(c.snow_depth);
+  const snowMetric = document.getElementById('snowMetric');
+  if (Number.isFinite(snowDepthM) && snowDepthM > 0.001) {
+    const snowCm = snowDepthM * 100;
+    snowMetric.classList.add('visible');
+    document.getElementById('mainSnowDepth').textContent = snowCm < 1 ? `${snowCm.toFixed(1)} cm` : `${Math.round(snowCm)} cm`;
+  } else {
+    snowMetric.classList.remove('visible');
+  }
+  const fallbackUv = Number(c.uv_index || 0);
+  const aqUv = Number(airQualityData?.current?.uv_index);
+  const uv = Number.isFinite(aqUv) ? aqUv : fallbackUv;
+  const uvMetric = document.getElementById('uvMetric');
+  const uvAdvice = document.getElementById('uvAdvice');
+  uvMetric.classList.add('visible');
+  if (Number.isFinite(uv)) {
+    document.getElementById('mainUv').textContent = `${uv.toFixed(1)} · ${uvLevel(uv)}`;
+    uvAdvice.className = 'uv-advice visible';
+    if (uv >= 6) {
+      uvAdvice.classList.add('strong');
+      uvAdvice.innerHTML = '<strong>Suojaa iho huolellisesti.</strong> Käytä peittävää vaatetusta, aurinkovoidetta, hattua ja aurinkolaseja. Vältä pitkää oleskelua suorassa auringossa keskipäivällä.';
+    } else if (uv >= 3) {
+      uvAdvice.classList.add('protect');
+      uvAdvice.innerHTML = '<strong>Ihon suojaaminen on tarpeen.</strong> Käytä aurinkovoidetta ja suojaavaa vaatetusta, etenkin keskipäivällä.';
+    } else {
+      uvAdvice.innerHTML = '<strong>UV-säteily on vähäistä.</strong> Tavallista erityistä ihonsuojausta ei yleensä tarvita.';
+    }
+  } else {
+    document.getElementById('mainUv').textContent = 'Ei saatavilla';
+    uvAdvice.className = 'uv-advice';
+    uvAdvice.textContent = '';
+  }
+}
+
+
+
+function pollenNumber(value) {
+  if (value === null || value === undefined || value === '') return NaN;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function pollenValue(value) {
+  const n = pollenNumber(value);
+  return Number.isFinite(n) ? `${n.toFixed(n < 10 ? 1 : 0)} /m³` : 'Ei saatavilla';
+}
+
+function pollenCategory(value) {
+  const n = pollenNumber(value);
+  if (!Number.isFinite(n)) return { label:'Ei saatavilla', cls:'none', dots:0 };
+  if (n <= 0.1) return { label:'Ei juuri lainkaan', cls:'none', dots:0 };
+  if (n < 10) return { label:'Vähän', cls:'low', dots:1 };
+  if (n < 50) return { label:'Kohtalaisesti', cls:'moderate', dots:2 };
+  return { label:'Runsaasti', cls:'high', dots:3 };
+}
+
+function pollenReading(value) {
+  const category = pollenCategory(value);
+  const dots = [1,2,3].map(i => `<i class="pollen-dot${i <= category.dots ? ' on' : ''}"></i>`).join('');
+  return `<span>${pollenValue(value)}</span><span class="pollen-level ${category.cls}"><span class="pollen-dots">${dots}</span>${category.label}</span>`;
+}
+
+function pollenLevel(maxValue) {
+  if (!Number.isFinite(maxValue) || maxValue <= 0.1) return { text: 'Siitepölyä ei juuri ennusteta olevan ilmassa.', cls: '' };
+  if (maxValue < 10) return { text: 'Siitepölypitoisuus on tällä hetkellä vähäinen.', cls: '' };
+  if (maxValue < 50) return { text: 'Siitepölypitoisuus on koholla. Oireherkkien kannattaa seurata vointiaan.', cls: 'elevated' };
+  return { text: 'Siitepölypitoisuus on korkea. Allergisten kannattaa varautua oireisiin ja pitää lääkitys saatavilla lääkärin tai apteekin ohjeen mukaan.', cls: 'high' };
+}
+
+function renderAirQuality() {
+  if (!airQualityData?.current) return;
+  const c = airQualityData.current;
+  const values = {
+    birch: pollenNumber(c.birch_pollen),
+    alder: pollenNumber(c.alder_pollen),
+    grass: pollenNumber(c.grass_pollen),
+    mugwort: pollenNumber(c.mugwort_pollen),
+    ragweed: pollenNumber(c.ragweed_pollen)
+  };
+  for (const [id,key] of [['pollenBirch','birch'],['pollenAlder','alder'],['pollenGrass','grass'],['pollenMugwort','mugwort'],['pollenRagweed','ragweed']]) {
+    const el = document.getElementById(id);
+    el.className = 'pollen-reading';
+    el.innerHTML = pollenReading(values[key]);
+  }
+  const finite = Object.values(values).filter(Number.isFinite);
+  const max = finite.length ? Math.max(...finite) : NaN;
+  const level = pollenLevel(max);
+  const summary = document.getElementById('pollenSummary');
+  summary.className = `pollen-summary ${level.cls}`.trim();
+  summary.textContent = finite.length ? level.text : 'Siitepölytietoja ei ole tällä hetkellä saatavilla.';
+  const stamp = c.time ? new Date(c.time).toLocaleTimeString('fi-FI', { hour:'2-digit', minute:'2-digit' }) : '';
+  document.getElementById('pollenUpdated').textContent = stamp ? `Malliennuste päivitetty klo ${stamp}` : 'Malliennuste Bromarvin alueelle';
+  if (allWeather.length) renderCenter();
+}
+
+async function fetchAirQuality() {
+  const cached = loadCache(AIR_CACHE_KEY);
+  if (cached && Date.now() - cached.savedAt < AIR_CACHE_MAX_AGE) {
+    airQualityData = cached.value;
+    renderAirQuality();
+  }
+  const vars = 'uv_index,alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,ragweed_pollen';
+  const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${CENTER.lat.toFixed(4)}&longitude=${CENTER.lon.toFixed(4)}&current=${vars}&timezone=Europe%2FHelsinki`;
+  try {
+    const response = await fetch(url, { cache:'no-cache' });
+    if (!response.ok) throw new Error(`UV- ja siitepölypalvelin vastasi virheellä ${response.status}`);
+    airQualityData = await response.json();
+    saveCache(AIR_CACHE_KEY, airQualityData);
+    renderAirQuality();
+  } catch (err) {
+    console.warn('UV- ja siitepölytietojen haku epäonnistui.', err);
+    if (!airQualityData && cached) {
+      airQualityData = cached.value;
+      renderAirQuality();
+      document.getElementById('pollenUpdated').textContent = 'Näytetään viimeksi tallennetut siitepölytiedot';
+    } else if (!airQualityData) {
+      document.getElementById('pollenUpdated').textContent = 'Siitepölytietoja ei saatu';
+      document.getElementById('pollenSummary').textContent = 'Tarkista internet-yhteys ja päivitä sivu myöhemmin.';
+    }
+  }
+}
+
+async function fetchWildfireWarning() {
+  // FMI:n CAP-syöte ei salli selaimen suoraa CORS-hakua GitHub Pagesista.
+  // Kortti pidetään piilossa, jotta konsoliin ei tule virhettä.
+  const card = document.getElementById('wildfireCard');
+  if (card) card.className = 'card wildfire-card wide';
+}
+
+function pressureMeaning(hPa) {
+  if (!Number.isFinite(hPa)) return 'Tietoa ei saatu sääpalvelusta.';
+  if (hPa < 990) return 'Erittäin matala paine. Voimakas matalapaine voi tuoda sateita, puuskaista tuulta ja nopeasti vaihtelevaa säätä.';
+  if (hPa < 1005) return 'Melko matala paine. Epävakainen, pilvinen tai sateinen sää on tavallista todennäköisempi.';
+  if (hPa <= 1020) return 'Tavanomainen ilmanpaine. Pelkkä lukema ei vielä kerro säästä paljon; paineen nousu tai lasku on tärkeämpi merkki.';
+  if (hPa <= 1035) return 'Korkea paine. Sää on usein vakaampaa, kuivempaa ja vähätuulisempaa, mikä on yleensä hyvä merkki heinänkorjuulle.';
+  return 'Erittäin korkea paine. Sää on yleensä vakaa ja kuiva, mutta kesällä paikalliset sadekuurot ovat silti mahdollisia.';
+}
+
+function pressureTrend(hourly, currentIndex, currentPressure) {
+  const arr = hourly.pressure_msl || [];
+  const pastIndex = Math.max(0, currentIndex - 6);
+  const past = Number(arr[pastIndex]);
+  if (!Number.isFinite(currentPressure) || !Number.isFinite(past)) return { label: '--', explain: '' };
+  const diff = currentPressure - past;
+  let word = 'vakaa';
+  if (diff <= -4) word = 'laskee nopeasti';
+  else if (diff <= -1.5) word = 'laskee';
+  else if (diff >= 4) word = 'nousee nopeasti';
+  else if (diff >= 1.5) word = 'nousee';
+  return {
+    label: `${diff >= 0 ? '+' : ''}${diff.toFixed(1)} hPa · ${word}`,
+    explain: `Viimeisen noin kuuden tunnin aikana paine ${word === 'vakaa' ? 'on pysynyt melko vakaana' : word} (${diff >= 0 ? '+' : ''}${diff.toFixed(1)} hPa).`
+  };
+}
+
+function uvLevel(uv) {
+  if (uv < 3) return 'matala';
+  if (uv < 6) return 'kohtalainen';
+  if (uv < 8) return 'korkea';
+  if (uv < 11) return 'erittäin korkea';
+  return 'äärimmäinen';
+}
+
+function moonData(date = new Date()) {
+  const synodicMonth = 29.530588853;
+  const referenceNewMoon = Date.UTC(2000, 0, 6, 18, 14, 0);
+  const days = (date.getTime() - referenceNewMoon) / 86400000;
+  const age = ((days % synodicMonth) + synodicMonth) % synodicMonth;
+  const fraction = age / synodicMonth;
+  const illumination = (1 - Math.cos(2 * Math.PI * fraction)) / 2 * 100;
+  let name, icon;
+  if (age < 1.84566 || age >= 27.68493) { name = 'Uusikuu'; icon = '🌑'; }
+  else if (age < 5.53699) { name = 'Kasvava kuunsirppi'; icon = '🌒'; }
+  else if (age < 9.22831) { name = 'Ensimmäinen neljännes'; icon = '🌓'; }
+  else if (age < 12.91963) { name = 'Kasvava kuperakuu'; icon = '🌔'; }
+  else if (age < 16.61096) { name = 'Täysikuu'; icon = '🌕'; }
+  else if (age < 20.30228) { name = 'Vähenevä kuperakuu'; icon = '🌖'; }
+  else if (age < 23.99361) { name = 'Viimeinen neljännes'; icon = '🌗'; }
+  else { name = 'Vähenevä kuunsirppi'; icon = '🌘'; }
+  const daysToFull = ((synodicMonth / 2 - age) + synodicMonth) % synodicMonth;
+  const daysToNew = (synodicMonth - age) % synodicMonth;
+  return {
+    age, illumination, name, icon,
+    nextFull: new Date(date.getTime() + daysToFull * 86400000),
+    nextNew: new Date(date.getTime() + daysToNew * 86400000)
+  };
+}
+
+function renderMoon() {
+  const moon = moonData(new Date());
+  document.getElementById('moonIcon').textContent = moon.icon;
+  document.getElementById('moonPhase').textContent = moon.name;
+  document.getElementById('moonMeta').textContent = `Valaistus noin ${Math.round(moon.illumination)} % · kuun ikä ${moon.age.toFixed(1)} vrk`;
+  const opts = { day: 'numeric', month: 'numeric', year: 'numeric' };
+  document.getElementById('nextFullMoon').textContent = moon.nextFull.toLocaleDateString('fi-FI', opts);
+  document.getElementById('nextNewMoon').textContent = moon.nextNew.toLocaleDateString('fi-FI', opts);
+}
+
+
+function timelineWeatherIcon(code, isDay = 1) {
+  const c = Number(code);
+  const night = Number(isDay) === 0;
+  if (c === 0) return night ? '☾' : '☀';
+  if ([1, 2].includes(c)) return night ? '☾☁' : '☀☁';
+  if (c === 3) return '☁';
+  if ([45, 48].includes(c)) return '≋';
+  if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(c)) return '☂';
+  if ([71, 73, 75, 77, 85, 86].includes(c)) return '❄';
+  if ([95, 96, 99].includes(c)) return '⚡';
+  return '☁';
+}
+
+function renderTimeline() {
+  const d = allWeather[0].data;
+  const h = d.hourly;
+  const now = new Date(d.current.time).getTime();
+  let start = h.time.findIndex(t => new Date(t).getTime() >= now);
+  if (start < 0) start = 0;
+  const html = h.time.slice(start,start+8).map((time, offset) => {
+    const i = start + offset;
+    const date = new Date(time);
+    const isDay = date.getHours() >= 7 && date.getHours() < 22 ? 1 : 0;
+    const w = weatherInfo(Number(h.weather_code[i]), isDay);
+    return `<div class="hour"><strong>${date.toLocaleTimeString('fi-FI',{hour:'2-digit',minute:'2-digit'})}</strong>
+      <div class="hicon" title="${w.label}" aria-label="${w.label}">${timelineWeatherIcon(h.weather_code[i], isDay)}</div><div>${Math.round(h.temperature_2m[i])} °C</div>
+      <div class="rain">Saderiski ${Math.round(h.precipitation_probability[i] || 0)} %</div>
+      <small>${Number(h.precipitation[i] || 0).toFixed(1)} mm</small>
+      <small><span class="wind-arrow" style="transform:rotate(${(Number(h.wind_direction_10m[i])+180)%360}deg)">↑</span> ${Number(h.wind_speed_10m[i] || 0).toFixed(1)} m/s</small></div>`;
+  }).join('');
+  document.getElementById('timeline').innerHTML = html;
+}
+
+function isHarvestSeason() {
+  const month = new Date().getMonth(); // 0 = tammikuu
+  return month === 5 || month === 6;   // kesäkuu tai heinäkuu
+}
+
+function updateHarvestVisibility() {
+  const card = document.getElementById('harvestCard');
+  if (!card) return false;
+  const visible = isHarvestSeason();
+  card.style.display = visible ? '' : 'none';
+  return visible;
+}
+
+function renderHarvest() {
+  if (!updateHarvestVisibility()) return;
+  const d = allWeather[0].data;
+  const h = d.hourly;
+  const card = document.getElementById('harvestCard');
+  const now = new Date(d.current.time).getTime();
+  let start = h.time.findIndex(t => new Date(t).getTime() >= now);
+  if (start < 0) start = 0;
+  const next8 = h.time.slice(start,start+8).map((time, offset) => {
+    const i = start + offset;
+    return {
+      time: new Date(time),
+      prob: Number(h.precipitation_probability[i] || 0),
+      rain: Number(h.precipitation[i] || 0),
+      gust: Number(h.wind_gusts_10m[i] || 0),
+      humidity: Number(h.relative_humidity_2m[i] || 0),
+      dew: Number(h.dew_point_2m[i]),
+      temp: Number(h.temperature_2m[i]),
+      cloud: Number(h.cloud_cover[i] || 0)
+    };
+  });
+  const innerRain = allWeather.some(item => !item.point.center && item.point.distance === 10 && precipitationState(item.data.current) !== 'dry');
+  const firstRisk = next8.findIndex(x => x.prob >= 45 || x.rain >= 0.1);
+  const heavy = next8.some(x => x.prob >= 70 || x.rain >= 0.8);
+  const strongGust = next8.some(x => x.gust >= 12);
+  const poorDrying = next8.slice(0,4).some(x => x.humidity >= 85 || (Number.isFinite(x.dew) && x.temp - x.dew <= 2.5));
+  const cloudy = next8.slice(0,4).every(x => x.cloud >= 80);
+  card.className = 'card harvest';
+  let status = 'Kohtuullinen korjuusää';
+  let text = 'Seuraavien tuntien aikana ei näy merkittävää sadetta Bromarvin ennustepisteessä.';
+  if (!poorDrying && !cloudy && firstRisk < 0 && !innerRain) {
+    status = 'Hyvä korjuusää';
+    text = 'Sateen riski on pieni ja kuivumisolosuhteet näyttävät kohtuullisen hyviltä seuraavien tuntien aikana.';
+  }
+  if (poorDrying || cloudy) {
+    card.classList.add('warn');
+    status = 'Kuivuminen voi olla hidasta';
+    text = 'Korkea ilmankosteus, lähellä oleva kastepiste tai runsas pilvisyys voi hidastaa heinän kuivumista, vaikka sadetta ei tulisi.';
+  }
+  if (innerRain && firstRisk < 0) {
+    card.classList.add('warn');
+    status = 'Lähialueella sade-ennustetta';
+    text = 'Bromarvin omassa pisteessä ei välttämättä sada, mutta 10 km lähiennusteessa näkyy sadetta. Tarkista kartan suunta ja tuuli.';
+  }
+  if (firstRisk >= 0) {
+    const t = next8[firstRisk].time.toLocaleTimeString('fi-FI',{hour:'2-digit',minute:'2-digit'});
+    status = heavy ? 'Sadetta tulossa' : 'Saderiski kasvaa';
+    text = `Ensimmäinen selvästi kohonnut saderiski näkyy noin klo ${t}. Tarkista myös kartan tuulenpuoleiset sääpisteet.`;
+    card.className = 'card harvest';
+    card.classList.add(heavy ? 'danger' : 'warn');
+  }
+  if (strongGust) text += ' Puuskat voivat ylittää 12 m/s.';
+  document.getElementById('harvestStatus').textContent = status;
+  document.getElementById('harvestText').textContent = text;
+}
+
+function renderAll() { renderMarkers(); renderCenter(); renderNearbyAlert(); renderMoon(); renderTimeline(); renderHarvest(); if (marineData) renderMarine(); }
+function setStatus(text) { document.getElementById('mapStatus').innerHTML = text; }
+function showError(err) {
+  console.error(err);
+  const box = document.getElementById('errorBox');
+  box.style.display = 'block';
+  box.innerHTML = `<strong>Säätietojen lataus epäonnistui.</strong><br>${err.message}<br><br>Tarkista internet-yhteys ja avaa tiedosto uudelleen. Firefox tai Chrome toimii parhaiten.`;
+  setStatus('Säätietoja ei voitu ladata.');
+}
+
+function setMode(mode) {
+  displayMode = mode;
+  ['All','Temp','Wind','Rain'].forEach(x => document.getElementById('mode'+x)?.classList.remove('active'));
+  const id = mode === 'all' ? 'modeAll' : mode === 'temp' ? 'modeTemp' : mode === 'wind' ? 'modeWind' : 'modeRain';
+  document.getElementById(id)?.classList.add('active');
+  if (allWeather.length) renderMarkers();
+}
+
+
+
+
+
+document.getElementById('refreshBtn').onclick = async () => {
+  await Promise.allSettled([fetchWeather({ force: true }), fetchMarine().catch(showMarineError), fetchAirQuality()]);
+};
+document.getElementById('radarToggle').onclick = toggleRadar;
+document.getElementById('radarPlay').onclick = toggleRadarAnimation;
+document.getElementById('radarSlider').oninput = e => { if (radarEnabled) { stopRadarAnimation(); showRadarFrame(Number(e.target.value)); } };
+
+// Piilota heinänkorjuuarvio heti sivun avautuessa elokuusta toukokuuhun.
+updateHarvestVisibility();
+
+async function startApp() {
+  try {
+    initMap();
+  } catch (err) {
+    showError(err);
+    return;
+  }
+
+  const centerCache = loadCache(CENTER_CACHE_KEY);
+  if (centerCache) {
+    allWeather = [{ point: buildPoints()[0], data: centerCache.value }];
+    renderAll();
+    const centerTime = new Date(centerCache.savedAt).toLocaleTimeString('fi-FI', { hour: '2-digit', minute: '2-digit' });
+    setStatus(`Näytetään välimuistista Bromarvin tiedot klo ${centerTime}. Uusi haku tehdään MET Norway -palvelusta.`);
+  }
+  try {
+    await fetchWeather();
+  } catch (err) {
+    console.error(err);
+    if (!allWeather.length) {
+      if (err.status === 429) {
+        showError(new Error('Open-Meteo rajoittaa tilapäisesti pyyntöjä (429). Näytetään viimeksi tallennetut tiedot. Odota noin 30 minuuttia ennen uutta Päivitä-painallusta.'));
+      } else {
+        showError(err);
+      }
+    }
+  }
+  await Promise.allSettled([fetchMarine().catch(showMarineError), fetchAirQuality()]);
+  await fetchWildfireWarning();
+  setInterval(() => {
+    fetchWeather().catch(err => {
+      if (err.status !== 429) showError(err);
+    });
+    fetchMarine().catch(showMarineError);
+    fetchAirQuality();
+  }, 30 * 60 * 1000);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startApp, { once: true });
+} else {
+  startApp();
+}
+</script>
+
+<script id="bilingual-v36">
+(() => {
+  'use strict';
+  const STORAGE_KEY = 'bromarv-language-v36';
+  const chosen = localStorage.getItem(STORAGE_KEY);
+  const lang = chosen === 'fi' ? 'fi' : 'sv';
+
+  const exact = new Map(Object.entries({
+    'Bromarvin paikallissää':'Bromarvs lokala väder',
+    'Sää · sadetutka · merisää · siitepöly · livekamerat':'Väder · nederbördsradar · havsväder · pollen · livekameror',
+    'Päivitä':'Uppdatera','Haetaan Bromarvin säätietoja…':'Hämtar väderdata för Bromarv…',
+    'Sadetutka päälle':'Slå på nederbördsradarn','Sadetutka pois':'Stäng av nederbördsradarn','▶ Toista':'▶ Spela','⏸ Pysäytä':'⏸ Pausa','Tutka pois päältä':'Radarn är avstängd',
+    'Heikko':'Svag','Voimakas':'Kraftig','Bromarv nyt':'Bromarv just nu','Haetaan säätä…':'Hämtar väder…',
+    'Tuuli':'Vind','Puuskat':'Vindbyar','Sade nyt':'Nederbörd nu','Saderiski 1 h':'Regnrisk 1 h','Auringonnousu':'Soluppgång','Auringonlasku':'Solnedgång','Päivän pituus':'Dagens längd','Ilmankosteus':'Luftfuktighet','Kastepiste':'Daggpunkt','Ilmanpaine':'Lufttryck','Paineen muutos 6 h':'Tryckförändring 6 h','Lumen syvyys':'Snödjup','UV-indeksi':'UV-index',
+    'Ilmanpaine:':'Lufttryck:','Haetaan tietoa…':'Hämtar information…','Maastopalovaroitus':'Varning för terrängbrand','Tarkista virallinen varoituskartta':'Kontrollera den officiella varningskartan',
+    'Seuraavat 8 tuntia Bromarvissa':'De kommande 8 timmarna i Bromarv','Ladataan…':'Laddar…','Veneilijän sää':'Väder för båtförare','Haetaan merisäätä…':'Hämtar havsväder…','Lasketaan lähimeren aallokko- ja tuuliolosuhteita.':'Beräknar våg- och vindförhållanden på närliggande havsområde.',
+    'Aallonkorkeus':'Våghöjd','Aallon suunta':'Vågriktning','Aallon jakso':'Vågperiod','Meriveden lämpötila':'Havsvattnets temperatur','Pintavirtaus':'Ytström','Meridatan aika':'Tid för havsdata',
+    'Heinänkorjuuarvio':'Bedömning av höskördsvädret','Lasketaan…':'Beräknar…','Analysoidaan seuraavien tuntien sadetta ja tuulta.':'Analyserar regn och vind under de kommande timmarna.',
+    'Kuun vaihe':'Månfas','Kuun valaistus ja ikä.':'Månens belysning och ålder.','Seuraava täysikuu':'Nästa fullmåne','Seuraava uusikuu':'Nästa nymåne',
+    'Siitepöly Bromarvissa':'Pollen i Bromarv','Haetaan siitepölyennustetta…':'Hämtar pollenprognos…','Koivu':'Björk','Leppä':'Al','Heinä':'Gräs','Pujo':'Gråbo','Tuoksukki':'Ambrosia','Odotetaan tietoja…':'Väntar på data…','Arvion asteikko':'Bedömningsskala','Vähän':'Lågt','Kohtalaisesti':'Måttligt','Runsaasti':'Högt','Ei juuri lainkaan':'Nästan inget',
+    'Kartan merkinnät':'Kartförklaring','Ei sadetta':'Inget regn','Saderiski':'Risk för regn','Sade':'Regn','Livekamera':'Livekamera',
+    'Tietoa Bromarvin paikallissäästä':'Om Bromarvs lokala väder','Bromarvin sää ja sääennuste':'Väder och väderprognos för Bromarv','Bromarvin sadetutka':'Nederbördsradar för Bromarv','Bromarvin merisää':'Havsväder för Bromarv','Siitepöly ja UV-indeksi':'Pollen och UV-index','Bromarvin livekamerat':'Livekameror i Bromarv','Usein kysyttyä':'Vanliga frågor',
+    'Mitä tietoja Bromarvin paikallissää näyttää?':'Vilken information visar Bromarvs lokala väder?','Kuinka usein säätiedot päivittyvät?':'Hur ofta uppdateras väderinformationen?','Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?':'Kan sidan användas som grund för säkerhetsbeslut vid båtfärder?',
+    'Julkaisusarja':'Utgivningsserie','Versio 33':'Versio 36','Version 33 tärkeimmät muutokset':'Versio 36 viktigaste ändringar','· Julkaisusarja':'· Utgivningsserie',
+    'Aurinkoista':'Soligt','Selkeää':'Klart','Pääosin selkeää':'Mestadels klart','Puolipilvistä':'Halvklart','Pilvistä':'Molnigt','Sumua':'Dimma','Tihkusadetta':'Duggregn','Heikko sade':'Lätt regn','Sadetta':'Regn','Voimakas sade':'Kraftigt regn','Lumisadetta':'Snöfall','Ukkosta':'Åska','Ei tietoa':'Ingen information','matala':'låg','kohtalainen':'måttlig','korkea':'hög','erittäin korkea':'mycket hög','äärimmäinen':'extrem','vakaa':'stabilt','nousee':'stiger','laskee':'sjunker',
+    'Kuivuminen voi olla hidasta':'Torkningen kan gå långsamt','Rauhalliset olosuhteet':'Lugna förhållanden','Kohtalaiset olosuhteet':'Måttliga förhållanden','Haastavat olosuhteet':'Krävande förhållanden',
+    'Uusikuu':'Nymåne','Kasvava kuunsirppi':'Tilltagande månskära','Ensimmäinen neljännes':'Första kvarteret','Kasvava kuperakuu':'Tilltagande nästan fullmåne','Täysikuu':'Fullmåne','Vähenevä kuperakuu':'Avtagande nästan fullmåne','Viimeinen neljännes':'Sista kvarteret','Vähenevä kuunsirppi':'Avtagande månskära',
+    'Saderiski':'Risk för regn','Keskity':'Centrera','Keskitä':'Centrera','Sääpiste':'Väderpunkt','Kamera':'Kamera',
+    'Sadetta tulossa':'Regn är på väg','Saderiski kasvaa':'Risken för regn ökar','Hyvä korjuusää':'Bra skördeväder','Kohtalainen korjuusää':'Måttligt skördeväder','Huono korjuusää':'Dåligt skördeväder'
+  }));
+
+  const paragraphs = [
+    ['RainViewerin tutkakuva näyttää viimeisimmät sadehavainnot. Tutkadata ei ole sama asia kuin sääennuste.','RainViewers radarbild visar de senaste nederbördsobservationerna. Radardata är inte samma sak som en väderprognos.'],
+    ['Aallokko on malliennuste lähimmälle meriruudulle. Bromarvin suojaisessa satamassa aallokko voi olla selvästi tätä pienempää. Tietoa ei saa käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena.','Våghöjden är en modellprognos för närmaste havsruta. I Bromarvs skyddade hamn kan vågorna vara betydligt lägre. Informationen får inte användas som enda grund för navigation eller säkerhetsbeslut.'],
+    ['Jokaisessa laatikossa näkyvät sekä mallin ennustama määrä että sanallinen arvio. Pitoisuudet ilmoitetaan siitepölyhiukkasina/m³. Paikallinen määrä voi vaihdella tuulen, sateen ja kasvillisuuden mukaan.','Varje ruta visar både den modellberäknade mängden och en verbal bedömning. Halterna anges som pollenpartiklar/m³. Den lokala mängden kan variera beroende på vind, regn och växtlighet.'],
+    ['Tuulinuoli osoittaa suuntaan, johon ilma liikkuu. Bromarv näkyy kartan ainoana sääpisteenä. Lähialueen sateet näkyvät sadetutkasta. Punaisesta kameramerkistä avautuvat alueen livekamerat. M/S Jurmo on liikkuva lautta, joten sen karttamerkki on viitteellinen. Örön kamera auttaa vertaamaan lännen ja lounaan säätilannetta Bromarvin tuulensuuntaan.','Vindpilen visar den riktning som luften rör sig mot. Bromarv visas som kartans enda väderpunkt. Regn i närområdet syns på nederbördsradarn. De röda kameramarkörerna öppnar områdets livekameror. M/S Jurmo är en färja i rörelse, så dess kartposition är ungefärlig. Kameran på Örö hjälper till att jämföra vädret väster och sydväst om Bromarv.'],
+    ['Bromarvin paikallissää kokoaa yhdelle sivulle Bromarvin ja Raaseporin saariston tärkeimmät säätiedot. Palvelu auttaa seuraamaan paikallista sääennustetta, lähestyviä sateita, tuulta, merisäätä, UV-säteilyä, siitepölytilannetta ja alueen livekameroita.','Bromarvs lokala väder samlar den viktigaste väderinformationen för Bromarv och Raseborgs skärgård på en sida. Tjänsten hjälper dig att följa den lokala prognosen, annalkande regn, vind, havsväder, UV-strålning, pollenläget och områdets livekameror.'],
+    ['Sivu on suunniteltu erityisesti veneilijöille, kalastajille, mökkiläisille, ulkoilijoille ja maatalouden tarpeisiin. Säätiedot ovat ennusteita ja mallilaskelmia, joten turvallisuuteen liittyvissä päätöksissä on tarkistettava myös viralliset varoitukset.','Sidan är särskilt utformad för båtförare, fiskare, stugägare, friluftsmänniskor och jordbrukets behov. Väderuppgifterna är prognoser och modellberäkningar, så kontrollera även officiella varningar när säkerheten berörs.'],
+    ['Ajantasainen lämpötila, sade, tuuli, ilmankosteus, ilmanpaine sekä seuraavien tuntien ennuste.','Aktuell temperatur, nederbörd, vind, luftfuktighet, lufttryck och prognos för de kommande timmarna.'],
+    ['Tutkakuva auttaa näkemään Bromarvia lähestyvät sadealueet ja niiden liikkeen.','Radarbilden visar nederbördsområden som närmar sig Bromarv och hur de rör sig.'],
+    ['Veneilijälle hyödylliset tiedot tuulesta, puuskista, aallokosta, meriveden lämpötilasta ja pintavirtauksesta.','Nyttig information för båtförare om vind, vindbyar, vågor, havsvattnets temperatur och ytströmmar.'],
+    ['Päivän siitepölyennuste sekä UV-indeksi ja tarvittaessa ihon suojaamista koskeva ohje.','Dagens pollenprognos samt UV-index och vid behov råd om att skydda huden.'],
+    ['Alueen kamerat täydentävät sääennustetta näyttämällä todellisia olosuhteita lähialueella.','Områdets kameror kompletterar prognosen genom att visa de verkliga förhållandena i närområdet.'],
+    ['Sivu näyttää Bromarvin ajantasaisen sään, lähituntien ennusteen, sadetutkan, tuulen, merisään, UV-indeksin, siitepölytiedot, kuun vaiheen sekä alueen livekamerat.','Sidan visar aktuellt väder i Bromarv, prognosen för de närmaste timmarna, nederbördsradar, vind, havsväder, UV-index, pollenprognos, månfas och områdets livekameror.'],
+    ['Tiedot haetaan sivua avattaessa ja päivitetään automaattisesti noin 30 minuutin välein. Päivitä-painikkeella voi pyytää uuden haun.','Uppgifterna hämtas när sidan öppnas och uppdateras automatiskt ungefär var 30:e minut. Med knappen Uppdatera kan du begära en ny hämtning.'],
+    ['Sivu auttaa arvioimaan olosuhteita, mutta malliennustetta ei pidä käyttää navigoinnin tai turvallisuuspäätöksen ainoana perusteena. Tarkista aina myös viralliset varoitukset ja merisää.','Sidan hjälper till att bedöma förhållandena, men modellprognosen får inte användas som enda grund för navigation eller säkerhetsbeslut. Kontrollera alltid även officiella varningar och havsväder.'],
+    ['Säätiedot ovat ennusteita ja mallilaskelmia. Tarkista turvallisuuteen liittyvät tiedot aina myös virallisista lähteistä.','Väderuppgifterna är prognoser och modellberäkningar. Kontrollera alltid säkerhetsrelaterad information även från officiella källor.']
+  ];
+
+  function svText(value){
+    let t=value;
+    if(exact.has(t.trim())){
+      const lead=t.match(/^\s*/)[0], trail=t.match(/\s*$/)[0];
+      return lead+exact.get(t.trim())+trail;
+    }
+    for(const [fi,sv] of paragraphs) t=t.split(fi).join(sv);
+    const parts=[
+      [/Siitepölytietoja ei ole tällä hetkellä saatavilla\./g,'Polleninformation är inte tillgänglig just nu.'],
+      [/Siitepölypitoisuus on tällä hetkellä vähäinen\./g,'Pollenhalten är för närvarande låg.'],
+      [/Siitepölyä ei juuri ennusteta olevan ilmassa\./g,'Nästan inget pollen förväntas i luften.'],
+      [/Siitepölypitoisuus on koholla\./g,'Pollenhalten är förhöjd.'],
+      [/Siitepölypitoisuus on korkea\./g,'Pollenhalten är hög.'],
+      [/UV-säteily on vähäistä\./g,'UV-strålningen är låg.'],
+      [/Tavallista erityistä ihonsuojausta ei yleensä tarvita\./g,'Särskilt hudskydd behövs vanligtvis inte.'],
+      [/Hyvä korjuusää/g,'Bra skördeväder'],[/Kohtalainen korjuusää/g,'Måttligt skördeväder'],[/Huono korjuusää/g,'Dåligt skördeväder'],
+      [/Kuivuminen voi olla hidasta/g,'Torkningen kan gå långsamt'],[/Rauhalliset olosuhteet/g,'Lugna förhållanden'],[/Kohtalaiset olosuhteet/g,'Måttliga förhållanden'],[/Haastavat olosuhteet/g,'Krävande förhållanden'],
+      [/Vähenevä kuperakuu/g,'Avtagande nästan fullmåne'],[/Kasvava kuperakuu/g,'Tilltagande nästan fullmåne'],[/Vähenevä kuunsirppi/g,'Avtagande månskära'],[/Kasvava kuunsirppi/g,'Tilltagande månskära'],[/Ensimmäinen neljännes/g,'Första kvarteret'],[/Viimeinen neljännes/g,'Sista kvarteret'],[/Täysikuu/g,'Fullmåne'],[/Uusikuu/g,'Nymåne'],
+      [/Valaistus noin/g,'Belysning cirka'],[/kuun ikä/g,'månens ålder'],[/vrk/g,'dygn'],
+      [/Malliennuste päivitetty klo/g,'Modellprognosen uppdaterad kl.'],[/Malliennuste Bromarvin alueelle/g,'Modellprognos för Bromarvområdet'],
+      [/Tavanomainen ilmanpaine\./g,'Normalt lufttryck.'],[/Pelkkä lukema ei vielä kerro säästä paljon; paineen nousu tai lasku on tärkeämpi merkki\./g,'Enbart värdet säger ännu inte mycket om vädret; en stigande eller sjunkande trend är en viktigare signal.'],
+      [/Viimeisen noin kuuden tunnin aikana paine on pysynyt melko vakaana/g,'Under de senaste cirka sex timmarna har lufttrycket varit relativt stabilt'],
+      [/Viimeisen noin kuuden tunnin aikana paine nousee/g,'Under de senaste cirka sex timmarna har lufttrycket stigit'],[/Viimeisen noin kuuden tunnin aikana paine laskee/g,'Under de senaste cirka sex timmarna har lufttrycket sjunkit'],
+      [/Erittäin matala paine\./g,'Mycket lågt lufttryck.'],[/Voimakas matalapaine voi tuoda sateita, puuskaista tuulta ja nopeasti vaihtelevaa säätä\./g,'Ett kraftigt lågtryck kan föra med sig regn, byig vind och snabbt växlande väder.'],
+      [/Melko matala paine\./g,'Ganska lågt lufttryck.'],[/Epävakainen, pilvinen tai sateinen sää on tavallista todennäköisempi\./g,'Ostadigt, molnigt eller regnigt väder är mer sannolikt än vanligt.'],
+      [/Korkea paine\./g,'Högt lufttryck.'],[/Sää on usein vakaampaa, kuivempaa ja vähätuulisempaa, mikä on yleensä hyvä merkki heinänkorjuulle\./g,'Vädret är ofta stabilare, torrare och mindre blåsigt, vilket vanligen är gynnsamt för höskörd.'],
+      [/Erittäin korkea paine\./g,'Mycket högt lufttryck.'],[/Sää on yleensä vakaa ja kuiva, mutta kesällä paikalliset sadekuurot ovat silti mahdollisia\./g,'Vädret är vanligen stabilt och torrt, men lokala regnskurar är fortfarande möjliga på sommaren.'],
+      [/Sateen riski on pieni/g,'Risken för regn är liten'],[/kuivumisolosuhteet näyttävät kohtuullisen hyviltä/g,'torkförhållandena ser förhållandevis goda ut'],[/seuraavien tuntien aikana/g,'under de kommande timmarna'],
+      [/Korkea ilmankosteus, lähellä oleva kastepiste tai runsas pilvisyys voi hidastaa heinän kuivumista, vaikka sadetta ei tulisi\./g,'Hög luftfuktighet, en daggpunkt nära lufttemperaturen eller kraftig molnighet kan bromsa höets torkning även om det inte regnar.'],
+      [/Puuskat voivat ylittää 12 m\/s\./g,'Vindbyarna kan överstiga 12 m/s.'],
+      [/Malliennusteen perusteella lähimeren aallokko ja tuuli ovat pienveneilylle melko rauhallisia\./g,'Enligt modellprognosen är vågorna och vinden på närliggande havsområde relativt lugna för småbåtar.'],
+      [/Bromarvin sää päivitetty klo/g,'Vädret i Bromarv uppdaterat kl.'],[/kartalla sadetutka ja livekamerat/g,'nederbördsradar och livekameror på kartan'],
+      [/Tuuli /g,'Vind '],[/puuskat /g,'vindbyar '],[/Sade nyt /g,'Nederbörd nu '],[/1 h saderiski /g,'regnrisk 1 h '],
+      [/Saderiski/g,'Risk för regn'],[/Keskitä/g,'Centrera'],[/Bromarvin sää/g,'Vädret i Bromarv'],[/päivitetty klo/g,'uppdaterat kl.'],
+      [/matala/g,'låg'],[/kohtalainen/g,'måttlig'],[/korkea/g,'hög'],[/vakaa/g,'stabilt'],
+      [/Haetaan/g,'Hämtar'],[/Ladataan/g,'Laddar'],[/Ei saatavilla/g,'Inte tillgänglig'],[/Ei tietoa/g,'Ingen information']
+    ];
+    for(const [a,b] of parts)t=t.replace(a,b);
+    return t;
+  }
+
+  function translateNode(root=document.body){
+    if(lang!=='sv')return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){
+      if(!n.nodeValue.trim())return NodeFilter.FILTER_REJECT;
+      const p=n.parentElement;if(!p||['SCRIPT','STYLE','NOSCRIPT'].includes(p.tagName))return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }});
+    const nodes=[]; while(walker.nextNode())nodes.push(walker.currentNode);
+    for(const n of nodes){const x=svText(n.nodeValue);if(x!==n.nodeValue)n.nodeValue=x;}
+    root.querySelectorAll?.('[aria-label],[title]').forEach(el=>{
+      for(const a of ['aria-label','title']){const v=el.getAttribute(a);if(v)el.setAttribute(a,svText(v));}
+    });
+  }
+
+  function setMeta(){
+    if(lang==='sv'){
+      document.documentElement.lang='sv';
+      document.title='Bromarvs lokala väder – väder, nederbördsradar, havsväder och livekameror';
+    }else{
+      document.documentElement.lang='fi';
+      document.title='Bromarvin paikallissää – sää, sadetutka, merisää ja livekamerat';
+      const d=document.querySelector('meta[name="description"]'); if(d)d.content='Bromarvin paikallissää kokoaa sääennusteen, sadetutkan, merisään, tuulen, UV-indeksin, siitepölytiedot, kuun vaiheen ja alueen livekamerat yhdelle mobiiliystävälliselle sivulle.';
+    }
+  }
+
+  function choose(next){localStorage.setItem(STORAGE_KEY,next);location.reload();}
+  function init(){
+    setMeta();
+    const sv=document.getElementById('langSv'),fi=document.getElementById('langFi');
+    sv?.setAttribute('aria-pressed',String(lang==='sv'));fi?.setAttribute('aria-pressed',String(lang==='fi'));
+    sv?.addEventListener('click',()=>choose('sv'));fi?.addEventListener('click',()=>choose('fi'));
+    if(lang==='sv'){
+      translateNode(document.body);
+      const observer=new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData'){const v=svText(m.target.nodeValue);if(v!==m.target.nodeValue)m.target.nodeValue=v;}for(const n of m.addedNodes){if(n.nodeType===1)translateNode(n);else if(n.nodeType===3){const v=svText(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;}}}});
+      observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+</body>
+</html>
