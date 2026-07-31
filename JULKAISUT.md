@@ -1,21 +1,13 @@
-# Versio 35 – täysin kaksikielinen
+# Julkaisusarja
 
-- Ruotsi oletuskielenä.
-- Kaikki dynaamiset säätekstit, karttatekstit, kuun vaiheet, ilmanpaineselitykset, heinänkorjuuarvio ja merisää käännetään ruotsiksi.
-- Suomenkielinen vaihtoehto säilyy lippupainikkeella.
+## Versio 37 – 31.7.2026
 
-# Bromarvin paikallissää – julkaisusarja
+### Korjattu
+- Livekamerakartan ruotsinkieliset ponnahdusikkunat.
+- Kameran avausteksti: Öppna livekameran.
+- Paikannimet: Hangö, Dalsbruk, Kimitoön ja Örö hamn.
+- Etäisyystekstit ja liikkuvan lautan kuvaus ruotsiksi.
+- Kartan OpenStreetMap-attribuutio ruotsiksi.
 
-## Versio 34 – 31.7.2026
-
-### Uutta
-- Ruotsi on sivun oletuskieli.
-- Suomi valitaan Suomen lipusta.
-- Graafinen kielivalitsin käyttää Ruotsin ja Suomen lippuja.
-- Käyttäjän kielivalinta tallennetaan selaimeen.
-- Otsikot, sääkuvaukset, kortit, ohjeet, varoitukset ja dynaamiset ilmoitukset vaihtuvat kielen mukana.
-- SEO:n oletuskieli on ruotsi.
-
-### Säilytetty versiosta 33
-- Sadetutka, merisää, siitepöly, kuun vaihe ja livekamerat.
-- robots.txt, sitemap.xml, favicon, manifesti ja Search Console -vahvistustiedosto säilytetään GitHubissa.
+## Versio 36
+- Siitepölyn numeroarvot, sanallinen arvio ja pisteasteikko.

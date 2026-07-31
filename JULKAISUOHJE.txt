@@ -1,9 +1,13 @@
-BROMARVIN PAIKALLISSÄÄ – VERSION 34 JULKAISU
+BROMARVIN PAIKALLISSÄÄ – VERSION 37 JULKAISU
 
 1. Pura ZIP-paketti.
-2. Vie GitHub-repositorion juureen kaikki tämän kansion tiedostot.
-3. Korvaa vanhat samannimiset tiedostot, kuten index.html, 404.html, sitemap.xml ja site.webmanifest.
-4. ÄLÄ poista Googlen vahvistustiedostoa, jonka nimi alkaa sanalla google ja päättyy .html. Se ei ole tässä paketissa, koska tiedosto on henkilökohtainen Search Console -vahvistuksesi.
-5. Tee GitHubissa commit esimerkiksi nimellä: Julkaisu 34 – kaksikielinen versio.
-6. Odota GitHub Pagesin päivittymistä 1–5 minuuttia.
-7. Testaa ruotsin ja suomen lippupainikkeet puhelimella.
+2. Avaa GitHub-repository tekniikka-petteri/bromarv-paikallissaa.
+3. Säilytä Googlen vahvistustiedosto, jonka nimi alkaa sanalla google ja päättyy .html.
+4. Valitse Add file -> Upload files.
+5. Lataa KAIKKI tämän paketin tiedostot repositorion juureen.
+6. Hyväksy samannimisten vanhojen tiedostojen korvaaminen.
+7. Commit-viesti: Julkaisu 37 – livekamerat kokonaan ruotsiksi
+8. Odota GitHub Pagesin päivittymistä 2–5 minuuttia.
+9. Avaa sivu ja tee tarvittaessa pakotettu päivitys.
+
+Älä poista Googlen vahvistustiedostoa.
