@@ -57,17 +57,17 @@
     .leaflet-popup-close-button:hover{color:#777}.leaflet-popup-scrolled{overflow:auto}
     .leaflet-div-icon{background:#fff;border:1px solid #666}
   
-  .uv-advice { margin-top:10px; padding:12px; border-radius:12px; background:#eef8ff; border:1px solid #b9def5; font-size:.95rem; line-height:1.4; display:none; }
+  .uv-advice { margin-top:10px; padding:12px; border-radius:12px; background:#eef8ff; border:1px solid #b9def5; color:#183247; font-size:.95rem; line-height:1.4; display:none; }
   .uv-advice.visible { display:block; }
   .uv-advice.protect { background:#fff4d6; border-color:#f2c864; }
   .uv-advice.strong { background:#ffe1df; border-color:#ef8a82; }
   .pollen-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
-  .pollen-item { background:#f5f8fb; border:1px solid #dce5ec; border-radius:12px; padding:10px; }
+  .pollen-item { background:#f5f8fb; border:1px solid #dce5ec; border-radius:12px; padding:10px; color:#183247; }
   .pollen-item small { display:block; color:#526371; margin-bottom:4px; }
-  .pollen-item strong { font-size:1.05rem; }
-  .pollen-summary { margin-top:12px; padding:12px; border-radius:12px; background:#edf8ee; border:1px solid #b9dfbf; line-height:1.4; }
-  .pollen-summary.elevated { background:#fff4d6; border-color:#f2c864; }
-  .pollen-summary.high { background:#ffe1df; border-color:#ef8a82; }
+  .pollen-item strong { font-size:1.05rem; color:#183247; }
+  .pollen-summary { margin-top:12px; padding:12px; border-radius:12px; background:#edf8ee; border:1px solid #b9dfbf; color:#183b24; line-height:1.4; }
+  .pollen-summary.elevated { background:#fff4d6; border-color:#f2c864; color:#5a4210; }
+  .pollen-summary.high { background:#ffe1df; border-color:#ef8a82; color:#68231f; }
   .pollen-note { margin-top:10px; color:#5c6d79; font-size:.88rem; line-height:1.4; }
 
 </style>
@@ -426,8 +426,9 @@
     #marineCard { order:6; }
     #harvestCard { order:7; }
     #moonCard { order:8; }
-    aside > section:nth-last-of-type(1) { order:9; }
-    #errorBox { order:10; }
+    #pollenCard { order:9; }
+    aside > section:nth-last-of-type(1) { order:10; }
+    #errorBox { order:11; }
 
     .card { padding:14px; border-radius:15px; box-shadow:0 7px 18px rgba(0,0,0,.2); }
     .card h2 { font-size:22px; margin-bottom:10px; }
@@ -1394,8 +1395,14 @@ function renderCenter() {
 
 
 
-function pollenValue(value) {
+function pollenNumber(value) {
+  if (value === null || value === undefined || value === '') return NaN;
   const n = Number(value);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function pollenValue(value) {
+  const n = pollenNumber(value);
   return Number.isFinite(n) ? `${n.toFixed(n < 10 ? 1 : 0)} /m³` : 'Ei saatavilla';
 }
 
@@ -1410,11 +1417,11 @@ function renderAirQuality() {
   if (!airQualityData?.current) return;
   const c = airQualityData.current;
   const values = {
-    birch: Number(c.birch_pollen),
-    alder: Number(c.alder_pollen),
-    grass: Number(c.grass_pollen),
-    mugwort: Number(c.mugwort_pollen),
-    ragweed: Number(c.ragweed_pollen)
+    birch: pollenNumber(c.birch_pollen),
+    alder: pollenNumber(c.alder_pollen),
+    grass: pollenNumber(c.grass_pollen),
+    mugwort: pollenNumber(c.mugwort_pollen),
+    ragweed: pollenNumber(c.ragweed_pollen)
   };
   document.getElementById('pollenBirch').textContent = pollenValue(values.birch);
   document.getElementById('pollenAlder').textContent = pollenValue(values.alder);
