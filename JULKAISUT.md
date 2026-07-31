@@ -1,13 +1,8 @@
-# Julkaisusarja
+# Julkaisut
 
-## Versio 37 – 31.7.2026
+## Versio 38 – 1.8.2026
 
-### Korjattu
-- Livekamerakartan ruotsinkieliset ponnahdusikkunat.
-- Kameran avausteksti: Öppna livekameran.
-- Paikannimet: Hangö, Dalsbruk, Kimitoön ja Örö hamn.
-- Etäisyystekstit ja liikkuvan lautan kuvaus ruotsiksi.
-- Kartan OpenStreetMap-attribuutio ruotsiksi.
-
-## Versio 36
-- Siitepölyn numeroarvot, sanallinen arvio ja pisteasteikko.
+- Korjattu ruotsinkielisen julkaisusarjan suomenkieliset tekstit.
+- Korjattu ruotsinkielinen alatunniste.
+- Säilytetty livekamerakartan kaksikielisyys.
+- Säilytetty siitepölyn numero- ja pisteasteikko.

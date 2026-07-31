@@ -1,14 +1,11 @@
-# Bromarvin paikallissää / Bromarvs lokala väder – versio 37
+# Bromarvin paikallissää – versio 38
 
-Täysin kaksikielinen mobiilisääpalvelu Bromarville.
+Kaksikielinen paikallinen sääpalvelu Bromarviin. Ruotsi on oletuskieli ja suomi valittavissa Suomen lipusta.
 
-## Version 37 muutokset
+## Version 38 muutokset
 
-- Ruotsinkielisen kartan kaikki livekameratekstit ovat nyt ruotsiksi.
-- Paikannimet näytetään ruotsiksi: Hangö, Dalsbruk, Kimitoön ja Örö hamn.
-- Kameran toimintoteksti on ruotsiksi: **Öppna livekameran**.
-- Etäisyys- ja liikkuvan lautan selitykset ovat ruotsiksi.
-- Kartan keskityspainike ja OpenStreetMap-attribuutio ovat oikealla kielellä.
-- Suomenkielinen näkymä säilyy kokonaan suomenkielisenä.
+- Julkaisusarjan ja alatunnisteen kaikki tekstit vaihtuvat suomeksi tai ruotsiksi.
+- Livekamerakartan tekstit vaihtuvat valitun kielen mukaan.
+- Siitepölymäärissä näkyvät tarkat lukemat, sanallinen arvio ja pisteasteikko.
 
-Julkaise kaikki paketin tiedostot GitHub-repositorion juureen. Säilytä Googlen vahvistustiedosto `google....html`.
+GitHub Pagesissa `index.html` sijoitetaan repositorion juureen. Säilytä Googlen vahvistustiedosto.
