@@ -1,3 +1,9 @@
+# Versio 35 – täysin kaksikielinen
+
+- Ruotsi oletuskielenä.
+- Kaikki dynaamiset säätekstit, karttatekstit, kuun vaiheet, ilmanpaineselitykset, heinänkorjuuarvio ja merisää käännetään ruotsiksi.
+- Suomenkielinen vaihtoehto säilyy lippupainikkeella.
+
 # Bromarvin paikallissää – julkaisusarja
 
 ## Versio 34 – 31.7.2026
