@@ -1,13 +1,11 @@
-## Versio 40 – 1.8.2026
+## Versio 41 – 1.8.2026
 
-- Korjattu kartan ruotsinkielisen sääikkunan sääkuvaus: “Melko selkeää” → “Ganska klart”.
-- Ruotsinkielisen näkymän karttatekstit tarkistettu.
+### Korjaukset
+- Kaikki Open-Meteon WMO-sääkoodit käytiin järjestelmällisesti läpi.
+- Kartan, pääsääkortin ja tuntiennusteen sääkuvaukset muodostetaan nyt suoraan valitulla kielellä.
+- Ruotsinkieliseen näkymään lisättiin täydet kuvaukset selkeästä säästä, pilvisyydestä, sumusta, tihkusta, sateesta, jäätävästä sateesta, lumesta, kuuroista, ukkosesta ja rakeista.
+- Tuulensuuntien lyhenteet vaihtuvat kielen mukaan: esimerkiksi suomeksi LO ja ruotsiksi SV.
+- Ruotsi säilyy oletuskielenä ja käyttäjän kielivalinta muistetaan.
 
-# Julkaisut
-
-## Versio 40 – 1.8.2026
-
-- Korjattu ruotsinkielisen julkaisusarjan suomenkieliset tekstit.
-- Korjattu ruotsinkielinen alatunniste.
-- Säilytetty livekamerakartan kaksikielisyys.
-- Säilytetty siitepölyn numero- ja pisteasteikko.
+### Tunnetut puutteet
+- Ei tiedossa.
