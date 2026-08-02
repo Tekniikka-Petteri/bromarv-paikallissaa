@@ -1,11 +1,8 @@
-## Versio 41 – 1.8.2026
+# Julkaisut / Utgåvor
 
-### Korjaukset
-- Kaikki Open-Meteon WMO-sääkoodit käytiin järjestelmällisesti läpi.
-- Kartan, pääsääkortin ja tuntiennusteen sääkuvaukset muodostetaan nyt suoraan valitulla kielellä.
-- Ruotsinkieliseen näkymään lisättiin täydet kuvaukset selkeästä säästä, pilvisyydestä, sumusta, tihkusta, sateesta, jäätävästä sateesta, lumesta, kuuroista, ukkosesta ja rakeista.
-- Tuulensuuntien lyhenteet vaihtuvat kielen mukaan: esimerkiksi suomeksi LO ja ruotsiksi SV.
-- Ruotsi säilyy oletuskielenä ja käyttäjän kielivalinta muistetaan.
+## Versio 42 – 1.8.2026
 
-### Tunnetut puutteet
-- Ei tiedossa.
+- Ruotsinkielisen sivun UV-suojausohjeet korjattu ruotsiksi.
+- Kaikki dynaamiset sää-, siitepöly-, merisää-, kartta-, varoitus- ja virhetekstit tarkistettu.
+- Ruotsinkielinen käyttöliittymä ei käytä suomenkielistä tekstiä puuttuvan käännöksen varatekstinä.
+- Suomenkielinen käyttöliittymä säilyy kokonaan suomenkielisenä.

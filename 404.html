@@ -1600,14 +1600,21 @@ function renderCenter() {
   if (Number.isFinite(uv)) {
     document.getElementById('mainUv').textContent = `${uv.toFixed(1)} · ${uvLevel(uv)}`;
     uvAdvice.className = 'uv-advice visible';
+    const sv = currentLanguage() === 'sv';
     if (uv >= 6) {
       uvAdvice.classList.add('strong');
-      uvAdvice.innerHTML = '<strong>Suojaa iho huolellisesti.</strong> Käytä peittävää vaatetusta, aurinkovoidetta, hattua ja aurinkolaseja. Vältä pitkää oleskelua suorassa auringossa keskipäivällä.';
+      uvAdvice.innerHTML = sv
+        ? '<strong>Skydda huden noggrant.</strong> Använd täckande kläder, solkräm, hatt och solglasögon. Undvik långvarig vistelse i direkt solljus mitt på dagen.'
+        : '<strong>Suojaa iho huolellisesti.</strong> Käytä peittävää vaatetusta, aurinkovoidetta, hattua ja aurinkolaseja. Vältä pitkää oleskelua suorassa auringossa keskipäivällä.';
     } else if (uv >= 3) {
       uvAdvice.classList.add('protect');
-      uvAdvice.innerHTML = '<strong>Ihon suojaaminen on tarpeen.</strong> Käytä aurinkovoidetta ja suojaavaa vaatetusta, etenkin keskipäivällä.';
+      uvAdvice.innerHTML = sv
+        ? '<strong>Huden behöver skyddas.</strong> Använd solkräm och skyddande kläder, särskilt mitt på dagen.'
+        : '<strong>Ihon suojaaminen on tarpeen.</strong> Käytä aurinkovoidetta ja suojaavaa vaatetusta, etenkin keskipäivällä.';
     } else {
-      uvAdvice.innerHTML = '<strong>UV-säteily on vähäistä.</strong> Tavallista erityistä ihonsuojausta ei yleensä tarvita.';
+      uvAdvice.innerHTML = sv
+        ? '<strong>UV-strålningen är låg.</strong> Särskilt hudskydd behövs vanligtvis inte.'
+        : '<strong>UV-säteily on vähäistä.</strong> Tavallista erityistä ihonsuojausta ei yleensä tarvita.';
     }
   } else {
     document.getElementById('mainUv').textContent = 'Ei saatavilla';
@@ -2034,6 +2041,43 @@ if (document.readyState === 'loading') {
       [/Siitepölypitoisuus on korkea\./g,'Pollenhalten är hög.'],
       [/UV-säteily on vähäistä\./g,'UV-strålningen är låg.'],
       [/Tavallista erityistä ihonsuojausta ei yleensä tarvita\./g,'Särskilt hudskydd behövs vanligtvis inte.'],
+      [/Suojaa iho huolellisesti\./g,'Skydda huden noggrant.'],
+      [/Käytä peittävää vaatetusta, aurinkovoidetta, hattua ja aurinkolaseja\./g,'Använd täckande kläder, solkräm, hatt och solglasögon.'],
+      [/Vältä pitkää oleskelua suorassa auringossa keskipäivällä\./g,'Undvik långvarig vistelse i direkt solljus mitt på dagen.'],
+      [/Ihon suojaaminen on tarpeen\./g,'Huden behöver skyddas.'],
+      [/Käytä aurinkovoidetta ja suojaavaa vaatetusta, etenkin keskipäivällä\./g,'Använd solkräm och skyddande kläder, särskilt mitt på dagen.'],
+      [/Oireherkkien kannattaa seurata vointiaan\./g,'Personer med känsliga symtom bör följa sitt mående.'],
+      [/Allergisten kannattaa varautua oireisiin ja pitää lääkitys saatavilla lääkärin tai apteekin ohjeen mukaan\./g,'Allergiker bör vara beredda på symtom och ha läkemedel tillgängliga enligt läkarens eller apotekets anvisningar.'],
+      [/Näytetään viimeksi tallennetut siitepölytiedot/g,'Senast sparade polleninformation visas'],
+      [/Siitepölytietoja ei saatu/g,'Polleninformation kunde inte hämtas'],
+      [/Tarkista internet-yhteys ja päivitä sivu myöhemmin\./g,'Kontrollera internetanslutningen och uppdatera sidan senare.'],
+      [/Tietoa ei saatu sääpalvelusta\./g,'Information kunde inte hämtas från vädertjänsten.'],
+      [/Merisäätietoa ei saatu/g,'Havsväderdata kunde inte hämtas'],
+      [/Sääsivu toimii muuten normaalisti\. Merisäätä yritetään uudelleen seuraavassa päivityksessä\./g,'Vädersidan fungerar i övrigt normalt. Havsvädret hämtas på nytt vid nästa uppdatering.'],
+      [/Lähialueella on ukkosriskiä\. Vältä vesille lähtöä ja seuraa tutkakuvaa\./g,'Det finns risk för åska i närområdet. Undvik att ge dig ut på vattnet och följ radarbilden.'],
+      [/Voimakkaat puuskat tai korkea lähimeren aallokko voivat tehdä pienveneilyolosuhteista haastavat\./g,'Kraftiga vindbyar eller höga vågor på närliggande havsområde kan göra förhållandena krävande för småbåtar.'],
+      [/Olosuhteissa on pienveneellä huomioitavaa\. Tarkista tuulen suunta, puuskat ja oma reitti ennen lähtöä\./g,'Förhållandena kräver uppmärksamhet med småbåt. Kontrollera vindriktning, vindbyar och din rutt före avfärd.'],
+      [/Lähialueen ennustepisteitä ei saatu tällä päivityksellä/g,'Prognospunkterna i närområdet kunde inte hämtas vid denna uppdatering'],
+      [/Bromarvin oma sää ja sadetutka toimivat normaalisti\./g,'Bromarvs eget väder och nederbördsradarn fungerar normalt.'],
+      [/Ukkosriskiä lähialueella/g,'Risk för åska i närområdet'],
+      [/Ukkosta ennustetaan noin 10 km etäisyydelle suunnassa/g,'Åska prognostiseras cirka 10 km bort i riktning'],
+      [/Seuraa tilannetta erityisen tarkasti\./g,'Följ situationen särskilt noggrant.'],
+      [/Sadetta ennustetaan lähialueelle/g,'Regn prognostiseras i närområdet'],
+      [/Sadetta ennustetaan noin 10 km etäisyydelle suunnassa/g,'Regn prognostiseras cirka 10 km bort i riktning'],
+      [/Tarkista myös tuulen suunta ennen ulkotöitä\./g,'Kontrollera även vindriktningen före utomhusarbete.'],
+      [/Ei sadetta 10 km lähiennusteessa juuri nyt/g,'Inget regn i 10 km närprognosen just nu'],
+      [/Kohtuullinen korjuusää/g,'Måttligt skördeväder'],
+      [/Seuraavien tuntien aikana ei näy merkittävää sadetta Bromarvin ennustepisteessä\./g,'Ingen betydande nederbörd syns vid Bromarvs prognospunkt under de kommande timmarna.'],
+      [/Lähialueella sade-ennustetta/g,'Regn i prognosen för närområdet'],
+      [/Bromarvin omassa pisteessä ei välttämättä sada, mutta 10 km lähiennusteessa näkyy sadetta\. Tarkista kartan suunta ja tuuli\./g,'Det regnar inte nödvändigtvis vid Bromarvs egen punkt, men regn syns i 10 km närprognosen. Kontrollera riktningen på kartan och vinden.'],
+      [/Ensimmäinen selvästi kohonnut saderiski näkyy noin klo/g,'Den första tydligt förhöjda regnrisken syns omkring kl.'],
+      [/Tarkista myös kartan tuulenpuoleiset sääpisteet\./g,'Kontrollera även väderpunkterna på lovartsidan på kartan.'],
+      [/Säätietojen lataus epäonnistui\./g,'Hämtningen av väderdata misslyckades.'],
+      [/Tarkista internet-yhteys ja avaa tiedosto uudelleen\. Firefox tai Chrome toimii parhaiten\./g,'Kontrollera internetanslutningen och öppna sidan på nytt. Firefox eller Chrome fungerar bäst.'],
+      [/Säätietoja ei voitu ladata\./g,'Väderdata kunde inte hämtas.'],
+      [/Näytetään välimuistista Bromarvin tiedot klo/g,'Bromarvs uppgifter från cache visas från kl.'],
+      [/Uusi haku tehdään MET Norway -palvelusta\./g,'En ny hämtning görs från MET Norway.'],
+      [/Ei saatavilla/g,'Inte tillgängligt'],
       [/Hyvä korjuusää/g,'Bra skördeväder'],[/Kohtalainen korjuusää/g,'Måttligt skördeväder'],[/Huono korjuusää/g,'Dåligt skördeväder'],
       [/Kuivuminen voi olla hidasta/g,'Torkningen kan gå långsamt'],[/Rauhalliset olosuhteet/g,'Lugna förhållanden'],[/Kohtalaiset olosuhteet/g,'Måttliga förhållanden'],[/Haastavat olosuhteet/g,'Krävande förhållanden'],
       [/Vähenevä kuperakuu/g,'Avtagande nästan fullmåne'],[/Kasvava kuperakuu/g,'Tilltagande nästan fullmåne'],[/Vähenevä kuunsirppi/g,'Avtagande månskära'],[/Kasvava kuunsirppi/g,'Tilltagande månskära'],[/Ensimmäinen neljännes/g,'Första kvarteret'],[/Viimeinen neljännes/g,'Sista kvarteret'],[/Täysikuu/g,'Fullmåne'],[/Uusikuu/g,'Nymåne'],

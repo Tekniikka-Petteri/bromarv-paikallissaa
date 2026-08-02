@@ -1,11 +1,8 @@
-BROMARVIN PAIKALLISSÄÄ – VERSION 41 JULKAISU
+BROMARVIN PAIKALLISSÄÄ – VERSION 42 JULKAISU
 
 1. Pura ZIP-paketti.
 2. Avaa GitHub-repository tekniikka-petteri/bromarv-paikallissaa.
-3. Säilytä Googlen vahvistustiedosto (google....html).
-4. Valitse Add file -> Upload files.
-5. Vie kaikki tämän paketin tiedostot repositorion juureen.
-6. Anna uusien tiedostojen ylikirjoittaa samannimiset vanhat tiedostot.
-7. Commit-viesti: Julkaisu 41 – kaikki sääkuvaukset tarkistettu
-8. Odota GitHub Pagesin päivittymistä muutama minuutti.
-9. Sulje puhelimen selainvälilehti kokonaan ja avaa sivu uudelleen, jos vanha versio näkyy välimuistista.
+3. Säilytä Googlen vahvistustiedosto google....html.
+4. Lataa kaikki tämän paketin tiedostot repositoryn juureen ja ylikirjoita samannimiset vanhat tiedostot.
+5. Commit-viesti: Julkaisu 42 – perusteellinen kielitarkastus
+6. Odota 2–5 minuuttia ja avaa sivu uudelleen.

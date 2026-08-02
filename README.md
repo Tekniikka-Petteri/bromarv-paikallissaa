@@ -1,11 +1,7 @@
-# Bromarvin paikallissää
+# Bromarvin paikallissää / Bromarvs lokala väder – Versio 42
 
-Kaksikielinen, mobiiliystävällinen paikallissääpalvelu Bromarvin alueelle. Ruotsi on oletuskieli ja suomi voidaan valita Suomen lipusta.
+Täysin kaksikielinen mobiilisääpalvelu Bromarviin. Ruotsi on oletuskieli ja suomi valittavissa Suomen lipulla.
 
-## Versio 41
+Versiossa 42 on tarkistettu erityisesti kaikki dynaamisesti muodostuvat sää-, UV-, siitepöly-, merisää-, kartta- ja virhetekstit.
 
-Versiossa 41 kaikki WMO-sääkoodien sääkuvaukset tarkistettiin. Kartta, tuntiennuste ja pääsääkortti käyttävät nyt suoraan valitun kielen mukaisia säätekstejä. Myös tuulensuuntien lyhenteet vaihtuvat suomen ja ruotsin mukaan.
-
-## Julkaiseminen
-
-Vie kaikki tämän paketin tiedostot GitHub-repositorion juureen. Säilytä Googlen omistajuuden vahvistustiedosto, jonka nimi alkaa sanalla `google` ja päättyy `.html`.
+Julkaise repositorion juureen kaikki tämän paketin tiedostot. Säilytä Googlen antama `google....html`-vahvistustiedosto.
