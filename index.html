@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="sv">
-<!-- Bromarvs lokala väder / Bromarvin paikallissää, version 46 -->
+<!-- Bromarvs lokala väder / Bromarvin paikallissää, version 47 -->
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
@@ -69,7 +69,7 @@
         "name": "Bromarvin paikallissää",
         "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
         "dateModified": "2026-08-05",
-        "version": "46",
+        "version": "47",
         "applicationCategory": "WeatherApplication",
         "operatingSystem": "Any",
         "isAccessibleForFree": true,
@@ -667,11 +667,24 @@
     @media(max-width:520px){.header-actions{gap:5px}.language-switcher{gap:4px;margin-right:2px}.lang-flag{width:39px;height:36px;font-size:23px}#refreshBtn{padding-left:13px;padding-right:13px}}
   </style>
 <style id="v44-structure-fix">
-/* Versio 46: todellinen DOM-järjestys, ei order/display:contents-riippuvuutta. */
+/* Versio 47: todellinen DOM-järjestys, ei order/display:contents-riippuvuutta. */
 main { display:flex !important; flex-direction:column !important; }
 main > * { order:initial !important; width:100%; min-width:0; }
 #currentWeatherCard { order:initial !important; }
 #roadcamSection { order:initial !important; }
+</style><style id="v47-conditions-style">
+.conditions-summary h3{margin-bottom:10px}
+.conditions-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.condition-chip{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:9px;align-items:center;padding:11px;border-radius:13px;border:1px solid rgba(255,255,255,.10);background:#14283b}
+.condition-chip>span{grid-row:1/3;font-size:26px}
+.condition-chip strong{font-size:13px;color:#fff}
+.condition-chip small{font-size:12px;color:#b9c9d9;line-height:1.3}
+.condition-chip.good{background:rgba(41,177,107,.13);border-color:rgba(80,220,145,.35)}
+.condition-chip.caution{background:rgba(255,189,46,.12);border-color:rgba(255,204,72,.40)}
+.condition-chip.danger{background:rgba(255,79,79,.13);border-color:rgba(255,100,100,.42)}
+.condition-chip.neutral{background:#14283b}
+.conditions-updated{margin-top:9px;color:#91a9bf;font-size:11px;line-height:1.45}
+@media(max-width:520px){.conditions-grid{grid-template-columns:1fr 1fr}.condition-chip{padding:9px;column-gap:7px}.condition-chip>span{font-size:23px}.condition-chip strong{font-size:12px}.condition-chip small{font-size:11px}}
 </style></head>
 <body>
 <header>
@@ -715,6 +728,16 @@ main > * { order:initial !important; width:100%; min-width:0; }
 <div class="pressure-explain" id="pressureExplain"><strong>Ilmanpaine:</strong> Haetaan tietoa…</div>
 </div>
 <div aria-live="polite" class="uv-advice" id="uvAdvice"></div>
+</section><section class="card wide conditions-summary" id="conditionsSummary">
+<h3>Olosuhteet nyt</h3>
+<div class="conditions-grid" id="conditionsGrid">
+<div class="condition-chip neutral"><span>🌦️</span><strong>Sää</strong><small>Odotetaan tietoja…</small></div>
+<div class="condition-chip neutral"><span>💨</span><strong>Puuskat</strong><small>Odotetaan tietoja…</small></div>
+<div class="condition-chip neutral"><span>🧊</span><strong>Jäätymisriski</strong><small>Odotetaan tietoja…</small></div>
+<div class="condition-chip neutral"><span>🌊</span><strong>Merio­losuhteet</strong><small>Odotetaan tietoja…</small></div>
+</div>
+<div class="conditions-updated" id="conditionsUpdated">Tietojen päivitysajat näkyvät tässä.</div>
+
 </section><section class="card wide">
 <h3>Seuraavat 8 tuntia Bromarvissa</h3>
 <div class="timeline" id="timeline"><div class="hour loading">Ladataan…</div></div>
@@ -851,20 +874,21 @@ main > * { order:initial !important; width:100%; min-width:0; }
 <h3 id="releaseTitle">Julkaisusarja</h3>
 <div class="release-meta">Bromarvin paikallissää · julkaistu 5.8.2026</div>
 </div>
-<span class="release-badge">Versio 46</span>
+<span class="release-badge">Versio 47</span>
 </div>
 <p>Tämä on Bromarvin paikallissään kaksikielinen vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen <strong>JULKAISUT.md</strong>-tiedostoon.</p>
-<strong>Version 46 tärkeimmät muutokset</strong>
+<strong>Version 47 tärkeimmät muutokset</strong>
 <ul class="release-list">
-<li>Livekameroiden säätilanne palautettiin kartan kameramerkkien ponnahdusikkunoihin.</li>
-<li>Livekameran yhteydessä näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja tuulensuunta nuolella.</li>
-<li>Livekameroiden paikalliset säätiedot haetaan MET Norway -palvelusta kameran koordinaateilla.</li>
-<li>Livekamerasää välimuistitetaan 30 minuutiksi turhien verkkopyyntöjen vähentämiseksi.</li>
+<li>Lisätty Olosuhteet nyt -yhteenvetokortti Bromarv nyt -tiedon jälkeen.</li>
+<li>Yhteenveto näyttää sateen, puuskien voimakkuuden, kelikameroihin perustuvan jäätymisriskin ja meriolosuhteet.</li>
+<li>Puuskat korostetaan varoituksena 12 m/s ja vaarana 20 m/s tasolta alkaen.</li>
+<li>Jäätymisriski arvioidaan tien lämpötilan ja tienpinnan tilan perusteella.</li>
+<li>Sää-, merisää- ja kelikameratietojen päivitysajat näkyvät yhteenvetokortissa.</li>
 <li>Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.</li>
 </ul>
 <div class="release-note">Säätiedot ovat ennusteita ja mallilaskelmia. Tarkista turvallisuuteen liittyvät tiedot aina myös virallisista lähteistä.</div>
 </section><footer aria-label="Sivuston versiotieto" class="version-footer" id="versionFooter">
-      Päivitetty 5.8.2026 · <strong>Versio 46</strong> · Julkaisusarja
+      Päivitetty 5.8.2026 · <strong>Versio 47</strong> · Julkaisusarja
     </footer><div class="errorbox" id="errorBox"></div></main>
 <script crossorigin="" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -1335,6 +1359,7 @@ function renderMarine() {
   light.className = `marine-light ${level}`;
   document.getElementById('marineStatus').textContent = status;
   document.getElementById('marineStatusText').textContent = text;
+  updateConditionsSummary();
 }
 
 function showMarineError(err) {
@@ -1995,7 +2020,104 @@ function renderHarvest() {
   document.getElementById('harvestText').textContent = text;
 }
 
-function renderAll() { renderMarkers(); renderCenter(); renderNearbyAlert(); renderMoon(); renderTimeline(); renderHarvest(); if (marineData) renderMarine(); }
+
+function summaryText(fi, sv) { return currentLanguage() === 'sv' ? sv : fi; }
+
+function summaryChip(icon, title, text, level='neutral') {
+  return `<div class="condition-chip ${level}"><span>${icon}</span><strong>${title}</strong><small>${text}</small></div>`;
+}
+
+function roadSensorNumeric(observation, names) {
+  const sensor = roadPickSensor(roadSensorValues(observation?.data), names);
+  const value = Number(sensor?.value);
+  return Number.isFinite(value) ? value : NaN;
+}
+
+function roadFreezingSummary() {
+  if (!latestRoadCameraObservations.length) {
+    return { level:'neutral', text:summaryText('Ei vielä kelitietoa','Ingen väglagsinformation ännu') };
+  }
+  let minRoad = Infinity;
+  let wetOrSlippery = false;
+  for (const cam of latestRoadCameraObservations) {
+    const roadTemp = roadSensorNumeric(cam.weather, ['tie 1','tie1','tie 2','tie2','tienpinnan lämpötila','road surface temperature','vägytans temperatur']);
+    if (Number.isFinite(roadTemp)) minRoad = Math.min(minRoad, roadTemp);
+    const condition = roadConditionText(cam.weather).toLowerCase();
+    if (/mär|wet|fukt|slip|liukas|jä|is|snö|lumi/.test(condition)) wetOrSlippery = true;
+  }
+  if (minRoad !== Infinity && minRoad <= 0.5 && wetOrSlippery) {
+    return { level:'danger', text:summaryText(`Jäätymisriski · tie ${minRoad.toFixed(1)} °C`,`Risk för halka · väg ${minRoad.toFixed(1)} °C`) };
+  }
+  if (minRoad !== Infinity && minRoad <= 2.0) {
+    return { level:'caution', text:summaryText(`Seuraa tienpintaa · ${minRoad.toFixed(1)} °C`,`Följ vägytan · ${minRoad.toFixed(1)} °C`) };
+  }
+  if (minRoad !== Infinity) {
+    return { level:'good', text:summaryText(`Ei selvää jäätymisriskiä · ${minRoad.toFixed(1)} °C`,`Ingen tydlig halkrisk · ${minRoad.toFixed(1)} °C`) };
+  }
+  return { level:'neutral', text:summaryText('Tien lämpötilaa ei saatu','Vägtemperaturen saknas') };
+}
+
+function updateConditionsSummary() {
+  const grid = document.getElementById('conditionsGrid');
+  const updated = document.getElementById('conditionsUpdated');
+  if (!grid || !updated) return;
+
+  const current = allWeather[0]?.data?.current || {};
+  const rain = Number(current.precipitation || current.rain || current.showers || 0);
+  const risk = Number(allWeather[0]?.data?.hourly?.precipitation_probability?.[0] || 0);
+  const gust = Number(current.wind_gusts_10m);
+  const weatherTime = current.time ? new Date(current.time) : null;
+
+  let rainLevel = 'good';
+  let rainText = summaryText('Ei sadetta nyt','Inget regn just nu');
+  let rainIcon = '☀️';
+  if (rain >= 1 || risk >= 70) {
+    rainLevel = 'danger'; rainIcon = '🌧️';
+    rainText = summaryText(`Sadetta ${rain.toFixed(1)} mm · riski ${Math.round(risk)} %`,`Regn ${rain.toFixed(1)} mm · risk ${Math.round(risk)} %`);
+  } else if (rain > 0 || risk >= 35) {
+    rainLevel = 'caution'; rainIcon = '🌦️';
+    rainText = summaryText(`Saderiski ${Math.round(risk)} %`,`Risk för regn ${Math.round(risk)} %`);
+  }
+
+  let gustLevel = 'good';
+  let gustText = Number.isFinite(gust) ? summaryText(`Puuskat ${gust.toFixed(1)} m/s`,`Vindbyar ${gust.toFixed(1)} m/s`) : summaryText('Puuskatietoa ei saatu','Uppgift om vindbyar saknas');
+  if (Number.isFinite(gust) && gust >= 20) gustLevel = 'danger';
+  else if (Number.isFinite(gust) && gust >= 12) gustLevel = 'caution';
+
+  const road = roadFreezingSummary();
+
+  const wave = marineData ? marineCurrentValue('wave_height') : NaN;
+  let marineLevel = 'neutral';
+  let marineText = summaryText('Merisäätietoa odotetaan','Väntar på havsväder');
+  if (Number.isFinite(wave)) {
+    marineLevel = wave >= 1.5 ? 'danger' : wave >= 0.8 ? 'caution' : 'good';
+    marineText = summaryText(`Aallonkorkeus ${wave.toFixed(1)} m`,`Våghöjd ${wave.toFixed(1)} m`);
+  }
+
+  grid.innerHTML =
+    summaryChip(rainIcon, summaryText('Sade','Regn'), rainText, rainLevel) +
+    summaryChip('💨', summaryText('Puuskat','Vindbyar'), gustText, gustLevel) +
+    summaryChip('🧊', summaryText('Jäätymisriski','Halkrisk'), road.text, road.level) +
+    summaryChip('🌊', summaryText('Meriolosuhteet','Havsförhållanden'), marineText, marineLevel);
+
+  const times = [];
+  if (weatherTime && !Number.isNaN(weatherTime.getTime())) {
+    times.push(`${summaryText('Sää','Väder')} ${weatherTime.toLocaleTimeString(currentLanguage()==='sv'?'sv-FI':'fi-FI',{hour:'2-digit',minute:'2-digit'})}`);
+  }
+  const marineTime = marineData?.current?.time;
+  if (marineTime) {
+    const d = new Date(marineTime);
+    if (!Number.isNaN(d.getTime())) times.push(`${summaryText('Merisää','Havsväder')} ${d.toLocaleTimeString(currentLanguage()==='sv'?'sv-FI':'fi-FI',{hour:'2-digit',minute:'2-digit'})}`);
+  }
+  if (roadCameraUpdatedAt) {
+    times.push(`${summaryText('Kelikamerat','Väglagskameror')} ${roadCameraUpdatedAt.toLocaleTimeString(currentLanguage()==='sv'?'sv-FI':'fi-FI',{hour:'2-digit',minute:'2-digit'})}`);
+  }
+  updated.textContent = times.length
+    ? `${summaryText('Päivitetty','Uppdaterad')}: ${times.join(' · ')}`
+    : summaryText('Päivitysaikoja odotetaan.','Väntar på uppdateringstider.');
+}
+
+function renderAll() { renderMarkers(); renderCenter(); renderNearbyAlert(); renderMoon(); renderTimeline(); renderHarvest(); if (marineData) renderMarine(); updateConditionsSummary(); }
 function setStatus(text) { document.getElementById('mapStatus').innerHTML = text; }
 function showError(err) {
   console.error(err);
@@ -2029,6 +2151,8 @@ const ROAD_CAMERA_TARGETS = [
 ];
 let roadCameraMarkers = [];
 let roadSensorMetadata = new Map();
+let latestRoadCameraObservations = [];
+let roadCameraUpdatedAt = null;
 const roadSv = () => currentLanguage() === 'sv';
 const roadT = (fi, sv) => roadSv() ? sv : fi;
 function roadLabel(target){ return roadSv() ? target.labelSv : target.labelFi; }
@@ -2104,7 +2228,7 @@ async function loadRoadCameras(){const status=document.getElementById('roadcamSt
   roadFetchJson('https://tie.digitraffic.fi/api/weather/v1/sensors')
 ]);
 roadSensorMetadata=new Map((sensorJson.sensors||[]).map(sensor=>[String(sensor.id),sensor]));
-const cameraFeatures=cameraJson.features||cameraJson.stations||[],weatherFeatures=weatherJson.features||weatherJson.stations||[],used=new Set(),selected=[];for(const target of ROAD_CAMERA_TARGETS){const feature=matchRoadCamera(cameraFeatures,target,used);if(!feature)continue;used.add(String(roadFeatureId(feature)));const c=roadFeatureCoords(feature);if(!Number.isFinite(c.lat)||!Number.isFinite(c.lon))continue;const distance=distanceKm(CENTER.lat,CENTER.lon,c.lat,c.lon);if(distance>30.01)continue;const preset=chooseRoadPreset(feature),image=roadPresetImage(preset);if(!image)continue;selected.push({target,feature,lat:c.lat,lon:c.lon,distance,preset,image});}for(const cam of selected)cam.weather=await nearestRoadWeather(cam,weatherFeatures);grid.innerHTML='';clearRoadCameraMarkers();for(const cam of selected){const label=roadLabel(cam.target);const metrics=roadNowMetrics(cam.weather).map(([l,v])=>`<div class="roadcam-value"><small>${l}</small><strong>${v}</strong></div>`).join('');const card=document.createElement('article');card.className='roadcam-card';card.innerHTML=`<img src="${cam.image}?t=${Date.now()}" alt="${roadT('Kelikamerakuva','Väglagskamerabild')}: ${label}"><div class="roadcam-body"><div class="roadcam-title">${label}</div><div class="roadcam-distance">${cam.distance.toFixed(1)} km ${roadT('Bromarvin keskustasta','från Bromarvs centrum')}</div><div class="roadcam-now-title">${roadT('Sää nyt','Vädret nu')}</div><div class="roadcam-condition">${roadConditionText(cam.weather)}</div><div class="roadcam-values">${metrics}</div></div>`;grid.appendChild(card);addRoadCameraMarker(cam);}status.textContent=selected.length?roadT(`${selected.length} kameraa löytyi 30 km säteeltä. Violetit merkit ovat kelikameroita.`,`${selected.length} kameror hittades inom 30 km. De violetta markörerna är väglagskameror.`):roadT('Kelikameroita ei löytynyt 30 km säteeltä.','Inga väglagskameror hittades inom 30 km.');fitCameraView(false);}catch(err){console.error('Road cameras:',err);status.textContent=roadT(`Kelikameroita ei saatu ladattua: ${err.message}`,`Väglagskamerorna kunde inte hämtas: ${err.message}`);}}
+const cameraFeatures=cameraJson.features||cameraJson.stations||[],weatherFeatures=weatherJson.features||weatherJson.stations||[],used=new Set(),selected=[];for(const target of ROAD_CAMERA_TARGETS){const feature=matchRoadCamera(cameraFeatures,target,used);if(!feature)continue;used.add(String(roadFeatureId(feature)));const c=roadFeatureCoords(feature);if(!Number.isFinite(c.lat)||!Number.isFinite(c.lon))continue;const distance=distanceKm(CENTER.lat,CENTER.lon,c.lat,c.lon);if(distance>30.01)continue;const preset=chooseRoadPreset(feature),image=roadPresetImage(preset);if(!image)continue;selected.push({target,feature,lat:c.lat,lon:c.lon,distance,preset,image});}for(const cam of selected)cam.weather=await nearestRoadWeather(cam,weatherFeatures);latestRoadCameraObservations=selected;roadCameraUpdatedAt=new Date();updateConditionsSummary();grid.innerHTML='';clearRoadCameraMarkers();for(const cam of selected){const label=roadLabel(cam.target);const metrics=roadNowMetrics(cam.weather).map(([l,v])=>`<div class="roadcam-value"><small>${l}</small><strong>${v}</strong></div>`).join('');const card=document.createElement('article');card.className='roadcam-card';card.innerHTML=`<img src="${cam.image}?t=${Date.now()}" alt="${roadT('Kelikamerakuva','Väglagskamerabild')}: ${label}"><div class="roadcam-body"><div class="roadcam-title">${label}</div><div class="roadcam-distance">${cam.distance.toFixed(1)} km ${roadT('Bromarvin keskustasta','från Bromarvs centrum')}</div><div class="roadcam-now-title">${roadT('Sää nyt','Vädret nu')}</div><div class="roadcam-condition">${roadConditionText(cam.weather)}</div><div class="roadcam-values">${metrics}</div></div>`;grid.appendChild(card);addRoadCameraMarker(cam);}status.textContent=selected.length?roadT(`${selected.length} kameraa löytyi 30 km säteeltä. Violetit merkit ovat kelikameroita.`,`${selected.length} kameror hittades inom 30 km. De violetta markörerna är väglagskameror.`):roadT('Kelikameroita ei löytynyt 30 km säteeltä.','Inga väglagskameror hittades inom 30 km.');fitCameraView(false);}catch(err){console.error('Road cameras:',err);latestRoadCameraObservations=[];roadCameraUpdatedAt=null;updateConditionsSummary();status.textContent=roadT(`Kelikameroita ei saatu ladattua: ${err.message}`,`Väglagskamerorna kunde inte hämtas: ${err.message}`);}}
 
 
 document.getElementById('refreshBtn').onclick = async () => {
@@ -2185,7 +2309,7 @@ if (document.readyState === 'loading') {
     'Sää nyt':'Vädret nu','Kuvat ja Sää nyt -tiesäähavainnot: Fintraffic / Digitraffic, lisenssi CC BY 4.0. Tiesäähavainto tulee lähimmältä saatavilla olevalta tiesääasemalta ja voi puuttua tai olla eri paikasta kuin kamera.':'Bilder och aktuella vägväderobservationer: Fintraffic / Digitraffic, licens CC BY 4.0. Vägväderobservationen kommer från närmaste tillgängliga vägväderstation och kan saknas eller komma från en annan plats än kameran.','Liikenteen kelikamerat':'Trafikens väglagskameror','Haetaan Fintrafficin kelikameroita enintään 30 km säteeltä…':'Hämtar Fintraffics väglagskameror inom högst 30 km…','Kuvat ja Sää nyt -tiesäähavainnot: Fintraffic / Digitraffic, lisenssi CC BY 4.0. Tiesäähavainto tulee lähimmältä saatavilla olevalta tiesääasemalta ja voi puuttua tai olla eri paikasta kuin kamera.':'Bilder och vägväderobservationer: Fintraffic / Digitraffic, licens CC BY 4.0. Kamerabilden mäter inte snödjup; kortet visar observationen från närmaste tillgängliga vägväderstation. Uppgifter kan saknas eller komma från en annan plats än kameran.','Liikenteen kelikamerat':'Trafikens väglagskameror','Kartan merkinnät':'Kartförklaring','Ei sadetta':'Inget regn','Saderiski':'Risk för regn','Sade':'Regn','Livekamera':'Livekamera',
     'Tietoa Bromarvin paikallissäästä':'Om Bromarvs lokala väder','Bromarvin sää ja sääennuste':'Väder och väderprognos för Bromarv','Bromarvin sadetutka':'Nederbördsradar för Bromarv','Bromarvin merisää':'Havsväder för Bromarv','Siitepöly ja UV-indeksi':'Pollen och UV-index','Bromarvin livekamerat':'Livekameror i Bromarv','Usein kysyttyä':'Vanliga frågor',
     'Mitä tietoja Bromarvin paikallissää näyttää?':'Vilken information visar Bromarvs lokala väder?','Kuinka usein säätiedot päivittyvät?':'Hur ofta uppdateras väderinformationen?','Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?':'Kan sidan användas som grund för säkerhetsbeslut vid båtfärder?',
-    'Julkaisusarja':'Utgivningsserie','Versio 46':'Version 46','Version 46 tärkeimmät muutokset':'De viktigaste ändringarna i version 46','Livekameroiden säätilanne palautettiin kartan kameramerkkien ponnahdusikkunoihin.':'Väderläget för livekamerorna återställdes i popupfönstren för kameramarkörerna på kartan.','Livekameran yhteydessä näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja tuulensuunta nuolella.':'Vid livekameran visas åter väderikon, temperatur, vindstyrka och vindriktning med en pil.','Livekameroiden paikalliset säätiedot haetaan MET Norway -palvelusta kameran koordinaateilla.':'De lokala väderuppgifterna för livekamerorna hämtas från MET Norway med kamerans koordinater.','Livekamerasää välimuistitetaan 30 minuutiksi turhien verkkopyyntöjen vähentämiseksi.':'Livekamerans väderuppgifter mellanlagras i 30 minuter för att minska onödiga nätverksförfrågningar.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Säätietoa ei saatavilla':'Väderuppgifter saknas','Bromarvin keskustasta':'från Bromarvs centrum','Seuraavat 8 tuntia -ennuste siirrettiin heti Bromarv nyt -kortin jälkeen.':'Prognosen för de kommande 8 timmarna flyttades direkt efter kortet Bromarv just nu.','Liikenteen kelikameroiden tuuli- ja tien lämpötilat luetaan Digitrafficin sensorimetatietojen avulla.':'Vind- och vägtemperaturerna för trafikens väglagskameror läses med hjälp av Digitraffics sensormetadata.','Kelikamerakortteihin lisättiin etäisyys Bromarvin keskustasta.':'Avståndet från Bromarvs centrum lades till på väglagskamerakorten.','Kelikameroiden järjestys säilyy sadetutkan jälkeen ennen veneilijän säätä.':'Väglagskamerorna visas fortfarande efter nederbördsradarn och före vädret för båtförare.','Ruotsinkieliset uudet tekstit lisättiin ja tarkistettiin.':'De nya svenskspråkiga texterna lades till och granskades.','Sivun rakenne alkaa nyt varmasti Bromarv nyt -tiedolla myös iPhonessa ja Safarissa.':'Sidans struktur börjar nu säkert med Bromarv just nu även på iPhone och i Safari.','Kartta ja sadetutka näkyvät ennen liikenteen kelikameroita.':'Kartan och nederbördsradarn visas före trafikens väglagskameror.','Liikenteen kelikamerat sijaitsevat sadetutkan jälkeen ennen veneilijän säätä.':'Trafikens väglagskameror finns efter nederbördsradarn och före vädret för båtförare.','Kelikamerakorteissa näytetään vain Sää nyt -tiedot: tienpinnan tila, tuuli, ilman lämpötila ja tien lämpötila.':'Väglagskamerakorten visar endast Vädret nu: vägytans tillstånd, vind, lufttemperatur och vägtemperatur.','Kelikamerakuvat eivät ole klikattavia; kartan violetit merkit avaavat Fintrafficin lisätiedot.':'Väglagskamerabilderna är inte klickbara; de violetta markörerna på kartan öppnar Fintraffics tilläggsinformation.','Ruotsinkielisen näkymän käyttöliittymä- ja säätekstit on tarkistettu.':'Gränssnitts- och vädertexterna i den svenskspråkiga vyn har granskats.','· Julkaisusarja':'· Utgivningsserie',
+    'Julkaisusarja':'Utgivningsserie','Versio 47':'Version 47','Version 47 tärkeimmät muutokset':'De viktigaste ändringarna i version 47','Olosuhteet nyt':'Förhållandena just nu','Jäätymisriski':'Halkrisk','Meriolosuhteet':'Havsförhållanden','Tietojen päivitysajat näkyvät tässä.':'Uppdateringstiderna visas här.','Lisätty Olosuhteet nyt -yhteenvetokortti Bromarv nyt -tiedon jälkeen.':'Ett sammanfattningskort för Förhållandena just nu lades till efter Bromarv just nu.','Yhteenveto näyttää sateen, puuskien voimakkuuden, kelikameroihin perustuvan jäätymisriskin ja meriolosuhteet.':'Sammanfattningen visar regn, vindbyarnas styrka, halkrisk baserad på väglagskameror och havsförhållanden.','Puuskat korostetaan varoituksena 12 m/s ja vaarana 20 m/s tasolta alkaen.':'Vindbyar markeras som varning från 12 m/s och som fara från 20 m/s.','Jäätymisriski arvioidaan tien lämpötilan ja tienpinnan tilan perusteella.':'Halkrisken bedöms utifrån vägtemperaturen och vägytans tillstånd.','Sää-, merisää- ja kelikameratietojen päivitysajat näkyvät yhteenvetokortissa.':'Uppdateringstiderna för väder, havsväder och väglagskameror visas i sammanfattningskortet.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Livekameroiden säätilanne palautettiin kartan kameramerkkien ponnahdusikkunoihin.':'Väderläget för livekamerorna återställdes i popupfönstren för kameramarkörerna på kartan.','Livekameran yhteydessä näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja tuulensuunta nuolella.':'Vid livekameran visas åter väderikon, temperatur, vindstyrka och vindriktning med en pil.','Livekameroiden paikalliset säätiedot haetaan MET Norway -palvelusta kameran koordinaateilla.':'De lokala väderuppgifterna för livekamerorna hämtas från MET Norway med kamerans koordinater.','Livekamerasää välimuistitetaan 30 minuutiksi turhien verkkopyyntöjen vähentämiseksi.':'Livekamerans väderuppgifter mellanlagras i 30 minuter för att minska onödiga nätverksförfrågningar.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Säätietoa ei saatavilla':'Väderuppgifter saknas','Bromarvin keskustasta':'från Bromarvs centrum','Seuraavat 8 tuntia -ennuste siirrettiin heti Bromarv nyt -kortin jälkeen.':'Prognosen för de kommande 8 timmarna flyttades direkt efter kortet Bromarv just nu.','Liikenteen kelikameroiden tuuli- ja tien lämpötilat luetaan Digitrafficin sensorimetatietojen avulla.':'Vind- och vägtemperaturerna för trafikens väglagskameror läses med hjälp av Digitraffics sensormetadata.','Kelikamerakortteihin lisättiin etäisyys Bromarvin keskustasta.':'Avståndet från Bromarvs centrum lades till på väglagskamerakorten.','Kelikameroiden järjestys säilyy sadetutkan jälkeen ennen veneilijän säätä.':'Väglagskamerorna visas fortfarande efter nederbördsradarn och före vädret för båtförare.','Ruotsinkieliset uudet tekstit lisättiin ja tarkistettiin.':'De nya svenskspråkiga texterna lades till och granskades.','Sivun rakenne alkaa nyt varmasti Bromarv nyt -tiedolla myös iPhonessa ja Safarissa.':'Sidans struktur börjar nu säkert med Bromarv just nu även på iPhone och i Safari.','Kartta ja sadetutka näkyvät ennen liikenteen kelikameroita.':'Kartan och nederbördsradarn visas före trafikens väglagskameror.','Liikenteen kelikamerat sijaitsevat sadetutkan jälkeen ennen veneilijän säätä.':'Trafikens väglagskameror finns efter nederbördsradarn och före vädret för båtförare.','Kelikamerakorteissa näytetään vain Sää nyt -tiedot: tienpinnan tila, tuuli, ilman lämpötila ja tien lämpötila.':'Väglagskamerakorten visar endast Vädret nu: vägytans tillstånd, vind, lufttemperatur och vägtemperatur.','Kelikamerakuvat eivät ole klikattavia; kartan violetit merkit avaavat Fintrafficin lisätiedot.':'Väglagskamerabilderna är inte klickbara; de violetta markörerna på kartan öppnar Fintraffics tilläggsinformation.','Ruotsinkielisen näkymän käyttöliittymä- ja säätekstit on tarkistettu.':'Gränssnitts- och vädertexterna i den svenskspråkiga vyn har granskats.','· Julkaisusarja':'· Utgivningsserie',
     'Bromarvin paikallissää · julkaistu 5.8.2026':'Bromarvs lokala väder · publicerad 5.8.2026',
     'Tämä on Bromarvin paikallissään kaksikielinen vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen':'Detta är den stabila tvåspråkiga utgåvan av Bromarvs lokala väder. Varje ny utgåva får ett nytt versionsnummer och ändringarna dokumenteras i den separata',
     '-tiedostoon.':'-filen.',

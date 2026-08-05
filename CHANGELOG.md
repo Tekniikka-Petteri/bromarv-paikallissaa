@@ -1,5 +1,15 @@
 # Muutosloki
 
+## Versio 47 – 5.8.2026
+- Lisätty Olosuhteet nyt -yhteenvetokortti heti Bromarv nyt -kortin jälkeen.
+- Yhteenvetoon lisätty sade ja saderiski.
+- Puuskille lisätty värilliset rajat: huomio 12 m/s ja vaara 20 m/s.
+- Lisätty kelikameroiden tien lämpötilaan ja tienpinnan tilaan perustuva jäätymisriski.
+- Lisätty meriolosuhteiden yhteenveto aallonkorkeuden perusteella.
+- Lisätty sää-, merisää- ja kelikameratietojen päivitysajat.
+- Ratkaisu käyttää vain sivun nykyisiä tietolähteitä eikä lisää uutta sääpalvelua.
+- Uudet suomen- ja ruotsinkieliset tekstit lisätty ja tarkistettu.
+
 ## Versio 46 – 5.8.2026
 - Palautettu livekameroiden säätilanne kartan punaisten kameramerkkien ponnahdusikkunoihin.
 - Livekameroissa näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja nuolella esitettävä tuulensuunta.
