@@ -1,7 +1,19 @@
-# Bromarvin paikallissää / Bromarvs lokala väder – Versio 42
+# Bromarvin paikallissää – versio 43
 
-Täysin kaksikielinen mobiilisääpalvelu Bromarviin. Ruotsi on oletuskieli ja suomi valittavissa Suomen lipulla.
+GitHub Pages -julkaisu:
 
-Versiossa 42 on tarkistettu erityisesti kaikki dynaamisesti muodostuvat sää-, UV-, siitepöly-, merisää-, kartta- ja virhetekstit.
+1. Poista vanhat tiedostot repositorion juuresta tai korvaa ne tämän paketin tiedostoilla.
+2. Lataa kaikki tämän kansion tiedostot repositorion juureen.
+3. Pääsivun tiedostonimen pitää olla `index.html`.
+4. GitHub Pages: Deploy from a branch → `main` → `/ (root)`.
+5. Tee selaimessa pakotettu päivitys julkaisun jälkeen.
 
-Julkaise repositorion juureen kaikki tämän paketin tiedostot. Säilytä Googlen antama `google....html`-vahvistustiedosto.
+Paketin tiedostot:
+- index.html
+- site.webmanifest
+- favicon.svg
+- social-preview.png
+- robots.txt
+- sitemap.xml
+- README.md
+- CHANGELOG.md
