@@ -1,4 +1,4 @@
-# Bromarvin paikallissää – versio 45
+# Bromarvin paikallissää – versio 46
 
 ## GitHub Pages -julkaisu
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="sv">
-<!-- Bromarvs lokala väder / Bromarvin paikallissää, version 45 -->
+<!-- Bromarvs lokala väder / Bromarvin paikallissää, version 46 -->
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
@@ -69,7 +69,7 @@
         "name": "Bromarvin paikallissää",
         "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
         "dateModified": "2026-08-05",
-        "version": "45",
+        "version": "46",
         "applicationCategory": "WeatherApplication",
         "operatingSystem": "Any",
         "isAccessibleForFree": true,
@@ -319,6 +319,17 @@
     .camera-popup-item a { color: #71c7ff; font-weight: 800; text-decoration: none; }
     .camera-popup-item a:hover { text-decoration: underline; }
     .camera-popup-distance { color: #a9bbcf; font-size: 12px; margin-top: 2px; }
+    .camera-popup-weather {
+      display:flex; align-items:center; gap:10px; margin:8px 0 3px;
+      padding:8px 10px; border-radius:10px; background:rgba(77,183,255,.10);
+      border:1px solid rgba(119,202,255,.22);
+    }
+    .camera-popup-weather-icon { font-size:28px; line-height:1; }
+    .camera-popup-weather-main { min-width:0; }
+    .camera-popup-weather-temp { font-weight:900; font-size:17px; color:#fff; }
+    .camera-popup-weather-wind { color:#b9d9f4; font-size:13px; margin-top:2px; }
+    .camera-popup-weather .wind-arrow { color:#77caff; font-weight:900; }
+
 
     .leaflet-control-center-bromarv {
       margin-bottom: 6px !important;
@@ -656,7 +667,7 @@
     @media(max-width:520px){.header-actions{gap:5px}.language-switcher{gap:4px;margin-right:2px}.lang-flag{width:39px;height:36px;font-size:23px}#refreshBtn{padding-left:13px;padding-right:13px}}
   </style>
 <style id="v44-structure-fix">
-/* Versio 45: todellinen DOM-järjestys, ei order/display:contents-riippuvuutta. */
+/* Versio 46: todellinen DOM-järjestys, ei order/display:contents-riippuvuutta. */
 main { display:flex !important; flex-direction:column !important; }
 main > * { order:initial !important; width:100%; min-width:0; }
 #currentWeatherCard { order:initial !important; }
@@ -840,20 +851,20 @@ main > * { order:initial !important; width:100%; min-width:0; }
 <h3 id="releaseTitle">Julkaisusarja</h3>
 <div class="release-meta">Bromarvin paikallissää · julkaistu 5.8.2026</div>
 </div>
-<span class="release-badge">Versio 45</span>
+<span class="release-badge">Versio 46</span>
 </div>
 <p>Tämä on Bromarvin paikallissään kaksikielinen vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen <strong>JULKAISUT.md</strong>-tiedostoon.</p>
-<strong>Version 45 tärkeimmät muutokset</strong>
+<strong>Version 46 tärkeimmät muutokset</strong>
 <ul class="release-list">
-<li>Seuraavat 8 tuntia -ennuste siirrettiin heti Bromarv nyt -kortin jälkeen.</li>
-<li>Liikenteen kelikameroiden tuuli- ja tien lämpötilat luetaan Digitrafficin sensorimetatietojen avulla.</li>
-<li>Kelikamerakortteihin lisättiin etäisyys Bromarvin keskustasta.</li>
-<li>Kelikameroiden järjestys säilyy sadetutkan jälkeen ennen veneilijän säätä.</li>
-<li>Ruotsinkieliset uudet tekstit lisättiin ja tarkistettiin.</li>
+<li>Livekameroiden säätilanne palautettiin kartan kameramerkkien ponnahdusikkunoihin.</li>
+<li>Livekameran yhteydessä näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja tuulensuunta nuolella.</li>
+<li>Livekameroiden paikalliset säätiedot haetaan MET Norway -palvelusta kameran koordinaateilla.</li>
+<li>Livekamerasää välimuistitetaan 30 minuutiksi turhien verkkopyyntöjen vähentämiseksi.</li>
+<li>Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.</li>
 </ul>
 <div class="release-note">Säätiedot ovat ennusteita ja mallilaskelmia. Tarkista turvallisuuteen liittyvät tiedot aina myös virallisista lähteistä.</div>
 </section><footer aria-label="Sivuston versiotieto" class="version-footer" id="versionFooter">
-      Päivitetty 5.8.2026 · <strong>Versio 45</strong> · Julkaisusarja
+      Päivitetty 5.8.2026 · <strong>Versio 46</strong> · Julkaisusarja
     </footer><div class="errorbox" id="errorBox"></div></main>
 <script crossorigin="" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -863,6 +874,7 @@ const CENTER = { lat: 59.98865518652084, lon: 23.03065759214128 };
 const RINGS_KM = [10, 20, 30];
 const BEARINGS = [0, 45, 90, 135, 180, 225, 270, 315];
 let map, rangeCircle, weatherMarkers = [], cameraMarkers = [], allWeather = [], displayMode = 'all';
+const liveCameraWeatherCache = new Map();
 let radarFrames = [], radarLayer = null, radarIndex = 0, radarTimer = null, radarEnabled = false, radarHost = 'https://tilecache.rainviewer.com';
 let marineData = null;
 let airQualityData = null;
@@ -1050,6 +1062,59 @@ function fitCameraView(animate = false) {
   map.fitBounds(bounds, { padding: [18, 18], animate, maxZoom: 10 });
 }
 
+
+function liveCameraWeatherKey(location) {
+  return `${Number(location.lat).toFixed(4)},${Number(location.lon).toFixed(4)}`;
+}
+
+async function fetchLiveCameraWeather(location) {
+  const key = liveCameraWeatherKey(location);
+  const cached = liveCameraWeatherCache.get(key);
+  if (cached && Date.now() - cached.savedAt < 30 * 60 * 1000) return cached.data;
+
+  const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${Number(location.lat).toFixed(4)}&lon=${Number(location.lon).toFixed(4)}`;
+  const response = await fetch(url, { cache: 'no-cache' });
+  if (!response.ok) throw new Error(`MET Norway ${response.status}`);
+  const json = await response.json();
+  const row = json?.properties?.timeseries?.[0];
+  if (!row) throw new Error('Livekameran säätietoa ei löytynyt');
+
+  const instant = row.data?.instant?.details || {};
+  const period = row.data?.next_1_hours || row.data?.next_6_hours || {};
+  const symbol = period.summary?.symbol_code || '';
+  const date = new Date(row.time);
+  const hour = date.getHours();
+  const data = {
+    temperature: Number(instant.air_temperature),
+    windSpeed: Number(instant.wind_speed),
+    windDirection: Number(instant.wind_from_direction),
+    weatherCode: metSymbolToWmo(symbol),
+    isDay: hour >= 6 && hour < 22 ? 1 : 0,
+    time: row.time
+  };
+  liveCameraWeatherCache.set(key, { savedAt: Date.now(), data });
+  return data;
+}
+
+function liveCameraWeatherHtml(data) {
+  const sv = currentLanguage() === 'sv';
+  if (!data) {
+    return `<div class="camera-popup-weather"><div class="camera-popup-weather-icon">⌛</div><div class="camera-popup-weather-main"><div class="camera-popup-weather-temp">${sv ? 'Hämtar väder…' : 'Haetaan säätä…'}</div></div></div>`;
+  }
+  const info = weatherInfo(data.weatherCode, data.isDay);
+  const temperature = Number.isFinite(data.temperature) ? `${data.temperature.toFixed(1)} °C` : '–';
+  const wind = Number.isFinite(data.windSpeed) ? `${data.windSpeed.toFixed(1)} m/s` : '–';
+  const direction = Number.isFinite(data.windDirection) ? windFromName(data.windDirection) : '';
+  const rotation = Number.isFinite(data.windDirection) ? (data.windDirection + 180) % 360 : 0;
+  return `<div class="camera-popup-weather">
+    <div class="camera-popup-weather-icon">${info.icon}</div>
+    <div class="camera-popup-weather-main">
+      <div class="camera-popup-weather-temp">${temperature} · ${info.label}</div>
+      <div class="camera-popup-weather-wind"><span class="wind-arrow" style="transform:rotate(${rotation}deg)">↑</span> ${direction} ${wind}</div>
+    </div>
+  </div>`;
+}
+
 function addCameraMarkers() {
   cameraMarkers.forEach(marker => map.removeLayer(marker));
   cameraMarkers = [];
@@ -1061,9 +1126,11 @@ function addCameraMarkers() {
     iconAnchor: [18, 38],
     popupAnchor: [0, -36]
   });
+
   CAMERA_LOCATIONS.forEach(location => {
     const distance = distanceKm(CENTER.lat, CENTER.lon, location.lat, location.lon);
     if (distance > 30.01 && !location.moving && !location.alwaysShow) return;
+
     const locationName = sv ? location.nameSv : location.nameFi;
     const items = location.cameras.map(camera => {
       const cameraTitle = sv ? camera.titleSv : camera.titleFi;
@@ -1073,13 +1140,25 @@ function addCameraMarkers() {
         <div><a href="${camera.url}" target="_blank" rel="noopener">${cameraTitle}</a><div class="camera-popup-distance">${sv ? 'Öppna livekameran' : 'Avaa livekamera'}</div></div>
       </div>`;
     }).join('');
+
     const locationText = location.moving
       ? (sv ? 'Rörlig färja – markören visar en ungefärlig position längs rutten' : 'Liikkuva lautta – merkki näyttää reitin viitteellisen sijainnin')
       : (sv ? `Cirka ${distance.toFixed(1)} km från Bromarv` : `Noin ${distance.toFixed(1)} km Bromarvista`);
-    const popup = `<div class="camera-popup"><h3>📹 ${locationName}</h3><div class="camera-popup-distance">${locationText}</div>${items}</div>`;
+
+    const popupBase = `<div class="camera-popup"><h3>📹 ${locationName}</h3><div class="camera-popup-distance">${locationText}</div>${liveCameraWeatherHtml(null)}${items}</div>`;
     const marker = L.marker([location.lat, location.lon], { icon, zIndexOffset: 1200 })
-      .addTo(map).bindPopup(popup, { maxWidth: 330 });
+      .addTo(map).bindPopup(popupBase, { maxWidth: 330 });
     cameraMarkers.push(marker);
+
+    fetchLiveCameraWeather(location).then(data => {
+      const weatherHtml = liveCameraWeatherHtml(data);
+      const updatedPopup = `<div class="camera-popup"><h3>📹 ${locationName}</h3><div class="camera-popup-distance">${locationText}</div>${weatherHtml}${items}</div>`;
+      marker.setPopupContent(updatedPopup);
+    }).catch(() => {
+      const unavailable = `<div class="camera-popup-weather"><div class="camera-popup-weather-icon">🌡️</div><div class="camera-popup-weather-main"><div class="camera-popup-weather-temp">${sv ? 'Väderuppgifter saknas' : 'Säätietoa ei saatavilla'}</div></div></div>`;
+      const updatedPopup = `<div class="camera-popup"><h3>📹 ${locationName}</h3><div class="camera-popup-distance">${locationText}</div>${unavailable}${items}</div>`;
+      marker.setPopupContent(updatedPopup);
+    });
   });
 }
 
@@ -2106,7 +2185,7 @@ if (document.readyState === 'loading') {
     'Sää nyt':'Vädret nu','Kuvat ja Sää nyt -tiesäähavainnot: Fintraffic / Digitraffic, lisenssi CC BY 4.0. Tiesäähavainto tulee lähimmältä saatavilla olevalta tiesääasemalta ja voi puuttua tai olla eri paikasta kuin kamera.':'Bilder och aktuella vägväderobservationer: Fintraffic / Digitraffic, licens CC BY 4.0. Vägväderobservationen kommer från närmaste tillgängliga vägväderstation och kan saknas eller komma från en annan plats än kameran.','Liikenteen kelikamerat':'Trafikens väglagskameror','Haetaan Fintrafficin kelikameroita enintään 30 km säteeltä…':'Hämtar Fintraffics väglagskameror inom högst 30 km…','Kuvat ja Sää nyt -tiesäähavainnot: Fintraffic / Digitraffic, lisenssi CC BY 4.0. Tiesäähavainto tulee lähimmältä saatavilla olevalta tiesääasemalta ja voi puuttua tai olla eri paikasta kuin kamera.':'Bilder och vägväderobservationer: Fintraffic / Digitraffic, licens CC BY 4.0. Kamerabilden mäter inte snödjup; kortet visar observationen från närmaste tillgängliga vägväderstation. Uppgifter kan saknas eller komma från en annan plats än kameran.','Liikenteen kelikamerat':'Trafikens väglagskameror','Kartan merkinnät':'Kartförklaring','Ei sadetta':'Inget regn','Saderiski':'Risk för regn','Sade':'Regn','Livekamera':'Livekamera',
     'Tietoa Bromarvin paikallissäästä':'Om Bromarvs lokala väder','Bromarvin sää ja sääennuste':'Väder och väderprognos för Bromarv','Bromarvin sadetutka':'Nederbördsradar för Bromarv','Bromarvin merisää':'Havsväder för Bromarv','Siitepöly ja UV-indeksi':'Pollen och UV-index','Bromarvin livekamerat':'Livekameror i Bromarv','Usein kysyttyä':'Vanliga frågor',
     'Mitä tietoja Bromarvin paikallissää näyttää?':'Vilken information visar Bromarvs lokala väder?','Kuinka usein säätiedot päivittyvät?':'Hur ofta uppdateras väderinformationen?','Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?':'Kan sidan användas som grund för säkerhetsbeslut vid båtfärder?',
-    'Julkaisusarja':'Utgivningsserie','Versio 45':'Version 45','Version 45 tärkeimmät muutokset':'De viktigaste ändringarna i version 45','Bromarvin keskustasta':'från Bromarvs centrum','Seuraavat 8 tuntia -ennuste siirrettiin heti Bromarv nyt -kortin jälkeen.':'Prognosen för de kommande 8 timmarna flyttades direkt efter kortet Bromarv just nu.','Liikenteen kelikameroiden tuuli- ja tien lämpötilat luetaan Digitrafficin sensorimetatietojen avulla.':'Vind- och vägtemperaturerna för trafikens väglagskameror läses med hjälp av Digitraffics sensormetadata.','Kelikamerakortteihin lisättiin etäisyys Bromarvin keskustasta.':'Avståndet från Bromarvs centrum lades till på väglagskamerakorten.','Kelikameroiden järjestys säilyy sadetutkan jälkeen ennen veneilijän säätä.':'Väglagskamerorna visas fortfarande efter nederbördsradarn och före vädret för båtförare.','Ruotsinkieliset uudet tekstit lisättiin ja tarkistettiin.':'De nya svenskspråkiga texterna lades till och granskades.','Sivun rakenne alkaa nyt varmasti Bromarv nyt -tiedolla myös iPhonessa ja Safarissa.':'Sidans struktur börjar nu säkert med Bromarv just nu även på iPhone och i Safari.','Kartta ja sadetutka näkyvät ennen liikenteen kelikameroita.':'Kartan och nederbördsradarn visas före trafikens väglagskameror.','Liikenteen kelikamerat sijaitsevat sadetutkan jälkeen ennen veneilijän säätä.':'Trafikens väglagskameror finns efter nederbördsradarn och före vädret för båtförare.','Kelikamerakorteissa näytetään vain Sää nyt -tiedot: tienpinnan tila, tuuli, ilman lämpötila ja tien lämpötila.':'Väglagskamerakorten visar endast Vädret nu: vägytans tillstånd, vind, lufttemperatur och vägtemperatur.','Kelikamerakuvat eivät ole klikattavia; kartan violetit merkit avaavat Fintrafficin lisätiedot.':'Väglagskamerabilderna är inte klickbara; de violetta markörerna på kartan öppnar Fintraffics tilläggsinformation.','Ruotsinkielisen näkymän käyttöliittymä- ja säätekstit on tarkistettu.':'Gränssnitts- och vädertexterna i den svenskspråkiga vyn har granskats.','· Julkaisusarja':'· Utgivningsserie',
+    'Julkaisusarja':'Utgivningsserie','Versio 46':'Version 46','Version 46 tärkeimmät muutokset':'De viktigaste ändringarna i version 46','Livekameroiden säätilanne palautettiin kartan kameramerkkien ponnahdusikkunoihin.':'Väderläget för livekamerorna återställdes i popupfönstren för kameramarkörerna på kartan.','Livekameran yhteydessä näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja tuulensuunta nuolella.':'Vid livekameran visas åter väderikon, temperatur, vindstyrka och vindriktning med en pil.','Livekameroiden paikalliset säätiedot haetaan MET Norway -palvelusta kameran koordinaateilla.':'De lokala väderuppgifterna för livekamerorna hämtas från MET Norway med kamerans koordinater.','Livekamerasää välimuistitetaan 30 minuutiksi turhien verkkopyyntöjen vähentämiseksi.':'Livekamerans väderuppgifter mellanlagras i 30 minuter för att minska onödiga nätverksförfrågningar.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Säätietoa ei saatavilla':'Väderuppgifter saknas','Bromarvin keskustasta':'från Bromarvs centrum','Seuraavat 8 tuntia -ennuste siirrettiin heti Bromarv nyt -kortin jälkeen.':'Prognosen för de kommande 8 timmarna flyttades direkt efter kortet Bromarv just nu.','Liikenteen kelikameroiden tuuli- ja tien lämpötilat luetaan Digitrafficin sensorimetatietojen avulla.':'Vind- och vägtemperaturerna för trafikens väglagskameror läses med hjälp av Digitraffics sensormetadata.','Kelikamerakortteihin lisättiin etäisyys Bromarvin keskustasta.':'Avståndet från Bromarvs centrum lades till på väglagskamerakorten.','Kelikameroiden järjestys säilyy sadetutkan jälkeen ennen veneilijän säätä.':'Väglagskamerorna visas fortfarande efter nederbördsradarn och före vädret för båtförare.','Ruotsinkieliset uudet tekstit lisättiin ja tarkistettiin.':'De nya svenskspråkiga texterna lades till och granskades.','Sivun rakenne alkaa nyt varmasti Bromarv nyt -tiedolla myös iPhonessa ja Safarissa.':'Sidans struktur börjar nu säkert med Bromarv just nu även på iPhone och i Safari.','Kartta ja sadetutka näkyvät ennen liikenteen kelikameroita.':'Kartan och nederbördsradarn visas före trafikens väglagskameror.','Liikenteen kelikamerat sijaitsevat sadetutkan jälkeen ennen veneilijän säätä.':'Trafikens väglagskameror finns efter nederbördsradarn och före vädret för båtförare.','Kelikamerakorteissa näytetään vain Sää nyt -tiedot: tienpinnan tila, tuuli, ilman lämpötila ja tien lämpötila.':'Väglagskamerakorten visar endast Vädret nu: vägytans tillstånd, vind, lufttemperatur och vägtemperatur.','Kelikamerakuvat eivät ole klikattavia; kartan violetit merkit avaavat Fintrafficin lisätiedot.':'Väglagskamerabilderna är inte klickbara; de violetta markörerna på kartan öppnar Fintraffics tilläggsinformation.','Ruotsinkielisen näkymän käyttöliittymä- ja säätekstit on tarkistettu.':'Gränssnitts- och vädertexterna i den svenskspråkiga vyn har granskats.','· Julkaisusarja':'· Utgivningsserie',
     'Bromarvin paikallissää · julkaistu 5.8.2026':'Bromarvs lokala väder · publicerad 5.8.2026',
     'Tämä on Bromarvin paikallissään kaksikielinen vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen':'Detta är den stabila tvåspråkiga utgåvan av Bromarvs lokala väder. Varje ny utgåva får ett nytt versionsnummer och ändringarna dokumenteras i den separata',
     '-tiedostoon.':'-filen.',

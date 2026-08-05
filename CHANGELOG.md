@@ -1,5 +1,13 @@
 # Muutosloki
 
+## Versio 46 – 5.8.2026
+- Palautettu livekameroiden säätilanne kartan punaisten kameramerkkien ponnahdusikkunoihin.
+- Livekameroissa näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja nuolella esitettävä tuulensuunta.
+- Sää haetaan erikseen jokaisen livekamerapaikan koordinaateilla MET Norway -palvelusta.
+- Livekamerasää välimuistitetaan 30 minuutiksi.
+- Virhetilanteessa näytetään selkeä ilmoitus säätiedon puuttumisesta.
+- Uudet suomen- ja ruotsinkieliset tekstit lisätty ja tarkistettu.
+
 ## Versio 45 – 5.8.2026
 - Seuraavat 8 tuntia -ennuste siirretty heti Bromarv nyt -kortin jälkeen.
 - Kelikameroiden tuuli- ja tien lämpötilat korjattu käyttämään Digitrafficin sensorimetatietoja.
