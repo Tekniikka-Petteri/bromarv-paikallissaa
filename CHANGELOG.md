@@ -1,5 +1,11 @@
 # Muutosloki
 
+## Versio 48 – 5.8.2026
+- Korjattu Olosuhteet nyt -kortin sadeikoni.
+- Sade-kortissa käytetään nyt aina sadeikonia.
+- Aurinkoikonia ei enää näytetä Sade-kortissa silloin, kun sadetta ei ole.
+- Muut ominaisuudet ja kaksikielisyys säilytetty ennallaan.
+
 ## Versio 47 – 5.8.2026
 - Lisätty Olosuhteet nyt -yhteenvetokortti heti Bromarv nyt -kortin jälkeen.
 - Yhteenvetoon lisätty sade ja saderiski.
