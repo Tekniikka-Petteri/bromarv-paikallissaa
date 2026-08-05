@@ -1,5 +1,13 @@
 # Muutosloki
 
+## Versio 45 – 5.8.2026
+- Seuraavat 8 tuntia -ennuste siirretty heti Bromarv nyt -kortin jälkeen.
+- Kelikameroiden tuuli- ja tien lämpötilat korjattu käyttämään Digitrafficin sensorimetatietoja.
+- Sensorit tunnistetaan sensorin ID:n, virallisen nimen ja kuvauksen avulla.
+- Kelikamerakortteihin lisätty etäisyys Bromarvin keskustasta.
+- Kelikameraosio säilytetty sadetutkan jälkeen ennen veneilijän säätä.
+- Uudet suomen- ja ruotsinkieliset tekstit lisätty.
+
 ## Versio 44 – 5.8.2026
 - Korjattu mobiilin todellinen HTML-järjestys ilman CSS:n `order`-kiertotietä.
 - Sivu alkaa Bromarv nyt -kortilla myös iPhonessa ja Safarissa.
