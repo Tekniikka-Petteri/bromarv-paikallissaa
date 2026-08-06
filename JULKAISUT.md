@@ -1,5 +1,12 @@
 # Muutosloki
 
+## Versio 49 – 6.8.2026
+- Jäätymisriski-kohdan nimi muutettu muotoon Tienpinnan jäätymisriski.
+- Lisätty selite siitä, että arvio koskee nimenomaan tienpintaa.
+- Selitteessä kerrotaan arvion perustuvan kelikameroiden tien lämpötilaan ja tienpinnan tilaan.
+- Uudet tekstit lisätty suomeksi ja ruotsiksi.
+- Muut ominaisuudet säilytetty ennallaan.
+
 ## Versio 48 – 5.8.2026
 - Korjattu Olosuhteet nyt -kortin sadeikoni.
 - Sade-kortissa käytetään nyt aina sadeikonia.
