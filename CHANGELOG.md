@@ -1,5 +1,17 @@
 # Muutosloki
 
+## Versio 50 – 13.8.2026
+- UV-indeksi erotettu varsinaisesta MET Norway -säähausta.
+- UV haetaan kevyellä Open-Meteo Forecast API -pyynnöllä.
+- Käytössä on tuntikohtainen `uv_index`, joka huomioi pilvisyyden, ei `uv_index_clear_sky`.
+- Näytetään sekä tämänhetkinen UV-indeksi että päivän maksimi (`uv_index_max`).
+- Ihonsuojausohje aktivoituu UV-arvosta 3 alkaen.
+- UV-haulle lisätty 60 minuutin välimuisti.
+- UV-haun virhe ei vaikuta muihin sää-, meri-, kamera- tai siitepölytietoihin.
+- Siitepölyhaku ei enää pyydä turhaan UV-arvoa Air Quality API:sta.
+- Suomen- ja ruotsinkieliset UV-tekstit päivitetty.
+- JavaScript tarkistettu Node.js:n syntaksitarkistuksella.
+
 ## Versio 49 – 6.8.2026
 - Jäätymisriski-kohdan nimi muutettu muotoon Tienpinnan jäätymisriski.
 - Lisätty selite siitä, että arvio koskee nimenomaan tienpintaa.
