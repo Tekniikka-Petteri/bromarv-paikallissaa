@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html lang="sv">
-<!-- Bromarvs lokala väder / Bromarvin paikallissää, version 50 -->
+<!-- Bromarvs lokala väder / Bromarvin paikallissää, version 51 -->
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
@@ -68,8 +68,8 @@
         "@type": "WebApplication",
         "name": "Bromarvin paikallissää",
         "url": "https://tekniikka-petteri.github.io/bromarv-paikallissaa/",
-        "dateModified": "2026-08-13",
-        "version": "50",
+        "dateModified": "2026-08-14",
+        "version": "51",
         "applicationCategory": "WeatherApplication",
         "operatingSystem": "Any",
         "isAccessibleForFree": true,
@@ -667,7 +667,7 @@
     @media(max-width:520px){.header-actions{gap:5px}.language-switcher{gap:4px;margin-right:2px}.lang-flag{width:39px;height:36px;font-size:23px}#refreshBtn{padding-left:13px;padding-right:13px}}
   </style>
 <style id="v44-structure-fix">
-/* Versio 50: todellinen DOM-järjestys, ei order/display:contents-riippuvuutta. */
+/* Versio 51: todellinen DOM-järjestys, ei order/display:contents-riippuvuutta. */
 main { display:flex !important; flex-direction:column !important; }
 main > * { order:initial !important; width:100%; min-width:0; }
 #currentWeatherCard { order:initial !important; }
@@ -819,7 +819,7 @@ main > * { order:initial !important; width:100%; min-width:0; }
 </div>
 </div>
 </section><section class="card harvest" id="harvestCard">
-<h3>Heinänkorjuuarvio</h3>
+<h3>Heinänteko- ja puintisää</h3>
 <div class="status" id="harvestStatus">Lasketaan…</div>
 <div class="weather-label" id="harvestText">Analysoidaan seuraavien tuntien sadetta ja tuulta.</div>
 </section><section class="card" id="moonCard">
@@ -874,24 +874,22 @@ main > * { order:initial !important; width:100%; min-width:0; }
 <div class="release-head">
 <div>
 <h3 id="releaseTitle">Julkaisusarja</h3>
-<div class="release-meta">Bromarvin paikallissää · julkaistu 5.8.2026</div>
+<div class="release-meta">Bromarvin paikallissää · julkaistu 14.8.2026</div>
 </div>
-<span class="release-badge">Versio 50</span>
+<span class="release-badge">Versio 51</span>
 </div>
 <p>Tämä on Bromarvin paikallissään kaksikielinen vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen <strong>JULKAISUT.md</strong>-tiedostoon.</p>
-<strong>Version 50 tärkeimmät muutokset</strong>
+<strong>Version 51 tärkeimmät muutokset</strong>
 <ul class="release-list">
-<li>UV-indeksi erotettiin MET Norway -säähausta omaksi kevyeksi Open-Meteo Forecast -hauksi.</li>
-<li>UV-arvona käytetään tuntikohtaista uv_index-arvoa eikä pilvettömän taivaan UV-arvoa.</li>
-<li>Bromarv nyt -kortissa näkyvät UV-indeksi nyt ja päivän korkein UV-indeksi.</li>
-<li>Ihonsuojausohje näytetään UV-indeksistä 3 alkaen.</li>
-<li>UV-haun epäonnistuminen ei estä muun sääsivun toimintaa.</li>
-<li>UV-tiedolle lisättiin tunnin välimuisti verkkopyyntöjen vähentämiseksi.</li>
-<li>Suomen- ja ruotsinkieliset UV-tekstit päivitettiin.</li>
+<li>Heinänkorjuuarvio nimettiin uudelleen muotoon Heinänteko- ja puintisää.</li>
+<li>Kausikortti näkyy nyt kesäkuussa, heinäkuussa ja elokuussa.</li>
+<li>Kortti piilotetaan automaattisesti syyskuusta toukokuuhun.</li>
+<li>Selitetekstit päivitettiin huomioimaan sekä heinänteko että puinti.</li>
+<li>Ruotsinkielinen nimi ja uudet selitetekstit päivitettiin.</li>
 </ul>
 <div class="release-note">Säätiedot ovat ennusteita ja mallilaskelmia. Tarkista turvallisuuteen liittyvät tiedot aina myös virallisista lähteistä.</div>
 </section><footer aria-label="Sivuston versiotieto" class="version-footer" id="versionFooter">
-      Päivitetty 5.8.2026 · <strong>Versio 50</strong> · Julkaisusarja
+      Päivitetty 14.8.2026 · <strong>Versio 51</strong> · Julkaisusarja
     </footer><div class="errorbox" id="errorBox"></div></main>
 <script crossorigin="" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -1929,7 +1927,7 @@ function pressureMeaning(hPa) {
   if (hPa < 990) return 'Erittäin matala paine. Voimakas matalapaine voi tuoda sateita, puuskaista tuulta ja nopeasti vaihtelevaa säätä.';
   if (hPa < 1005) return 'Melko matala paine. Epävakainen, pilvinen tai sateinen sää on tavallista todennäköisempi.';
   if (hPa <= 1020) return 'Tavanomainen ilmanpaine. Pelkkä lukema ei vielä kerro säästä paljon; paineen nousu tai lasku on tärkeämpi merkki.';
-  if (hPa <= 1035) return 'Korkea paine. Sää on usein vakaampaa, kuivempaa ja vähätuulisempaa, mikä on yleensä hyvä merkki heinänkorjuulle.';
+  if (hPa <= 1035) return 'Korkea paine. Sää on usein vakaampaa, kuivempaa ja vähätuulisempaa, mikä on yleensä hyvä merkki heinänteolle ja puinnille.';
   return 'Erittäin korkea paine. Sää on yleensä vakaa ja kuiva, mutta kesällä paikalliset sadekuurot ovat silti mahdollisia.';
 }
 
@@ -2029,7 +2027,7 @@ function renderTimeline() {
 
 function isHarvestSeason() {
   const month = new Date().getMonth(); // 0 = tammikuu
-  return month === 5 || month === 6;   // kesäkuu tai heinäkuu
+  return month === 5 || month === 6 || month === 7; // kesäkuu, heinäkuu tai elokuu
 }
 
 function updateHarvestVisibility() {
@@ -2077,7 +2075,7 @@ function renderHarvest() {
   if (poorDrying || cloudy) {
     card.classList.add('warn');
     status = 'Kuivuminen voi olla hidasta';
-    text = 'Korkea ilmankosteus, lähellä oleva kastepiste tai runsas pilvisyys voi hidastaa heinän kuivumista, vaikka sadetta ei tulisi.';
+    text = 'Korkea ilmankosteus, lähellä oleva kastepiste tai runsas pilvisyys voi hidastaa heinän kuivumista ja vaikeuttaa puintia, vaikka sadetta ei tulisi.';
   }
   if (innerRain && firstRisk < 0) {
     card.classList.add('warn');
@@ -2320,7 +2318,7 @@ document.getElementById('radarToggle').onclick = toggleRadar;
 document.getElementById('radarPlay').onclick = toggleRadarAnimation;
 document.getElementById('radarSlider').oninput = e => { if (radarEnabled) { stopRadarAnimation(); showRadarFrame(Number(e.target.value)); } };
 
-// Piilota heinänkorjuuarvio heti sivun avautuessa elokuusta toukokuuhun.
+// Näytä Heinänteko- ja puintisää vain kesäkuusta elokuuhun; piilota syyskuusta toukokuuhun.
 updateHarvestVisibility();
 
 async function startApp() {
@@ -2386,22 +2384,22 @@ if (document.readyState === 'loading') {
     'Ilmanpaine:':'Lufttryck:','Haetaan tietoa…':'Hämtar information…','Maastopalovaroitus':'Varning för terrängbrand','Tarkista virallinen varoituskartta':'Kontrollera den officiella varningskartan',
     'Seuraavat 8 tuntia Bromarvissa':'De kommande 8 timmarna i Bromarv','Ladataan…':'Laddar…','Veneilijän sää':'Väder för båtförare','Haetaan merisäätä…':'Hämtar havsväder…','Lasketaan lähimeren aallokko- ja tuuliolosuhteita.':'Beräknar våg- och vindförhållanden på närliggande havsområde.',
     'Aallonkorkeus':'Våghöjd','Aallon suunta':'Vågriktning','Aallon jakso':'Vågperiod','Meriveden lämpötila':'Havsvattnets temperatur','Pintavirtaus':'Ytström','Meridatan aika':'Tid för havsdata',
-    'Heinänkorjuuarvio':'Bedömning av höskördsvädret','Lasketaan…':'Beräknar…','Analysoidaan seuraavien tuntien sadetta ja tuulta.':'Analyserar regn och vind under de kommande timmarna.',
+    'Heinänteko- ja puintisää':'Höskörds- och tröskväder','Lasketaan…':'Beräknar…','Analysoidaan seuraavien tuntien sadetta ja tuulta.':'Analyserar regn och vind under de kommande timmarna.',
     'Kuun vaihe':'Månfas','Kuun valaistus ja ikä.':'Månens belysning och ålder.','Seuraava täysikuu':'Nästa fullmåne','Seuraava uusikuu':'Nästa nymåne',
     'Siitepöly Bromarvissa':'Pollen i Bromarv','Haetaan siitepölyennustetta…':'Hämtar pollenprognos…','Koivu':'Björk','Leppä':'Al','Heinä':'Gräs','Pujo':'Gråbo','Tuoksukki':'Ambrosia','Odotetaan tietoja…':'Väntar på data…','Arvion asteikko':'Bedömningsskala','Vähän':'Lågt','Kohtalaisesti':'Måttligt','Runsaasti':'Högt','Ei juuri lainkaan':'Nästan inget',
     'Sää nyt':'Vädret nu','Kuvat ja Sää nyt -tiesäähavainnot: Fintraffic / Digitraffic, lisenssi CC BY 4.0. Tiesäähavainto tulee lähimmältä saatavilla olevalta tiesääasemalta ja voi puuttua tai olla eri paikasta kuin kamera.':'Bilder och aktuella vägväderobservationer: Fintraffic / Digitraffic, licens CC BY 4.0. Vägväderobservationen kommer från närmaste tillgängliga vägväderstation och kan saknas eller komma från en annan plats än kameran.','Liikenteen kelikamerat':'Trafikens väglagskameror','Haetaan Fintrafficin kelikameroita enintään 30 km säteeltä…':'Hämtar Fintraffics väglagskameror inom högst 30 km…','Kuvat ja Sää nyt -tiesäähavainnot: Fintraffic / Digitraffic, lisenssi CC BY 4.0. Tiesäähavainto tulee lähimmältä saatavilla olevalta tiesääasemalta ja voi puuttua tai olla eri paikasta kuin kamera.':'Bilder och vägväderobservationer: Fintraffic / Digitraffic, licens CC BY 4.0. Kamerabilden mäter inte snödjup; kortet visar observationen från närmaste tillgängliga vägväderstation. Uppgifter kan saknas eller komma från en annan plats än kameran.','Liikenteen kelikamerat':'Trafikens väglagskameror','Kartan merkinnät':'Kartförklaring','Ei sadetta':'Inget regn','Saderiski':'Risk för regn','Sade':'Regn','Livekamera':'Livekamera',
     'Tietoa Bromarvin paikallissäästä':'Om Bromarvs lokala väder','Bromarvin sää ja sääennuste':'Väder och väderprognos för Bromarv','Bromarvin sadetutka':'Nederbördsradar för Bromarv','Bromarvin merisää':'Havsväder för Bromarv','Siitepöly ja UV-indeksi':'Pollen och UV-index','Bromarvin livekamerat':'Livekameror i Bromarv','Usein kysyttyä':'Vanliga frågor',
     'Mitä tietoja Bromarvin paikallissää näyttää?':'Vilken information visar Bromarvs lokala väder?','Kuinka usein säätiedot päivittyvät?':'Hur ofta uppdateras väderinformationen?','Voiko sivua käyttää veneilyn turvallisuuspäätöksiin?':'Kan sidan användas som grund för säkerhetsbeslut vid båtfärder?',
-    'Julkaisusarja':'Utgivningsserie','Versio 50':'Version 50','Version 50 tärkeimmät muutokset':'De viktigaste ändringarna i version 50','UV-indeksi erotettiin MET Norway -säähausta omaksi kevyeksi Open-Meteo Forecast -hauksi.':'UV-indexet separerades från MET Norway-väderhämtningen till en egen lätt Open-Meteo Forecast-hämtning.','UV-arvona käytetään tuntikohtaista uv_index-arvoa eikä pilvettömän taivaan UV-arvoa.':'Som UV-värde används det timvisa uv_index-värdet och inte UV-värdet för klar himmel.','Bromarv nyt -kortissa näkyvät UV-indeksi nyt ja päivän korkein UV-indeksi.':'Kortet Bromarv just nu visar UV-index nu och dagens högsta UV-index.','Ihonsuojausohje näytetään UV-indeksistä 3 alkaen.':'Råd om hudskydd visas från UV-index 3.','UV-haun epäonnistuminen ei estä muun sääsivun toimintaa.':'Ett misslyckat UV-anrop hindrar inte den övriga vädersidan från att fungera.','UV-tiedolle lisättiin tunnin välimuisti verkkopyyntöjen vähentämiseksi.':'UV-informationen mellanlagras i en timme för att minska nätverksförfrågningar.','Suomen- ja ruotsinkieliset UV-tekstit päivitettiin.':'De finsk- och svenskspråkiga UV-texterna uppdaterades.','Tienpinnan jäätymisriski':'Halkrisk på vägytan','Tienpinnan jäätymisriski arvioidaan kelikameroiden tien lämpötilan ja tienpinnan tilan perusteella.':'Risken för halka på vägytan bedöms utifrån vägtemperaturen och vägytans tillstånd från väglagskamerorna.','Jäätymisriski-kohdan otsikko muutettiin muotoon Tienpinnan jäätymisriski.':'Rubriken Halkrisk ändrades till Halkrisk på vägytan.','Olosuhteet nyt -korttiin lisättiin selite siitä, että arvio koskee tienpintaa.':'En förklaring lades till på kortet Förhållandena just nu om att bedömningen gäller vägytan.','Arvio perustuu kelikameroiden tien lämpötilaan ja tienpinnan tilaan.':'Bedömningen baseras på vägtemperaturen och vägytans tillstånd från väglagskamerorna.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Olosuhteet nyt -kortin sadeikoni korjattiin.':'Regnikonen på kortet Förhållandena just nu korrigerades.','Sade-osiossa näkyy nyt aina sateeseen liittyvä kuvake, myös silloin kun sadetta ei ole.':'I regnavsnittet visas nu alltid en regnrelaterad ikon, även när det inte regnar.','Aurinkoikonia ei enää käytetä Sade-kortissa.':'Solikonen används inte längre på regnkortet.','Suomen- ja ruotsinkieliset versiot säilytettiin ennallaan.':'De finsk- och svenskspråkiga versionerna behölls oförändrade.','Olosuhteet nyt':'Förhållandena just nu','Jäätymisriski':'Halkrisk','Meriolosuhteet':'Havsförhållanden','Tietojen päivitysajat näkyvät tässä.':'Uppdateringstiderna visas här.','Lisätty Olosuhteet nyt -yhteenvetokortti Bromarv nyt -tiedon jälkeen.':'Ett sammanfattningskort för Förhållandena just nu lades till efter Bromarv just nu.','Yhteenveto näyttää sateen, puuskien voimakkuuden, kelikameroihin perustuvan jäätymisriskin ja meriolosuhteet.':'Sammanfattningen visar regn, vindbyarnas styrka, halkrisk baserad på väglagskameror och havsförhållanden.','Puuskat korostetaan varoituksena 12 m/s ja vaarana 20 m/s tasolta alkaen.':'Vindbyar markeras som varning från 12 m/s och som fara från 20 m/s.','Jäätymisriski arvioidaan tien lämpötilan ja tienpinnan tilan perusteella.':'Halkrisken bedöms utifrån vägtemperaturen och vägytans tillstånd.','Sää-, merisää- ja kelikameratietojen päivitysajat näkyvät yhteenvetokortissa.':'Uppdateringstiderna för väder, havsväder och väglagskameror visas i sammanfattningskortet.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Livekameroiden säätilanne palautettiin kartan kameramerkkien ponnahdusikkunoihin.':'Väderläget för livekamerorna återställdes i popupfönstren för kameramarkörerna på kartan.','Livekameran yhteydessä näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja tuulensuunta nuolella.':'Vid livekameran visas åter väderikon, temperatur, vindstyrka och vindriktning med en pil.','Livekameroiden paikalliset säätiedot haetaan MET Norway -palvelusta kameran koordinaateilla.':'De lokala väderuppgifterna för livekamerorna hämtas från MET Norway med kamerans koordinater.','Livekamerasää välimuistitetaan 30 minuutiksi turhien verkkopyyntöjen vähentämiseksi.':'Livekamerans väderuppgifter mellanlagras i 30 minuter för att minska onödiga nätverksförfrågningar.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Säätietoa ei saatavilla':'Väderuppgifter saknas','Bromarvin keskustasta':'från Bromarvs centrum','Seuraavat 8 tuntia -ennuste siirrettiin heti Bromarv nyt -kortin jälkeen.':'Prognosen för de kommande 8 timmarna flyttades direkt efter kortet Bromarv just nu.','Liikenteen kelikameroiden tuuli- ja tien lämpötilat luetaan Digitrafficin sensorimetatietojen avulla.':'Vind- och vägtemperaturerna för trafikens väglagskameror läses med hjälp av Digitraffics sensormetadata.','Kelikamerakortteihin lisättiin etäisyys Bromarvin keskustasta.':'Avståndet från Bromarvs centrum lades till på väglagskamerakorten.','Kelikameroiden järjestys säilyy sadetutkan jälkeen ennen veneilijän säätä.':'Väglagskamerorna visas fortfarande efter nederbördsradarn och före vädret för båtförare.','Ruotsinkieliset uudet tekstit lisättiin ja tarkistettiin.':'De nya svenskspråkiga texterna lades till och granskades.','Sivun rakenne alkaa nyt varmasti Bromarv nyt -tiedolla myös iPhonessa ja Safarissa.':'Sidans struktur börjar nu säkert med Bromarv just nu även på iPhone och i Safari.','Kartta ja sadetutka näkyvät ennen liikenteen kelikameroita.':'Kartan och nederbördsradarn visas före trafikens väglagskameror.','Liikenteen kelikamerat sijaitsevat sadetutkan jälkeen ennen veneilijän säätä.':'Trafikens väglagskameror finns efter nederbördsradarn och före vädret för båtförare.','Kelikamerakorteissa näytetään vain Sää nyt -tiedot: tienpinnan tila, tuuli, ilman lämpötila ja tien lämpötila.':'Väglagskamerakorten visar endast Vädret nu: vägytans tillstånd, vind, lufttemperatur och vägtemperatur.','Kelikamerakuvat eivät ole klikattavia; kartan violetit merkit avaavat Fintrafficin lisätiedot.':'Väglagskamerabilderna är inte klickbara; de violetta markörerna på kartan öppnar Fintraffics tilläggsinformation.','Ruotsinkielisen näkymän käyttöliittymä- ja säätekstit on tarkistettu.':'Gränssnitts- och vädertexterna i den svenskspråkiga vyn har granskats.','· Julkaisusarja':'· Utgivningsserie',
-    'Bromarvin paikallissää · julkaistu 5.8.2026':'Bromarvs lokala väder · publicerad 5.8.2026',
+    'Julkaisusarja':'Utgivningsserie','Versio 51':'Version 51','Version 51 tärkeimmät muutokset':'De viktigaste ändringarna i version 51','Heinänkorjuuarvio nimettiin uudelleen muotoon Heinänteko- ja puintisää.':'Bedömningen av höskördsvädret döptes om till Höskörds- och tröskväder.','Kausikortti näkyy nyt kesäkuussa, heinäkuussa ja elokuussa.':'Säsongskortet visas nu i juni, juli och augusti.','Kortti piilotetaan automaattisesti syyskuusta toukokuuhun.':'Kortet döljs automatiskt från september till maj.','Selitetekstit päivitettiin huomioimaan sekä heinänteko että puinti.':'Förklaringstexterna uppdaterades för att ta hänsyn till både höskörd och tröskning.','Ruotsinkielinen nimi ja uudet selitetekstit päivitettiin.':'Det svenskspråkiga namnet och de nya förklaringstexterna uppdaterades.','UV-indeksi erotettiin MET Norway -säähausta omaksi kevyeksi Open-Meteo Forecast -hauksi.':'UV-indexet separerades från MET Norway-väderhämtningen till en egen lätt Open-Meteo Forecast-hämtning.','UV-arvona käytetään tuntikohtaista uv_index-arvoa eikä pilvettömän taivaan UV-arvoa.':'Som UV-värde används det timvisa uv_index-värdet och inte UV-värdet för klar himmel.','Bromarv nyt -kortissa näkyvät UV-indeksi nyt ja päivän korkein UV-indeksi.':'Kortet Bromarv just nu visar UV-index nu och dagens högsta UV-index.','Ihonsuojausohje näytetään UV-indeksistä 3 alkaen.':'Råd om hudskydd visas från UV-index 3.','UV-haun epäonnistuminen ei estä muun sääsivun toimintaa.':'Ett misslyckat UV-anrop hindrar inte den övriga vädersidan från att fungera.','UV-tiedolle lisättiin tunnin välimuisti verkkopyyntöjen vähentämiseksi.':'UV-informationen mellanlagras i en timme för att minska nätverksförfrågningar.','Suomen- ja ruotsinkieliset UV-tekstit päivitettiin.':'De finsk- och svenskspråkiga UV-texterna uppdaterades.','Tienpinnan jäätymisriski':'Halkrisk på vägytan','Tienpinnan jäätymisriski arvioidaan kelikameroiden tien lämpötilan ja tienpinnan tilan perusteella.':'Risken för halka på vägytan bedöms utifrån vägtemperaturen och vägytans tillstånd från väglagskamerorna.','Jäätymisriski-kohdan otsikko muutettiin muotoon Tienpinnan jäätymisriski.':'Rubriken Halkrisk ändrades till Halkrisk på vägytan.','Olosuhteet nyt -korttiin lisättiin selite siitä, että arvio koskee tienpintaa.':'En förklaring lades till på kortet Förhållandena just nu om att bedömningen gäller vägytan.','Arvio perustuu kelikameroiden tien lämpötilaan ja tienpinnan tilaan.':'Bedömningen baseras på vägtemperaturen och vägytans tillstånd från väglagskamerorna.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Olosuhteet nyt -kortin sadeikoni korjattiin.':'Regnikonen på kortet Förhållandena just nu korrigerades.','Sade-osiossa näkyy nyt aina sateeseen liittyvä kuvake, myös silloin kun sadetta ei ole.':'I regnavsnittet visas nu alltid en regnrelaterad ikon, även när det inte regnar.','Aurinkoikonia ei enää käytetä Sade-kortissa.':'Solikonen används inte längre på regnkortet.','Suomen- ja ruotsinkieliset versiot säilytettiin ennallaan.':'De finsk- och svenskspråkiga versionerna behölls oförändrade.','Olosuhteet nyt':'Förhållandena just nu','Jäätymisriski':'Halkrisk','Meriolosuhteet':'Havsförhållanden','Tietojen päivitysajat näkyvät tässä.':'Uppdateringstiderna visas här.','Lisätty Olosuhteet nyt -yhteenvetokortti Bromarv nyt -tiedon jälkeen.':'Ett sammanfattningskort för Förhållandena just nu lades till efter Bromarv just nu.','Yhteenveto näyttää sateen, puuskien voimakkuuden, kelikameroihin perustuvan jäätymisriskin ja meriolosuhteet.':'Sammanfattningen visar regn, vindbyarnas styrka, halkrisk baserad på väglagskameror och havsförhållanden.','Puuskat korostetaan varoituksena 12 m/s ja vaarana 20 m/s tasolta alkaen.':'Vindbyar markeras som varning från 12 m/s och som fara från 20 m/s.','Jäätymisriski arvioidaan tien lämpötilan ja tienpinnan tilan perusteella.':'Halkrisken bedöms utifrån vägtemperaturen och vägytans tillstånd.','Sää-, merisää- ja kelikameratietojen päivitysajat näkyvät yhteenvetokortissa.':'Uppdateringstiderna för väder, havsväder och väglagskameror visas i sammanfattningskortet.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Livekameroiden säätilanne palautettiin kartan kameramerkkien ponnahdusikkunoihin.':'Väderläget för livekamerorna återställdes i popupfönstren för kameramarkörerna på kartan.','Livekameran yhteydessä näkyvät jälleen sääikoni, lämpötila, tuulen voimakkuus ja tuulensuunta nuolella.':'Vid livekameran visas åter väderikon, temperatur, vindstyrka och vindriktning med en pil.','Livekameroiden paikalliset säätiedot haetaan MET Norway -palvelusta kameran koordinaateilla.':'De lokala väderuppgifterna för livekamerorna hämtas från MET Norway med kamerans koordinater.','Livekamerasää välimuistitetaan 30 minuutiksi turhien verkkopyyntöjen vähentämiseksi.':'Livekamerans väderuppgifter mellanlagras i 30 minuter för att minska onödiga nätverksförfrågningar.','Uudet suomen- ja ruotsinkieliset tekstit lisättiin ja tarkistettiin.':'De nya finsk- och svenskspråkiga texterna lades till och granskades.','Säätietoa ei saatavilla':'Väderuppgifter saknas','Bromarvin keskustasta':'från Bromarvs centrum','Seuraavat 8 tuntia -ennuste siirrettiin heti Bromarv nyt -kortin jälkeen.':'Prognosen för de kommande 8 timmarna flyttades direkt efter kortet Bromarv just nu.','Liikenteen kelikameroiden tuuli- ja tien lämpötilat luetaan Digitrafficin sensorimetatietojen avulla.':'Vind- och vägtemperaturerna för trafikens väglagskameror läses med hjälp av Digitraffics sensormetadata.','Kelikamerakortteihin lisättiin etäisyys Bromarvin keskustasta.':'Avståndet från Bromarvs centrum lades till på väglagskamerakorten.','Kelikameroiden järjestys säilyy sadetutkan jälkeen ennen veneilijän säätä.':'Väglagskamerorna visas fortfarande efter nederbördsradarn och före vädret för båtförare.','Ruotsinkieliset uudet tekstit lisättiin ja tarkistettiin.':'De nya svenskspråkiga texterna lades till och granskades.','Sivun rakenne alkaa nyt varmasti Bromarv nyt -tiedolla myös iPhonessa ja Safarissa.':'Sidans struktur börjar nu säkert med Bromarv just nu även på iPhone och i Safari.','Kartta ja sadetutka näkyvät ennen liikenteen kelikameroita.':'Kartan och nederbördsradarn visas före trafikens väglagskameror.','Liikenteen kelikamerat sijaitsevat sadetutkan jälkeen ennen veneilijän säätä.':'Trafikens väglagskameror finns efter nederbördsradarn och före vädret för båtförare.','Kelikamerakorteissa näytetään vain Sää nyt -tiedot: tienpinnan tila, tuuli, ilman lämpötila ja tien lämpötila.':'Väglagskamerakorten visar endast Vädret nu: vägytans tillstånd, vind, lufttemperatur och vägtemperatur.','Kelikamerakuvat eivät ole klikattavia; kartan violetit merkit avaavat Fintrafficin lisätiedot.':'Väglagskamerabilderna är inte klickbara; de violetta markörerna på kartan öppnar Fintraffics tilläggsinformation.','Ruotsinkielisen näkymän käyttöliittymä- ja säätekstit on tarkistettu.':'Gränssnitts- och vädertexterna i den svenskspråkiga vyn har granskats.','· Julkaisusarja':'· Utgivningsserie',
+    'Bromarvin paikallissää · julkaistu 14.8.2026':'Bromarvs lokala väder · publicerad 14.8.2026',
     'Tämä on Bromarvin paikallissään kaksikielinen vakaa julkaisuversio. Jokainen seuraava julkaisu saa uuden versionumeron, ja muutokset kirjataan erilliseen':'Detta är den stabila tvåspråkiga utgåvan av Bromarvs lokala väder. Varje ny utgåva får ett nytt versionsnummer och ändringarna dokumenteras i den separata',
     '-tiedostoon.':'-filen.',
-    'Päivitetty 5.8.2026 ·':'Uppdaterad 5.8.2026 ·',
+    'Päivitetty 14.8.2026 ·':'Uppdaterad 14.8.2026 ·',
     'Fintrafficin kelikamerat ja lähimpien tiesääasemien havainnot on lisätty 30 kilometrin alueelle.':'Fintraffics väglagskameror och observationer från närmaste vägväderstationer har lagts till inom 30 kilometer.','Kaikki dynaamiset sää-, UV-, siitepöly-, meri- ja virhetekstit on tarkistettu molemmilla kielillä.':'Alla dynamiska väder-, UV-, pollen-, havs- och felmeddelanden har granskats på båda språken.',
     'Kartan, tuntiennusteen ja pääsääkortin sääkuvaukset muodostuvat suoraan valitulla kielellä.':'Väderbeskrivningarna på kartan, i timprognosen och i huvudkortet skapas direkt på det valda språket.',
     'Livekameroiden nimet, kuvaukset ja toimintopainikkeet vaihtuvat valitun kielen mukaan.':'Livekamerornas namn, beskrivningar och funktionsknappar följer det valda språket.',
     'Siitepölymäärissä näkyvät numeroarvo, sanallinen arvio ja pisteasteikko.':'Pollenhalterna visas med ett talvärde, en verbal bedömning och en punktskala.',
-    'Päivitetty 5.8.2026':'Uppdaterad 5.8.2026',
+    'Päivitetty 14.8.2026':'Uppdaterad 14.8.2026',
     'Huurresumua':'Rimfrostsdimma','Heikkoa tihkusadetta':'Lätt duggregn','Voimakasta tihkusadetta':'Kraftigt duggregn','Heikkoa jäätävää tihkusadetta':'Lätt underkylt duggregn','Voimakasta jäätävää tihkusadetta':'Kraftigt underkylt duggregn',
     'Heikkoa sadetta':'Lätt regn','Kohtalaista sadetta':'Måttligt regn','Voimakasta sadetta':'Kraftigt regn','Heikkoa jäätävää sadetta':'Lätt underkylt regn','Voimakasta jäätävää sadetta':'Kraftigt underkylt regn',
     'Heikkoa lumisadetta':'Lätt snöfall','Kohtalaista lumisadetta':'Måttligt snöfall','Voimakasta lumisadetta':'Kraftigt snöfall','Lumijyväsiä':'Snökorn',
@@ -2495,10 +2493,10 @@ if (document.readyState === 'loading') {
       [/Viimeisen noin kuuden tunnin aikana paine nousee/g,'Under de senaste cirka sex timmarna har lufttrycket stigit'],[/Viimeisen noin kuuden tunnin aikana paine laskee/g,'Under de senaste cirka sex timmarna har lufttrycket sjunkit'],
       [/Erittäin matala paine\./g,'Mycket lågt lufttryck.'],[/Voimakas matalapaine voi tuoda sateita, puuskaista tuulta ja nopeasti vaihtelevaa säätä\./g,'Ett kraftigt lågtryck kan föra med sig regn, byig vind och snabbt växlande väder.'],
       [/Melko matala paine\./g,'Ganska lågt lufttryck.'],[/Epävakainen, pilvinen tai sateinen sää on tavallista todennäköisempi\./g,'Ostadigt, molnigt eller regnigt väder är mer sannolikt än vanligt.'],
-      [/Korkea paine\./g,'Högt lufttryck.'],[/Sää on usein vakaampaa, kuivempaa ja vähätuulisempaa, mikä on yleensä hyvä merkki heinänkorjuulle\./g,'Vädret är ofta stabilare, torrare och mindre blåsigt, vilket vanligen är gynnsamt för höskörd.'],
+      [/Korkea paine\./g,'Högt lufttryck.'],[/Sää on usein vakaampaa, kuivempaa ja vähätuulisempaa, mikä on yleensä hyvä merkki heinänteolle ja puinnille\./g,'Vädret är ofta stabilare, torrare och mindre blåsigt, vilket vanligen är gynnsamt för höskörd och tröskning.'],
       [/Erittäin korkea paine\./g,'Mycket högt lufttryck.'],[/Sää on yleensä vakaa ja kuiva, mutta kesällä paikalliset sadekuurot ovat silti mahdollisia\./g,'Vädret är vanligen stabilt och torrt, men lokala regnskurar är fortfarande möjliga på sommaren.'],
       [/Sateen riski on pieni/g,'Risken för regn är liten'],[/kuivumisolosuhteet näyttävät kohtuullisen hyviltä/g,'torkförhållandena ser förhållandevis goda ut'],[/seuraavien tuntien aikana/g,'under de kommande timmarna'],
-      [/Korkea ilmankosteus, lähellä oleva kastepiste tai runsas pilvisyys voi hidastaa heinän kuivumista, vaikka sadetta ei tulisi\./g,'Hög luftfuktighet, en daggpunkt nära lufttemperaturen eller kraftig molnighet kan bromsa höets torkning även om det inte regnar.'],
+      [/Korkea ilmankosteus, lähellä oleva kastepiste tai runsas pilvisyys voi hidastaa heinän kuivumista ja vaikeuttaa puintia, vaikka sadetta ei tulisi\./g,'Hög luftfuktighet, en daggpunkt nära lufttemperaturen eller kraftig molnighet kan bromsa höets torkning och försvåra tröskningen även om det inte regnar.'],
       [/Puuskat voivat ylittää 12 m\/s\./g,'Vindbyarna kan överstiga 12 m/s.'],
       [/Malliennusteen perusteella lähimeren aallokko ja tuuli ovat pienveneilylle melko rauhallisia\./g,'Enligt modellprognosen är vågorna och vinden på närliggande havsområde relativt lugna för småbåtar.'],
       [/Bromarvin sää päivitetty klo/g,'Vädret i Bromarv uppdaterat kl.'],[/kartalla sadetutka ja livekamerat/g,'nederbördsradar och livekameror på kartan'],

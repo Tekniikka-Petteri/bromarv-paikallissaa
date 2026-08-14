@@ -1,5 +1,14 @@
 # Muutosloki
 
+## Versio 51 – 14.8.2026
+- Heinänkorjuuarvio nimetty uudelleen: **Heinänteko- ja puintisää**.
+- Ruotsinkielinen nimi: **Höskörds- och tröskväder**.
+- Kausikortin näkyvyys laajennettu kesäkuusta elokuun loppuun.
+- Kortti piilotetaan automaattisesti syyskuusta toukokuuhun.
+- Kuivumis- ja painekuvauksia päivitetty huomioimaan sekä heinänteko että puinti.
+- Muut ominaisuudet säilytetty ennallaan.
+- JavaScriptin syntaksi tarkistettu.
+
 ## Versio 50 – 13.8.2026
 - UV-indeksi erotettu varsinaisesta MET Norway -säähausta.
 - UV haetaan kevyellä Open-Meteo Forecast API -pyynnöllä.
