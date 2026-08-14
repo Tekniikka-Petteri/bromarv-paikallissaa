@@ -1,5 +1,13 @@
 # Muutosloki
 
+## Versio 52 – 14.8.2026
+- Liikenteen kelikamerat järjestetään automaattisesti etäisyyden mukaan Bromarvin keskustasta.
+- Lähin kelikamera näkyy aina ensimmäisenä.
+- Kauimpana oleva kelikamera näkyy viimeisenä.
+- Järjestys perustuu jo kortissa käytettävään laskettuun etäisyyteen Bromarvin keskipisteestä.
+- Muut ominaisuudet säilytetty ennallaan.
+- JavaScriptin syntaksi tarkistettu.
+
 ## Versio 51 – 14.8.2026
 - Heinänkorjuuarvio nimetty uudelleen: **Heinänteko- ja puintisää**.
 - Ruotsinkielinen nimi: **Höskörds- och tröskväder**.
