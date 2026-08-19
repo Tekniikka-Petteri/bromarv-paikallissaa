@@ -1,3 +1,12 @@
+# Versio 53 – korjattu vakaa julkaisu
+
+- Korjattu vakava julkaisuvirhe, jossa Bromarvin peikkokuva jäi näkymättä, jos `assets`-kansiota ei ollut julkaistu.
+- Peikkokuva on nyt upotettu suoraan `index.html`-tiedostoon WebP-muodossa.
+- `index.html` toimii peikkokuvan osalta itsenäisenä tiedostona myös GitHub Pagesissa.
+- Peikkokuvan ulkoiset PNG/WebP-tiedostot jätettiin pakettiin varmuuskopioiksi, mutta sivu ei enää tarvitse niitä kuvan näyttämiseen.
+- Muut version 53 sää-, kartta-, kamera-, UV-, merisää- ja siitepölytoiminnot säilytettiin.
+- JavaScriptin syntaksi tarkistettu uudelleen.
+
 # Muutosloki
 
 ## Versio 53 – 19.8.2026
