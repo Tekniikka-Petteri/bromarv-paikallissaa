@@ -1,21 +1,16 @@
-# Bromarvin paikallissää – versio 52
+# Bromarvin paikallissää v53
 
-## GitHub Pages -julkaisu
+Mobiilioptimoitu Bromarvin paikallissääsivu.
 
-1. Pura ZIP-paketti.
-2. Korvaa repositorion juuressa olevat vanhat tiedostot kaikilla tämän paketin tiedostoilla.
-3. Varmista, että pääsivun nimi on `index.html`.
-4. GitHub Pages: Deploy from a branch → `main` → `/ (root)`.
-5. Tee julkaisun jälkeen selaimessa pakotettu päivitys.
+## Version 53 pääidea
+- Uusi satama-aiheinen Bromarv nyt -yläosa
+- Bromarvin peikot mukana sivun visuaalisessa ilmeessä
+- Sääikoni erillisessä kapselissa, jotta se näkyy paremmin taustakuvan päällä
+- Muut sää-, kelikamera-, merisää- ja siitepölytoiminnot säilytetty version 52 pohjalta
 
-## Paketin tiedostot
-
-- index.html
-- site.webmanifest
-- favicon.svg
-- social-preview.png
-- robots.txt
-- sitemap.xml
-- README.md
-- CHANGELOG.md
-- JULKAISUT.md
+## Tiedostot
+- `index.html` – pääsivu
+- `assets/bromarv_satama_peikot.png` – uuden yläosan kuvitus
+- `social-preview.png` – some-esikatselukuva
+- `CHANGELOG.md` – muutosloki
+- `JULKAISUT.md` – julkaisutiedot
