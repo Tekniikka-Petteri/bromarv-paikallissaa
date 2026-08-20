@@ -1,13 +1,16 @@
-# Bromarvin paikallissää – versio 53
+# Bromarvin paikallissää v54
 
-Mobiilioptimoitu kaksikielinen paikallissääsivu Bromarviin.
+Tämä paketti sisältää vakaan version 54 Bromarvin paikallissää -sivusta.
 
-## Version 53 uutta
-- Uusi Bromarvin satama- ja peikkokuvitus Bromarv nyt -kortissa.
-- Mille ja Nille näkyvät pysyvänä paikallisena elementtinä.
-- Sääikoni omassa läpikuultavassa kapselissa.
-- Mobiilin yläosan luettavuus ja skaalaus parannettu.
-- Kuva mukana paikallisina PNG- ja WebP-tiedostoina `assets/`-kansiossa.
-- Version 52 toimivat sää- ja kameratoiminnot säilytetty.
+## Sisältö
+- `index.html`
+- `social-preview.png`
+- `assets/bromarv_peikot_day_v54.png`
+- `assets/bromarv_peikot_night_v54.png`
+- `CHANGELOG.md`
+- `JULKAISUT.md`
 
-Avaa `index.html` tai julkaise kaikki paketin tiedostot GitHub Pages -repositoryn juureen.
+## Tärkeimmät korjaukset v54
+- Saderiski seuraavien 8 tunnin ennusteessa korjattu.
+- Päivä- ja yökuva vaihtuvat automaattisesti.
+- Yökuvassa peikoilla on yömyssyt.
