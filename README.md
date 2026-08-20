@@ -1,16 +1,11 @@
-# Bromarvin paikallissää v54
+# Bromarvin paikallissää – versio 54
 
-Tämä paketti sisältää vakaan version 54 Bromarvin paikallissää -sivusta.
+Täydellinen GitHub Pages -julkaisupaketti.
 
-## Sisältö
-- `index.html`
-- `social-preview.png`
-- `assets/bromarv_peikot_day_v54.png`
-- `assets/bromarv_peikot_night_v54.png`
-- `CHANGELOG.md`
-- `JULKAISUT.md`
-
-## Tärkeimmät korjaukset v54
-- Saderiski seuraavien 8 tunnin ennusteessa korjattu.
+## V54
+- Bromarv nyt -otsikko, lämpötila, sääteksti ja sääikoni ovat kuvan päällä.
 - Päivä- ja yökuva vaihtuvat automaattisesti.
-- Yökuvassa peikoilla on yömyssyt.
+- Yökuvassa Millellä ja Nillellä on yömyssyt.
+- MILLE- ja NILLE-nimilaatat on huomioitu kuvan rajauksessa.
+- Seuraavat 8 tuntia -ennusteen saderiski on korjattu.
+- Livekamerat, kelikamerat, sadetutka, merisää, UV, siitepöly ja muut aiemmat ominaisuudet säilyvät.

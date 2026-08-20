@@ -1,8 +1,11 @@
-BROMARVIN PAIKALLISSÄÄ – VERSION 42 JULKAISU
+BROMARVIN PAIKALLISSÄÄ – V54 JULKAISUOHJE
 
-1. Pura ZIP-paketti.
-2. Avaa GitHub-repository tekniikka-petteri/bromarv-paikallissaa.
-3. Säilytä Googlen vahvistustiedosto google....html.
-4. Lataa kaikki tämän paketin tiedostot repositoryn juureen ja ylikirjoita samannimiset vanhat tiedostot.
-5. Commit-viesti: Julkaisu 42 – perusteellinen kielitarkastus
-6. Odota 2–5 minuuttia ja avaa sivu uudelleen.
+Tämä ZIP on tehty GitHub-repositoryn juureen ladattavaksi.
+1. Pura ZIP.
+2. Avaa bromarv-paikallissaa repository.
+3. Add file -> Upload files.
+4. Lataa KAIKKI paketin tiedostot ja assets-kansio repositoryn JUUREEN.
+5. index.html ja assets-kansio pitää olla samalla juuritasolla.
+6. Commit changes.
+
+Älä tee ylimääräistä versionimikansiota repositoryn sisään.
