@@ -1,6 +1,5 @@
 # JULKAISUT
 
-## Versio 55 – 21.8.2026
-**Tila:** tuotantoversio
+## Bromarvin paikallissää v56
 
-Päämuutos: Bromarvin paikallinen saderiski yhdistää sääennusteen, kelikameroiden tienpinnan, etäisyyden ja tuulen tulosuunnan.
+Vakaa tuotantoversio 21.8.2026. Katso CHANGELOG.md.

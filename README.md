@@ -1,3 +1,7 @@
+# Bromarvin paikallissää v56
+
+Täydellinen GitHub Pages -julkaisupaketti. Pura ZIP ja lataa kaikki tiedostot repositoryn juureen. `assets`-kansio on ladattava kansiorakenne säilyttäen.
+
 # Bromarvin paikallissää v55
 
 Täydellinen GitHub Pages -julkaisupaketti.
