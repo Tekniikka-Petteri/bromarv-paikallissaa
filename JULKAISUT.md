@@ -1,13 +1,7 @@
 # JULKAISUT
 
-## Versio 54 – 20.8.2026
-**Tila:** vakaa täydellinen GitHub Pages -julkaisupaketti
-
-Sisältää automaattisen päivä-/yökuvan, yömyssypeikot, korjatun saderiskin, korjatun hero-kortin asettelun ja kaikki julkaisu-/SEO-aputiedostot.
-
-
-## v54 testattu korjaus
-- Päiväpeikkokuva vaihdettu puhtaaseen versioon.
-- Yöpeikkokuva vaihdettu puhtaaseen versioon ilman valmiiksi leivottuja säätietoja.
-- Hero-kuvan rajaus säädetty niin, että Mille- ja Nille-nimikyltit näkyvät paremmin.
-- Paketissa mukana myös assets-kansio, jotta peikkokuvat näkyvät GitHub Pagesissa sekä paikallisesti.
+## Bromarvin paikallissää v54 – korjattu julkaisu 21.8.2026
+- Siitepöly: seuraavan 24 tunnin korkein malliennuste lajikohtaisesti.
+- Veneilijän sää: näkyvyys km + laatuluokitus.
+- Paine-ennuste 6 h korjattu.
+- Päivä/yö-peikot ja saderiskikorjaus säilytetty.

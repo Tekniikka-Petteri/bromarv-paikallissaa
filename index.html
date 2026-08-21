@@ -827,6 +827,7 @@ main > * { order:initial !important; width:100%; min-width:0; }
 <div class="marine-metric"><small>Meriveden lämpötila</small><strong id="marineSeaTemp">--</strong></div>
 <div class="marine-metric"><small>Tuuli</small><strong id="marineWind">--</strong></div>
 <div class="marine-metric"><small>Puuskat</small><strong id="marineGust">--</strong></div>
+<div class="marine-metric"><small>Näkyvyys</small><strong id="marineVisibility">--</strong></div>
 <div class="marine-metric"><small>Pintavirtaus</small><strong id="marineCurrent">--</strong></div>
 <div class="marine-metric"><small>Meridatan aika</small><strong id="marineTime">--</strong></div>
 </div>
@@ -928,6 +929,9 @@ main > * { order:initial !important; width:100%; min-width:0; }
 <li>Seuraavat 8 tuntia -ennusteen saderiski ei enää jää 0 %:iin silloin, kun tuntiennusteessa näkyy sadetta.</li>
 <li>Päivä- ja yökuvat toimitetaan sivun mukana paikallisina PNG-tiedostoina, jotta ne toimivat vakaasti myös GitHub Pagesissa.</li>
 <li>Version 52 sää-, kartta-, sadetutka-, kelikamera-, merisää-, UV- ja siitepölytoiminnot säilytettiin.</li>
+<li>Siitepölyennuste näyttää nyt suurimman ennustetun pitoisuuden seuraavan 24 tunnin aikana yksittäisen iltatunnin sijasta.</li>
+<li>Veneilijän säähän lisättiin näkyvyys kilometreinä ja näkyvyyden laatuluokitus.</li>
+<li>Paineen 6 tunnin tieto näyttää nyt ennustetun muutoksen seuraavalle 6 tunnille.</li>
 </ul>
 <div class="release-note">Säätiedot ovat ennusteita ja mallilaskelmia. Tarkista turvallisuuteen liittyvät tiedot aina myös virallisista lähteistä.</div>
 </section><footer aria-label="Sivuston versiotieto" class="version-footer" id="versionFooter">
@@ -949,7 +953,7 @@ let uvData = null;
 const UV_CACHE_KEY = 'bromarv-uv-v50';
 const UV_CACHE_MAX_AGE = 60 * 60 * 1000;
 
-const AIR_CACHE_KEY = 'bromarv-air-pollen-v33';
+const AIR_CACHE_KEY = 'bromarv-air-pollen-v54-24h';
 const AIR_CACHE_MAX_AGE = 3 * 60 * 60 * 1000;
 const LANGUAGE_STORAGE_KEY = 'bromarv-language-v37';
 function currentLanguage() { return localStorage.getItem(LANGUAGE_STORAGE_KEY) === 'fi' ? 'fi' : 'sv'; }
@@ -1385,6 +1389,8 @@ function renderMarine() {
   document.getElementById('marineSeaTemp').textContent = Number.isFinite(seaTemp) ? `${seaTemp.toFixed(1)} °C` : 'Ei saatavilla';
   document.getElementById('marineWind').textContent = Number.isFinite(windKn) ? `${windKn.toFixed(1)} kn · ${wind.toFixed(1)} m/s` : '--';
   document.getElementById('marineGust').textContent = Number.isFinite(gustKn) ? `${gustKn.toFixed(1)} kn · ${gust.toFixed(1)} m/s` : '--';
+  const visibilityKm = currentVisibilityReading();
+  document.getElementById('marineVisibility').textContent = visibilityText(visibilityKm);
   document.getElementById('marineCurrent').textContent = Number.isFinite(currentSpeed) ? `${currentSpeed.toFixed(1)} kn ${compassName(currentDir)} →` : 'Ei saatavilla';
   const dataTime = marineData.current?.time || marineData.hourly?.time?.[0];
   document.getElementById('marineTime').textContent = dataTime ? new Date(dataTime).toLocaleTimeString('fi-FI',{hour:'2-digit',minute:'2-digit'}) : '--';
@@ -1393,14 +1399,14 @@ function renderMarine() {
   let level = 'good';
   let status = 'Rauhalliset olosuhteet';
   let text = 'Malliennusteen perusteella lähimeren aallokko ja tuuli ovat pienveneilylle melko rauhallisia.';
-  if (innerThunder || (Number.isFinite(gust) && gust >= 15) || (Number.isFinite(wave) && wave >= 1.5)) {
+  if (innerThunder || (Number.isFinite(visibilityKm) && visibilityKm < 1) || (Number.isFinite(gust) && gust >= 15) || (Number.isFinite(wave) && wave >= 1.5)) {
     level = 'danger';
     status = 'Haastavat olosuhteet';
-    text = innerThunder ? 'Lähialueella on ukkosriskiä. Vältä vesille lähtöä ja seuraa tutkakuvaa.' : 'Voimakkaat puuskat tai korkea lähimeren aallokko voivat tehdä pienveneilyolosuhteista haastavat.';
-  } else if ((Number.isFinite(gust) && gust >= 10) || (Number.isFinite(wind) && wind >= 7) || (Number.isFinite(wave) && wave >= 0.8)) {
+    text = innerThunder ? 'Lähialueella on ukkosriskiä. Vältä vesille lähtöä ja seuraa tutkakuvaa.' : (Number.isFinite(visibilityKm) && visibilityKm < 1 ? 'Näkyvyys on erittäin heikko. Huomioi sumu tai muu näkyvyyttä rajoittava sää ja vältä tarpeetonta vesille lähtöä.' : 'Voimakkaat puuskat tai korkea lähimeren aallokko voivat tehdä pienveneilyolosuhteista haastavat.');
+  } else if ((Number.isFinite(visibilityKm) && visibilityKm < 5) || (Number.isFinite(gust) && gust >= 10) || (Number.isFinite(wind) && wind >= 7) || (Number.isFinite(wave) && wave >= 0.8)) {
     level = 'caution';
     status = 'Huomioi tuuli ja aallokko';
-    text = 'Olosuhteissa on pienveneellä huomioitavaa. Tarkista tuulen suunta, puuskat ja oma reitti ennen lähtöä.';
+    text = Number.isFinite(visibilityKm) && visibilityKm < 5 ? 'Näkyvyys on heikentynyt. Huomioi muu liikenne, väylämerkinnät ja oma nopeus ennen lähtöä.' : 'Olosuhteissa on pienveneellä huomioitavaa. Tarkista tuulen suunta, puuskat ja oma reitti ennen lähtöä.';
   }
   const light = document.getElementById('marineLight');
   light.className = `marine-light ${level}`;
@@ -1853,16 +1859,17 @@ function pollenNumber(value) {
 
 function pollenValue(value) {
   const n = pollenNumber(value);
-  return Number.isFinite(n) ? `${n.toFixed(n < 10 ? 1 : 0)} /m³` : 'Ei saatavilla';
+  return Number.isFinite(n) ? `${n.toFixed(n < 10 ? 1 : 0)} /m³` : (currentLanguage() === 'sv' ? 'Inte tillgänglig' : 'Ei saatavilla');
 }
 
 function pollenCategory(value) {
   const n = pollenNumber(value);
-  if (!Number.isFinite(n)) return { label:'Ei saatavilla', cls:'none', dots:0 };
-  if (n <= 0.1) return { label:'Ei juuri lainkaan', cls:'none', dots:0 };
-  if (n < 10) return { label:'Vähän', cls:'low', dots:1 };
-  if (n < 50) return { label:'Kohtalaisesti', cls:'moderate', dots:2 };
-  return { label:'Runsaasti', cls:'high', dots:3 };
+  const sv = currentLanguage() === 'sv';
+  if (!Number.isFinite(n)) return { label:sv ? 'Inte tillgänglig' : 'Ei saatavilla', cls:'none', dots:0 };
+  if (n <= 0.1) return { label:sv ? 'Nästan inget' : 'Ei juuri lainkaan', cls:'none', dots:0 };
+  if (n < 10) return { label:sv ? 'Lite' : 'Vähän', cls:'low', dots:1 };
+  if (n < 50) return { label:sv ? 'Måttligt' : 'Kohtalaisesti', cls:'moderate', dots:2 };
+  return { label:sv ? 'Mycket' : 'Runsaasti', cls:'high', dots:3 };
 }
 
 function pollenReading(value) {
@@ -1878,15 +1885,29 @@ function pollenLevel(maxValue) {
   return { text: 'Siitepölypitoisuus on korkea. Allergisten kannattaa varautua oireisiin ja pitää lääkitys saatavilla lääkärin tai apteekin ohjeen mukaan.', cls: 'high' };
 }
 
+function pollenNext24hMax(hourly, key) {
+  const times = hourly?.time || [];
+  const values = hourly?.[key] || [];
+  const now = Date.now();
+  const end = now + 24 * 60 * 60 * 1000;
+  const selected = [];
+  for (let i = 0; i < times.length; i++) {
+    const t = new Date(times[i]).getTime();
+    const v = pollenNumber(values[i]);
+    if (Number.isFinite(t) && t >= now - 30 * 60 * 1000 && t <= end && Number.isFinite(v)) selected.push(v);
+  }
+  return selected.length ? Math.max(...selected) : NaN;
+}
+
 function renderAirQuality() {
-  if (!airQualityData?.current) return;
-  const c = airQualityData.current;
+  if (!airQualityData?.hourly) return;
+  const h = airQualityData.hourly;
   const values = {
-    birch: pollenNumber(c.birch_pollen),
-    alder: pollenNumber(c.alder_pollen),
-    grass: pollenNumber(c.grass_pollen),
-    mugwort: pollenNumber(c.mugwort_pollen),
-    ragweed: pollenNumber(c.ragweed_pollen)
+    birch: pollenNext24hMax(h, 'birch_pollen'),
+    alder: pollenNext24hMax(h, 'alder_pollen'),
+    grass: pollenNext24hMax(h, 'grass_pollen'),
+    mugwort: pollenNext24hMax(h, 'mugwort_pollen'),
+    ragweed: pollenNext24hMax(h, 'ragweed_pollen')
   };
   for (const [id,key] of [['pollenBirch','birch'],['pollenAlder','alder'],['pollenGrass','grass'],['pollenMugwort','mugwort'],['pollenRagweed','ragweed']]) {
     const el = document.getElementById(id);
@@ -1898,9 +1919,13 @@ function renderAirQuality() {
   const level = pollenLevel(max);
   const summary = document.getElementById('pollenSummary');
   summary.className = `pollen-summary ${level.cls}`.trim();
-  summary.textContent = finite.length ? level.text : 'Siitepölytietoja ei ole tällä hetkellä saatavilla.';
-  const stamp = c.time ? new Date(c.time).toLocaleTimeString('fi-FI', { hour:'2-digit', minute:'2-digit' }) : '';
-  document.getElementById('pollenUpdated').textContent = stamp ? `Malliennuste päivitetty klo ${stamp}` : 'Malliennuste Bromarvin alueelle';
+  const sv = currentLanguage() === 'sv';
+  if (!finite.length) summary.textContent = sv ? 'Pollenprognosen är inte tillgänglig just nu.' : 'Siitepölytietoja ei ole tällä hetkellä saatavilla.';
+  else if (max <= 0.1) summary.textContent = sv ? 'Nästan inget pollen väntas under de kommande 24 timmarna.' : 'Siitepölyä ei juuri ennusteta seuraavan 24 tunnin aikana.';
+  else if (max < 10) summary.textContent = sv ? 'En liten mängd pollen väntas under de kommande 24 timmarna.' : 'Siitepölyä ennustetaan vähän seuraavan 24 tunnin aikana.';
+  else if (max < 50) summary.textContent = sv ? 'Pollenhalten väntas vara måttlig under de kommande 24 timmarna.' : 'Siitepölypitoisuuden ennustetaan olevan kohtalainen seuraavan 24 tunnin aikana.';
+  else summary.textContent = sv ? 'Pollenhalten väntas vara hög under de kommande 24 timmarna.' : 'Siitepölypitoisuuden ennustetaan olevan korkea seuraavan 24 tunnin aikana.';
+  document.getElementById('pollenUpdated').textContent = sv ? 'Modellprognos · högsta halt under de kommande 24 h' : 'Malliennuste · suurin pitoisuus seuraavan 24 h aikana';
   if (allWeather.length) renderCenter();
 }
 
@@ -1928,6 +1953,32 @@ function currentUvReading() {
   return { current, max, time };
 }
 
+function currentVisibilityReading() {
+  const times = uvData?.hourly?.time || [];
+  const values = uvData?.hourly?.visibility || [];
+  if (!times.length || !values.length) return NaN;
+  const now = Date.now();
+  let bestIndex = -1;
+  let bestDiff = Infinity;
+  for (let i = 0; i < times.length; i++) {
+    const t = new Date(times[i]).getTime();
+    const diff = Math.abs(t - now);
+    if (diff < bestDiff) { bestDiff = diff; bestIndex = i; }
+  }
+  const meters = bestIndex >= 0 ? Number(values[bestIndex]) : NaN;
+  return Number.isFinite(meters) ? meters / 1000 : NaN;
+}
+
+function visibilityText(km) {
+  if (!Number.isFinite(km)) return currentLanguage() === 'sv' ? 'Inte tillgänglig' : 'Ei saatavilla';
+  const shown = km >= 10 ? Math.round(km) : km.toFixed(1);
+  let qualFi = 'hyvä', qualSv = 'god';
+  if (km < 1) { qualFi = 'erittäin heikko'; qualSv = 'mycket dålig'; }
+  else if (km < 5) { qualFi = 'heikko'; qualSv = 'dålig'; }
+  else if (km < 10) { qualFi = 'kohtalainen'; qualSv = 'måttlig'; }
+  return `${shown} km · ${currentLanguage() === 'sv' ? qualSv : qualFi}`;
+}
+
 async function fetchUvIndex() {
   const cached = loadCache(UV_CACHE_KEY);
   if (cached && Date.now() - cached.savedAt < UV_CACHE_MAX_AGE) {
@@ -1938,7 +1989,7 @@ async function fetchUvIndex() {
   const params = new URLSearchParams({
     latitude: CENTER.lat.toFixed(5),
     longitude: CENTER.lon.toFixed(5),
-    hourly: 'uv_index',
+    hourly: 'uv_index,visibility',
     daily: 'uv_index_max',
     forecast_days: '1',
     timezone: 'Europe/Helsinki'
@@ -1955,10 +2006,12 @@ async function fetchUvIndex() {
     uvData = await response.json();
     saveCache(UV_CACHE_KEY, uvData);
     if (allWeather.length) renderCenter();
+    if (marineData) renderMarine();
   } catch (err) {
     console.warn('UV-indeksin erillinen haku epäonnistui.', err);
     if (!uvData && cached) uvData = cached.value;
     if (allWeather.length) renderCenter();
+    if (marineData) renderMarine();
   }
 }
 
@@ -1969,7 +2022,7 @@ async function fetchAirQuality() {
     renderAirQuality();
   }
   const vars = 'alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,ragweed_pollen';
-  const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${CENTER.lat.toFixed(4)}&longitude=${CENTER.lon.toFixed(4)}&current=${vars}&timezone=Europe%2FHelsinki`;
+  const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${CENTER.lat.toFixed(4)}&longitude=${CENTER.lon.toFixed(4)}&hourly=${vars}&forecast_days=2&timezone=Europe%2FHelsinki`;
   try {
     const response = await fetch(url, { cache:'no-cache' });
     if (!response.ok) throw new Error(`Siitepölypalvelin vastasi virheellä ${response.status}`);
@@ -2006,16 +2059,12 @@ function pressureMeaning(hPa) {
 }
 
 function pressureTrend(hourly, currentIndex, currentPressure) {
-  // MET Norway Locationforecast sisältää nykyhetken ja tulevat tunnit, ei luotettavaa 6 h historiaa.
-  // Lasketaan siksi aidosti saatavilla olevasta datasta paineen ennustettu muutos seuraavalle 6 tunnille.
   const arr = hourly.pressure_msl || [];
   const times = hourly.time || [];
   if (!Number.isFinite(currentPressure) || !arr.length) return { label: '--', explain: '' };
-
   const startIndex = Math.max(0, Math.min(currentIndex, arr.length - 1));
   const startTime = times[startIndex] ? new Date(times[startIndex]).getTime() : NaN;
   let targetIndex = Math.min(startIndex + 6, arr.length - 1);
-
   if (Number.isFinite(startTime)) {
     const targetTime = startTime + 6 * 60 * 60 * 1000;
     for (let i = startIndex + 1; i < times.length; i++) {
@@ -2023,17 +2072,14 @@ function pressureTrend(hourly, currentIndex, currentPressure) {
       if (Number.isFinite(t) && t >= targetTime) { targetIndex = i; break; }
     }
   }
-
   const future = Number(arr[targetIndex]);
   if (!Number.isFinite(future)) return { label: '--', explain: '' };
-
   const diff = future - currentPressure;
   let word = 'vakaa';
   if (diff <= -4) word = 'laskee nopeasti';
   else if (diff <= -1.5) word = 'laskee';
   else if (diff >= 4) word = 'nousee nopeasti';
   else if (diff >= 1.5) word = 'nousee';
-
   return {
     label: `${diff >= 0 ? '+' : ''}${diff.toFixed(1)} hPa · ${word}`,
     explain: `Seuraavan noin kuuden tunnin ennusteessa ilmanpaine ${word === 'vakaa' ? 'pysyy melko vakaana' : word} (${diff >= 0 ? '+' : ''}${diff.toFixed(1)} hPa).`
@@ -2477,10 +2523,10 @@ if (document.readyState === 'loading') {
     'Päivitä':'Uppdatera','Haetaan Bromarvin säätietoja…':'Hämtar väderdata för Bromarv…',
     'Sadetutka päälle':'Slå på nederbördsradarn','Sadetutka pois':'Stäng av nederbördsradarn','▶ Toista':'▶ Spela','⏸ Pysäytä':'⏸ Pausa','Tutka pois päältä':'Radarn är avstängd',
     'Heikko':'Svag','Voimakas':'Kraftig','Bromarv nyt':'Bromarv just nu','Haetaan säätä…':'Hämtar väder…',
-    'Tuuli':'Vind','Puuskat':'Vindbyar','Sade nyt':'Nederbörd nu','Saderiski 1 h':'Regnrisk 1 h','Auringonnousu':'Soluppgång','Auringonlasku':'Solnedgång','Päivän pituus':'Dagens längd','Ilmankosteus':'Luftfuktighet','Kastepiste':'Daggpunkt','Ilmanpaine':'Lufttryck','Paine-ennuste 6 h':'Tryckprognos 6 h','Lumen syvyys':'Snödjup','UV-indeksi':'UV-index','UV-indeksi nyt':'UV-index nu','Päivän maksimi --':'Dagens maximum --',
+    'Tuuli':'Vind','Puuskat':'Vindbyar','Sade nyt':'Nederbörd nu','Saderiski 1 h':'Regnrisk 1 h','Auringonnousu':'Soluppgång','Auringonlasku':'Solnedgång','Päivän pituus':'Dagens längd','Ilmankosteus':'Luftfuktighet','Kastepiste':'Daggpunkt','Ilmanpaine':'Lufttryck','Paine-ennuste 6 h':'Tryckförändring 6 h','Lumen syvyys':'Snödjup','UV-indeksi':'UV-index','UV-indeksi nyt':'UV-index nu','Päivän maksimi --':'Dagens maximum --',
     'Ilmanpaine:':'Lufttryck:','Haetaan tietoa…':'Hämtar information…','Maastopalovaroitus':'Varning för terrängbrand','Tarkista virallinen varoituskartta':'Kontrollera den officiella varningskartan',
     'Seuraavat 8 tuntia Bromarvissa':'De kommande 8 timmarna i Bromarv','Ladataan…':'Laddar…','Veneilijän sää':'Väder för båtförare','Haetaan merisäätä…':'Hämtar havsväder…','Lasketaan lähimeren aallokko- ja tuuliolosuhteita.':'Beräknar våg- och vindförhållanden på närliggande havsområde.',
-    'Aallonkorkeus':'Våghöjd','Aallon suunta':'Vågriktning','Aallon jakso':'Vågperiod','Meriveden lämpötila':'Havsvattnets temperatur','Pintavirtaus':'Ytström','Meridatan aika':'Tid för havsdata',
+    'Aallonkorkeus':'Våghöjd','Näkyvyys':'Sikt','Aallon suunta':'Vågriktning','Aallon jakso':'Vågperiod','Meriveden lämpötila':'Havsvattnets temperatur','Pintavirtaus':'Ytström','Meridatan aika':'Tid för havsdata',
     'Heinänteko- ja puintisää':'Höskörds- och tröskväder','Lasketaan…':'Beräknar…','Analysoidaan seuraavien tuntien sadetta ja tuulta.':'Analyserar regn och vind under de kommande timmarna.',
     'Kuun vaihe':'Månfas','Kuun valaistus ja ikä.':'Månens belysning och ålder.','Seuraava täysikuu':'Nästa fullmåne','Seuraava uusikuu':'Nästa nymåne',
     'Siitepöly Bromarvissa':'Pollen i Bromarv','Haetaan siitepölyennustetta…':'Hämtar pollenprognos…','Koivu':'Björk','Leppä':'Al','Heinä':'Gräs','Pujo':'Gråbo','Tuoksukki':'Ambrosia','Odotetaan tietoja…':'Väntar på data…','Arvion asteikko':'Bedömningsskala','Vähän':'Lågt','Kohtalaisesti':'Måttligt','Runsaasti':'Högt','Ei juuri lainkaan':'Nästan inget',
