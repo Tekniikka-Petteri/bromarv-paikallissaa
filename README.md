@@ -1,12 +1,8 @@
-# Bromarvin paikallissää v54
+# Bromarvin paikallissää v55
 
 Täydellinen GitHub Pages -julkaisupaketti.
 
-Paketissa ovat kaikki sivuston tiedostot, myös `assets`-kansio päivä- ja yöpeikkokuvineen.
+## Uutta v55
+Paikallinen 1 tunnin saderiski käyttää sääennustetta ja enintään kuuden lähimmän kelikameran havaintoja. Kameran etäisyys, tienpinnan kosteus sekä sijainti tuulen tulosuuntaan nähden vaikuttavat painotukseen. Peräkkäiset kelikamerapäivitykset mahdollistavat myös kuivasta kosteaksi/märäksi muuttumisen havaitsemisen.
 
-## Tämän korjatun v54-version muutokset
-- siitepölyennuste seuraavan 24 h korkeimman pitoisuuden perusteella
-- näkyvyys Veneilijän sää -kortissa
-- korjattu 6 h paine-ennuste
-- aiempi 8 tunnin saderiskikorjaus
-- automaattinen päivä/yö-peikkokuva
+Sadetutka on edelleen käyttäjälle visuaalinen lisävarmistus eikä sitä tulkita automaattisesti prosenttilaskennassa.
