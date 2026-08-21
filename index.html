@@ -765,7 +765,7 @@ main > * { order:initial !important; width:100%; min-width:0; }
 <div class="metric"><small>Ilmankosteus</small><strong id="mainHumidity">--</strong></div>
 <div class="metric"><small>Kastepiste</small><strong id="mainDewPoint">--</strong></div>
 <div class="metric"><small>Ilmanpaine</small><strong id="mainPressure">--</strong></div>
-<div class="metric"><small>Paineen muutos 6 h</small><strong id="mainPressureTrend">--</strong></div>
+<div class="metric"><small>Paine-ennuste 6 h</small><strong id="mainPressureTrend">--</strong></div>
 <div class="metric optional" id="snowMetric"><small>Lumen syvyys</small><strong id="mainSnowDepth">--</strong></div>
 <div class="metric uv" id="uvMetric"><small>UV-indeksi nyt</small><strong id="mainUv">--</strong><span class="uv-max" id="mainUvMax">Päivän maksimi --</span></div>
 <div class="pressure-explain" id="pressureExplain"><strong>Ilmanpaine:</strong> Haetaan tietoa…</div>
@@ -2006,19 +2006,37 @@ function pressureMeaning(hPa) {
 }
 
 function pressureTrend(hourly, currentIndex, currentPressure) {
+  // MET Norway Locationforecast sisältää nykyhetken ja tulevat tunnit, ei luotettavaa 6 h historiaa.
+  // Lasketaan siksi aidosti saatavilla olevasta datasta paineen ennustettu muutos seuraavalle 6 tunnille.
   const arr = hourly.pressure_msl || [];
-  const pastIndex = Math.max(0, currentIndex - 6);
-  const past = Number(arr[pastIndex]);
-  if (!Number.isFinite(currentPressure) || !Number.isFinite(past)) return { label: '--', explain: '' };
-  const diff = currentPressure - past;
+  const times = hourly.time || [];
+  if (!Number.isFinite(currentPressure) || !arr.length) return { label: '--', explain: '' };
+
+  const startIndex = Math.max(0, Math.min(currentIndex, arr.length - 1));
+  const startTime = times[startIndex] ? new Date(times[startIndex]).getTime() : NaN;
+  let targetIndex = Math.min(startIndex + 6, arr.length - 1);
+
+  if (Number.isFinite(startTime)) {
+    const targetTime = startTime + 6 * 60 * 60 * 1000;
+    for (let i = startIndex + 1; i < times.length; i++) {
+      const t = new Date(times[i]).getTime();
+      if (Number.isFinite(t) && t >= targetTime) { targetIndex = i; break; }
+    }
+  }
+
+  const future = Number(arr[targetIndex]);
+  if (!Number.isFinite(future)) return { label: '--', explain: '' };
+
+  const diff = future - currentPressure;
   let word = 'vakaa';
   if (diff <= -4) word = 'laskee nopeasti';
   else if (diff <= -1.5) word = 'laskee';
   else if (diff >= 4) word = 'nousee nopeasti';
   else if (diff >= 1.5) word = 'nousee';
+
   return {
     label: `${diff >= 0 ? '+' : ''}${diff.toFixed(1)} hPa · ${word}`,
-    explain: `Viimeisen noin kuuden tunnin aikana paine ${word === 'vakaa' ? 'on pysynyt melko vakaana' : word} (${diff >= 0 ? '+' : ''}${diff.toFixed(1)} hPa).`
+    explain: `Seuraavan noin kuuden tunnin ennusteessa ilmanpaine ${word === 'vakaa' ? 'pysyy melko vakaana' : word} (${diff >= 0 ? '+' : ''}${diff.toFixed(1)} hPa).`
   };
 }
 
@@ -2459,7 +2477,7 @@ if (document.readyState === 'loading') {
     'Päivitä':'Uppdatera','Haetaan Bromarvin säätietoja…':'Hämtar väderdata för Bromarv…',
     'Sadetutka päälle':'Slå på nederbördsradarn','Sadetutka pois':'Stäng av nederbördsradarn','▶ Toista':'▶ Spela','⏸ Pysäytä':'⏸ Pausa','Tutka pois päältä':'Radarn är avstängd',
     'Heikko':'Svag','Voimakas':'Kraftig','Bromarv nyt':'Bromarv just nu','Haetaan säätä…':'Hämtar väder…',
-    'Tuuli':'Vind','Puuskat':'Vindbyar','Sade nyt':'Nederbörd nu','Saderiski 1 h':'Regnrisk 1 h','Auringonnousu':'Soluppgång','Auringonlasku':'Solnedgång','Päivän pituus':'Dagens längd','Ilmankosteus':'Luftfuktighet','Kastepiste':'Daggpunkt','Ilmanpaine':'Lufttryck','Paineen muutos 6 h':'Tryckförändring 6 h','Lumen syvyys':'Snödjup','UV-indeksi':'UV-index','UV-indeksi nyt':'UV-index nu','Päivän maksimi --':'Dagens maximum --',
+    'Tuuli':'Vind','Puuskat':'Vindbyar','Sade nyt':'Nederbörd nu','Saderiski 1 h':'Regnrisk 1 h','Auringonnousu':'Soluppgång','Auringonlasku':'Solnedgång','Päivän pituus':'Dagens längd','Ilmankosteus':'Luftfuktighet','Kastepiste':'Daggpunkt','Ilmanpaine':'Lufttryck','Paine-ennuste 6 h':'Tryckprognos 6 h','Lumen syvyys':'Snödjup','UV-indeksi':'UV-index','UV-indeksi nyt':'UV-index nu','Päivän maksimi --':'Dagens maximum --',
     'Ilmanpaine:':'Lufttryck:','Haetaan tietoa…':'Hämtar information…','Maastopalovaroitus':'Varning för terrängbrand','Tarkista virallinen varoituskartta':'Kontrollera den officiella varningskartan',
     'Seuraavat 8 tuntia Bromarvissa':'De kommande 8 timmarna i Bromarv','Ladataan…':'Laddar…','Veneilijän sää':'Väder för båtförare','Haetaan merisäätä…':'Hämtar havsväder…','Lasketaan lähimeren aallokko- ja tuuliolosuhteita.':'Beräknar våg- och vindförhållanden på närliggande havsområde.',
     'Aallonkorkeus':'Våghöjd','Aallon suunta':'Vågriktning','Aallon jakso':'Vågperiod','Meriveden lämpötila':'Havsvattnets temperatur','Pintavirtaus':'Ytström','Meridatan aika':'Tid för havsdata',
