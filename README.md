@@ -4,7 +4,6 @@ Täydellinen GitHub Pages -julkaisupaketti. Pura ZIP ja lataa kaikki tiedostot r
 
 ## Uutta v59
 - FMI Hanko Pikku Kolalahti (FMISID 134253): mitattu merivedenkorkeus N2000-järjestelmässä ja meriveden lämpötila.
-- FMI Hanko Längden (FMISID 654900): mitattu aallonkorkeus, aallon suunta, aallon jakso ja meriveden lämpötila.
 - Havainnot ovat erillinen, valinnainen tietokerros eivätkä vaikuta paikallisen saderiskin tai ukkosriskin laskentaan.
 - FMI-havainnot välimuistitetaan enintään kuudeksi tunniksi; vanha tieto merkitään näkyvästi.
 - Jos FMI-palvelu ei vastaa, muu sääsivu jatkaa toimintaansa normaalisti.
