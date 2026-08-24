@@ -1,18 +1,12 @@
-# Bromarvin paikallissää v57
+# Bromarvin paikallissää v58
 
 Täydellinen GitHub Pages -julkaisupaketti. Pura ZIP ja lataa kaikki tiedostot repositoryn juureen. `assets`-kansio on ladattava kansiorakenne säilyttäen.
 
-# Bromarvin paikallissää v55
+## Uutta v58
+- FMI Hanko Pikku Kolalahti (FMISID 134253): mitattu merivedenkorkeus N2000-järjestelmässä ja meriveden lämpötila.
+- FMI Hanko Längden (FMISID 654900): mitattu aallonkorkeus, aallon suunta, aallon jakso ja meriveden lämpötila.
+- Havainnot ovat erillinen, valinnainen tietokerros eivätkä vaikuta paikallisen saderiskin tai ukkosriskin laskentaan.
+- FMI-havainnot välimuistitetaan enintään kuudeksi tunniksi; vanha tieto merkitään näkyvästi.
+- Jos FMI-palvelu ei vastaa, muu sääsivu jatkaa toimintaansa normaalisti.
 
-Täydellinen GitHub Pages -julkaisupaketti.
-
-## Uutta v55
-Paikallinen 1 tunnin saderiski käyttää sääennustetta ja enintään kuuden lähimmän kelikameran havaintoja. Kameran etäisyys, tienpinnan kosteus sekä sijainti tuulen tulosuuntaan nähden vaikuttavat painotukseen. Peräkkäiset kelikamerapäivitykset mahdollistavat myös kuivasta kosteaksi/märäksi muuttumisen havaitsemisen.
-
-Sadetutka on edelleen käyttäjälle visuaalinen lisävarmistus eikä sitä tulkita automaattisesti prosenttilaskennassa.
-
-
-## v57
-- Seuraavat 8 tuntia -ennusteeseen lisätty näkyvä **Malliennuste**-tunniste.
-- Ruotsinkielisellä puolella tunniste on **Modellprognos**.
-- Paikallinen saderiski säilyy erillisenä **Paikallinen arvio** -lukemana, jotta 1 h paikallisriski ja tuntiennusteen malliriski eivät sekoitu keskenään.
+Kaikki v57:n ominaisuudet säilyvät.
