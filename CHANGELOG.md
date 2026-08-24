@@ -1,3 +1,9 @@
+# Bromarvin paikallissää – Versio 60
+
+- Automaattinen vuodenaikojen peikkokuvien vaihto: kevät 1.3., kesä 1.6., syksy 1.9., talvi 1.12.
+- Päivä- ja yökuvat luetaan assets/Kevat, assets/Kesa, assets/Syksy ja assets/Talvi -kansioista.
+- Vaihto perustuu Europe/Helsinki-aikavyöhykkeen kalenteripäivään ja toimii automaattisesti vuodesta toiseen.
+
 # Bromarvin paikallissää v59 – 24.8.2026
 
 - Korjattu FMI-meridatan puuttuvien arvojen käsittely: null/tyhjä ei enää muutu arvoksi 0.0.
@@ -8,7 +14,7 @@
 
 # Muutosloki
 
-## Versio 59 – 24.8.2026
+## Versio 60 – 24.8.2026
 - Lisätty erillinen **Mitatut merihavainnot** -kortti.
 - Hanko Pikku Kolalahti, FMI mareografi (FMISID 134253): merivedenkorkeus N2000-järjestelmässä ja meriveden lämpötila.
 - Mitatut FMI-havainnot näytetään erillään Open-Meteon Bromarvin malliennusteesta.
