@@ -1745,7 +1745,7 @@ function convertMetNoToOpenMeteo(json) {
     hourly.weather_code.push(metSymbolToWmo(symbol));
     hourly.wind_speed_10m.push(Number(instant.wind_speed));
     hourly.wind_direction_10m.push(Number(instant.wind_from_direction));
-    hourly.wind_gusts_10m.push(Number.isFinite(Number(instant.wind_speed_of_gust)) ? Number(instant.wind_speed_of_gust) : Number(instant.wind_speed));
+    hourly.wind_gusts_10m.push(Number.isFinite(Number(instant.wind_speed_of_gust)) ? Number(instant.wind_speed_of_gust) : null);
   }
   const i = 0;
   const first = rows[0];
@@ -2102,7 +2102,7 @@ function renderMarkers() {
     const w = weatherInfo(Number(c.weather_code), c.is_day);
     const prob1h = effectivePrecipitationProbability(item.data.hourly, 0);
     const popup = `<strong>${item.point.name}</strong><br>${w.icon} ${w.label}, ${Number(c.temperature_2m).toFixed(1)} °C<br>
-      Tuuli ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s, puuskat ${Number(c.wind_gusts_10m).toFixed(1)} m/s<br>
+      Tuuli ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s, puuskat ${(c.wind_gusts_10m !== null && c.wind_gusts_10m !== undefined && c.wind_gusts_10m !== '' && Number.isFinite(Number(c.wind_gusts_10m))) ? Number(c.wind_gusts_10m).toFixed(1) + ' m/s' : 'Ei saatavilla'}<br>
       Sade nyt ${Number(c.precipitation || 0).toFixed(1)} mm · 1 h saderiski ${Math.round(prob1h)} %`;
     const marker = L.marker([item.point.lat, item.point.lon], { icon }).addTo(map).bindPopup(popup);
     weatherMarkers.push(marker);
@@ -2199,7 +2199,8 @@ function renderCenter() {
   const windSpeed = Number(c.wind_speed_10m);
   const arrowRotation = Number.isFinite(windDir) ? (windDir + 180) % 360 : 0;
   document.getElementById('mainWind').innerHTML = `<span class="current-wind"><span class="wind-arrow" style="transform:rotate(${arrowRotation}deg)">↑</span><span>${windFromName(windDir)} ${windSpeed.toFixed(1)} m/s</span></span>`;
-  document.getElementById('mainGust').textContent = `${Number(c.wind_gusts_10m).toFixed(1)} m/s`;
+  const currentGust = (c.wind_gusts_10m === null || c.wind_gusts_10m === undefined || c.wind_gusts_10m === '') ? NaN : Number(c.wind_gusts_10m);
+  document.getElementById('mainGust').textContent = Number.isFinite(currentGust) ? `${currentGust.toFixed(1)} m/s` : 'Ei saatavilla';
   document.getElementById('mainRain').textContent = `${Number(c.precipitation || 0).toFixed(1)} mm`;
   document.getElementById('mainHumidity').textContent = `${Math.round(c.relative_humidity_2m)} %`;
   const hourly = d.hourly || {};
@@ -2624,7 +2625,8 @@ function renderHarvest() {
     const humidity = Number(h.relative_humidity_2m[i] || 0);
     const rain = Number(h.precipitation[i] || 0);
     const prob = effectivePrecipitationProbability(h, i);
-    const gust = Number(h.wind_gusts_10m[i] || 0);
+    const gustRaw = h.wind_gusts_10m[i];
+    const gust = (gustRaw === null || gustRaw === undefined || gustRaw === '') ? NaN : Number(gustRaw);
     const wind = Number(h.wind_speed_10m[i] || 0);
     const cloud = Number(h.cloud_cover[i] || 0);
     const hour = date.getHours();
@@ -2633,8 +2635,10 @@ function renderHarvest() {
 
     // Puintiin/heinäntekoon kelvollinen tunti: ei merkittävää sadetta,
     // ilma ei ole liian kosteaa, kastepiste ei ole liian lähellä ja puuskat pysyvät kohtuullisina.
-    const good = daylightWork && prob < 30 && rain < 0.1 && humidity < 80 && dewSpread > 3 && gust < 12;
-    const acceptable = daylightWork && prob < 40 && rain < 0.1 && humidity < 85 && dewSpread > 2 && gust < 14;
+    const gustGood = !Number.isFinite(gust) || gust < 12;
+    const gustAcceptable = !Number.isFinite(gust) || gust < 14;
+    const good = daylightWork && prob < 30 && rain < 0.1 && humidity < 80 && dewSpread > 3 && gustGood;
+    const acceptable = daylightWork && prob < 40 && rain < 0.1 && humidity < 85 && dewSpread > 2 && gustAcceptable;
     return { time:date, prob, rain, gust, wind, humidity, dew, temp, dewSpread, cloud, good, acceptable };
   });
 
