@@ -1,3 +1,12 @@
+# Bromarvin paikallissää – Versio 61 – 1.9.2026
+
+- Nykyinen 8 tunnin tuntiennuste säilytetty ennallaan.
+- Lisätty erillinen 3 vuorokauden ennuste: huominen + kaksi seuraavaa päivää.
+- Näytetään päivän minimi- ja maksimilämpötila, säätila, suurin saderiski, sademäärä ja voimakkain keskituuli.
+- Pidempi ennuste muodostetaan samasta MET Norway Locationforecast -datasta ilman uutta pakollista sääpalvelua.
+- MET Norway -välimuistin avain päivitetty, jotta v61 saa riittävän pitkän ennusteaikasarjan heti käyttöön.
+- Suomen- ja ruotsinkieliset tekstit lisätty.
+
 # Bromarvin paikallissää – Versio 60
 
 - Automaattinen vuodenaikojen peikkokuvien vaihto: kevät 1.3., kesä 1.6., syksy 1.9., talvi 1.12.
