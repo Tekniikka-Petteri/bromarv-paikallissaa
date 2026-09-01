@@ -807,6 +807,7 @@ main > * { order:initial !important; width:100%; min-width:0; }
 <div class="metric"><small>Auringonlasku</small><strong id="sunsetTime">--</strong></div>
 <div class="metric"><small>Päivän pituus</small><strong id="dayLength">--</strong></div>
 <div class="metric"><small>Ilmankosteus</small><strong id="mainHumidity">--</strong></div>
+<div class="metric"><small>Tuntuu iholla</small><strong id="mainFeelsLike">--</strong></div>
 <div class="metric"><small>Kastepiste</small><strong id="mainDewPoint">--</strong></div>
 <div class="metric"><small>Ilmanpaine</small><strong id="mainPressure">--</strong></div>
 <div class="metric"><small>Paine-ennuste 6 h</small><strong id="mainPressureTrend">--</strong></div>
@@ -2104,9 +2105,17 @@ function renderMarkers() {
     const c = item.data.current;
     const w = weatherInfo(Number(c.weather_code), c.is_day);
     const prob1h = effectivePrecipitationProbability(item.data.hourly, 0);
-    const popup = `<strong>${item.point.name}</strong><br>${w.icon} ${w.label}, ${Number(c.temperature_2m).toFixed(1)} °C<br>
-      Tuuli ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s, puuskat ${(c.wind_gusts_10m !== null && c.wind_gusts_10m !== undefined && c.wind_gusts_10m !== '' && Number.isFinite(Number(c.wind_gusts_10m))) ? Number(c.wind_gusts_10m).toFixed(1) + ' m/s' : 'Ei saatavilla'}<br>
-      Sade nyt ${Number(c.precipitation || 0).toFixed(1)} mm · 1 h saderiski ${Math.round(prob1h)} %`;
+    const popupGust = item.point.center
+      ? effectiveCurrentGust(c)
+      : ((c.wind_gusts_10m !== null && c.wind_gusts_10m !== undefined && c.wind_gusts_10m !== '' && Number.isFinite(Number(c.wind_gusts_10m))) ? Number(c.wind_gusts_10m) : NaN);
+    const popupFeels = item.point.center ? currentOpenMeteoFeelsLike() : NaN;
+    const gustText = Number.isFinite(popupGust) ? `${popupGust.toFixed(1)} m/s` : (currentLanguage() === 'sv' ? 'Inte tillgänglig' : 'Ei saatavilla');
+    const feelsText = item.point.center && Number.isFinite(popupFeels)
+      ? `<br>${currentLanguage() === 'sv' ? 'Känns som' : 'Tuntuu iholla'} ${popupFeels.toFixed(1)} °C`
+      : '';
+    const popup = `<strong>${item.point.name}</strong><br>${w.icon} ${w.label}, ${Number(c.temperature_2m).toFixed(1)} °C${feelsText}<br>
+      ${currentLanguage() === 'sv' ? 'Vind' : 'Tuuli'} ${windFromName(Number(c.wind_direction_10m))} ${Number(c.wind_speed_10m).toFixed(1)} m/s, ${currentLanguage() === 'sv' ? 'vindbyar' : 'puuskat'} ${gustText}<br>
+      ${currentLanguage() === 'sv' ? 'Nederbörd nu' : 'Sade nyt'} ${Number(c.precipitation || 0).toFixed(1)} mm · 1 h ${currentLanguage() === 'sv' ? 'regnrisk' : 'saderiski'} ${Math.round(prob1h)} %`;
     const marker = L.marker([item.point.lat, item.point.lon], { icon }).addTo(map).bindPopup(popup);
     weatherMarkers.push(marker);
   });
@@ -2206,6 +2215,9 @@ function renderCenter() {
   document.getElementById('mainGust').textContent = Number.isFinite(currentGust) ? `${currentGust.toFixed(1)} m/s` : (currentLanguage() === 'sv' ? 'Inte tillgänglig' : 'Ei saatavilla');
   document.getElementById('mainRain').textContent = `${Number(c.precipitation || 0).toFixed(1)} mm`;
   document.getElementById('mainHumidity').textContent = `${Math.round(c.relative_humidity_2m)} %`;
+  const feelsLike = currentOpenMeteoFeelsLike();
+  const feelsEl = document.getElementById('mainFeelsLike');
+  if (feelsEl) feelsEl.textContent = Number.isFinite(feelsLike) ? `${feelsLike.toFixed(1)} °C` : (currentLanguage() === 'sv' ? 'Inte tillgänglig' : 'Ei saatavilla');
   const hourly = d.hourly || {};
   const currentTime = new Date(c.time).getTime();
   let currentIndex = (hourly.time || []).findIndex(t => new Date(t).getTime() >= currentTime);
@@ -2407,6 +2419,11 @@ function currentOpenMeteoGust() {
   return Number.isFinite(gust) ? gust : NaN;
 }
 
+function currentOpenMeteoFeelsLike() {
+  const feels = Number(openMeteoGustData?.current?.apparent_temperature);
+  return Number.isFinite(feels) ? feels : NaN;
+}
+
 function effectiveCurrentGust(current) {
   const wind = Number(current?.wind_speed_10m);
   const gust = currentOpenMeteoGust();
@@ -2420,13 +2437,13 @@ async function fetchOpenMeteoGust() {
   const cached = loadCache(GUST_CACHE_KEY);
   if (cached && Date.now() - cached.savedAt < GUST_CACHE_MAX_AGE) {
     openMeteoGustData = cached.value;
-    if (allWeather.length) { renderCenter(); updateConditionsSummary(); }
+    if (allWeather.length) { renderCenter(); updateConditionsSummary(); renderMarkers(); }
   }
 
   const params = new URLSearchParams({
     latitude: CENTER.lat.toFixed(5),
     longitude: CENTER.lon.toFixed(5),
-    current: 'wind_gusts_10m',
+    current: 'wind_gusts_10m,apparent_temperature',
     timezone: 'Europe/Helsinki',
     wind_speed_unit: 'ms'
   });
@@ -2441,7 +2458,7 @@ async function fetchOpenMeteoGust() {
     console.warn('Open-Meteo puuskadatan haku epäonnistui.', err);
     if (!openMeteoGustData && cached) openMeteoGustData = cached.value;
   }
-  if (allWeather.length) { renderCenter(); updateConditionsSummary(); }
+  if (allWeather.length) { renderCenter(); updateConditionsSummary(); renderMarkers(); }
 }
 
 function visibilityText(km) {
@@ -3061,7 +3078,7 @@ if (document.readyState === 'loading') {
     'Päivitä':'Uppdatera','Haetaan Bromarvin säätietoja…':'Hämtar väderdata för Bromarv…',
     'Sadetutka päälle':'Slå på nederbördsradarn','Sadetutka pois':'Stäng av nederbördsradarn','▶ Toista':'▶ Spela','⏸ Pysäytä':'⏸ Pausa','Tutka pois päältä':'Radarn är avstängd',
     'Heikko':'Svag','Voimakas':'Kraftig','Bromarv nyt':'Bromarv just nu','Haetaan säätä…':'Hämtar väder…',
-    'Tuuli':'Vind','Puuskat':'Vindbyar','Sade nyt':'Nederbörd nu','Saderiski 1 h':'Regnrisk 1 h','Paikallinen saderiski 1 h':'Lokal regnrisk 1 h','Ennuste + kelikamerat + tuuli':'Prognos + väglagskameror + vind','Auringonnousu':'Soluppgång','Auringonlasku':'Solnedgång','Päivän pituus':'Dagens längd','Ilmankosteus':'Luftfuktighet','Kastepiste':'Daggpunkt','Ilmanpaine':'Lufttryck','Paine-ennuste 6 h':'Tryckförändring 6 h','Lumen syvyys':'Snödjup','UV-indeksi':'UV-index','UV-indeksi nyt':'UV-index nu','Päivän maksimi --':'Dagens maximum --',
+    'Tuuli':'Vind','Puuskat':'Vindbyar','Tuntuu iholla':'Känns som','Sade nyt':'Nederbörd nu','Saderiski 1 h':'Regnrisk 1 h','Paikallinen saderiski 1 h':'Lokal regnrisk 1 h','Ennuste + kelikamerat + tuuli':'Prognos + väglagskameror + vind','Auringonnousu':'Soluppgång','Auringonlasku':'Solnedgång','Päivän pituus':'Dagens längd','Ilmankosteus':'Luftfuktighet','Kastepiste':'Daggpunkt','Ilmanpaine':'Lufttryck','Paine-ennuste 6 h':'Tryckförändring 6 h','Lumen syvyys':'Snödjup','UV-indeksi':'UV-index','UV-indeksi nyt':'UV-index nu','Päivän maksimi --':'Dagens maximum --',
     'Ilmanpaine:':'Lufttryck:','Haetaan tietoa…':'Hämtar information…','Maastopalovaroitus':'Varning för terrängbrand','Tarkista virallinen varoituskartta':'Kontrollera den officiella varningskartan',
     'Seuraavat 8 tuntia Bromarvissa':'De kommande 8 timmarna i Bromarv','Ladataan…':'Laddar…','Veneilijän sää':'Väder för båtförare','Haetaan merisäätä…':'Hämtar havsväder…','Lasketaan lähimeren aallokko- ja tuuliolosuhteita.':'Beräknar våg- och vindförhållanden på närliggande havsområde.',
     'Aallonkorkeus':'Våghöjd','Näkyvyys':'Sikt','Aallon suunta':'Vågriktning','Aallon jakso':'Vågperiod','Meriveden lämpötila':'Havsvattnets temperatur','Pintavirtaus':'Ytström','Meridatan aika':'Tid för havsdata','Mitatut merihavainnot':'Uppmätta havsobservationer','Mitattu':'Uppmätt','Ilmatieteen laitoksen mitattuja havaintoja.':'Uppmätta observationer från Meteorologiska institutet.','Haetaan Ilmatieteen laitoksen avoimia merihavaintoja…':'Hämtar Meteorologiska institutets öppna havsobservationer…','Meriveden korkeus':'Havsvattenstånd','Havaintoaika':'Observationstid','FMI mareografi · FMISID 134253':'FMI mareograf · FMISID 134253',
