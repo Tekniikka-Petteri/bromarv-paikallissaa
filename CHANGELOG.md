@@ -32,3 +32,10 @@
 - Yli 60 min vanha mareografihavainto ja yli 90 min vanha poijuhavainto merkitään vanhaksi.
 - Käyttöliittymän suomen- ja ruotsinkieliset tekstit päivitetty v59:aan.
 - Kaikki v57:n ominaisuudet säilytetty.
+
+### v61 SEO-viilaus 1.9.2026
+- Päivitetty hakukoneotsikko ja meta-kuvaus vastaamaan nykyisiä sääominaisuuksia.
+- Lisätty luonnollinen sisältö Bromarvin sää-, väder-, sadetutka-, merisää- ja paikallissää-hakuihin.
+- Lisätty Bromarvin Mille- ja Nille-peikot näkyvään sisältöön, kuvan alt-teksteihin ja rakenteiseen dataan.
+- Päivitetty Schema.org WebSite/WebPage/WebApplication-tiedot versioon 61.
+- Päivitetty sitemap.xml:n lastmod.
