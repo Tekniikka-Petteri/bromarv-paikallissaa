@@ -1650,7 +1650,7 @@ function renderMarine() {
   const currentDir = marineCurrentValue('ocean_current_direction');
   const center = allWeather[0]?.data?.current || {};
   const wind = Number(center.wind_speed_10m);
-  const gust = Number(center.wind_gusts_10m);
+  const gust = effectiveCurrentGust(center);
   const windKn = Number.isFinite(wind) ? wind * 1.94384 : NaN;
   const gustKn = Number.isFinite(gust) ? gust * 1.94384 : NaN;
 
@@ -2475,7 +2475,7 @@ async function fetchOpenMeteoGust() {
   const cached = loadCache(GUST_CACHE_KEY);
   if (cached && Date.now() - cached.savedAt < GUST_CACHE_MAX_AGE) {
     openMeteoGustData = cached.value;
-    if (allWeather.length) { renderCenter(); updateConditionsSummary(); renderMarkers(); }
+    if (allWeather.length) { renderCenter(); updateConditionsSummary(); renderMarkers(); if (marineData) renderMarine(); }
   }
 
   const params = new URLSearchParams({
@@ -2496,7 +2496,7 @@ async function fetchOpenMeteoGust() {
     console.warn('Open-Meteo puuskadatan haku epäonnistui.', err);
     if (!openMeteoGustData && cached) openMeteoGustData = cached.value;
   }
-  if (allWeather.length) { renderCenter(); updateConditionsSummary(); renderMarkers(); }
+  if (allWeather.length) { renderCenter(); updateConditionsSummary(); renderMarkers(); if (marineData) renderMarine(); }
 }
 
 function visibilityText(km) {
