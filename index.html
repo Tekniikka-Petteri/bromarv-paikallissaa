@@ -3149,13 +3149,12 @@ updateHarvestVisibility();
 
 
 const ELECTRICITY_PRICE_URLS = [
-  { url:'https://nordapi.ee/api/v1/finland/spot-hinta/forward', kind:'spot' },
-  { url:'https://nordapi.ee/api/v1/finland/spot-hinta/today', kind:'spot' },
-  { url:'https://nordapi.ee/api/v1/finland/electricity/prices', kind:'porssisahko' },
+  { url:'https://api.spot-hinta.fi/TodayAndDayForward?region=FI&priceResolution=60', kind:'spot' },
+  { url:'https://api.spot-hinta.fi/Today?region=FI&priceResolution=60', kind:'spot' },
   { url:'https://api.porssisahko.net/v2/latest-prices.json', kind:'porssisahko' },
   { url:'https://api.porssisahko.net/v1/latest-prices.json', kind:'porssisahko' }
 ];
-const ELECTRICITY_CACHE_KEY = 'bromarv-electricity-v62c';
+const ELECTRICITY_CACHE_KEY = 'bromarv-electricity-v62d';
 const ELECTRICITY_CACHE_MS = 12 * 60 * 60 * 1000;
 let electricityPrices = [];
 let electricitySelectedDay = 'today';
@@ -3202,8 +3201,8 @@ function normalizeSpotHintaPayload(payload) {
     const start = new Date(dt);
     if (!Number.isFinite(start.getTime())) return null;
     const end = new Date(start.getTime() + 3600000);
-    // spot-hinta.fi reports EUR/kWh. Convert to c/kWh for this UI.
-    return { price:Number(price) * 100, startDate:start.toISOString(), endDate:end.toISOString() };
+    // Spot-hinta.fi PriceWithTax is already the consumer price used by the service in c/kWh.
+    return { price:Number(price), startDate:start.toISOString(), endDate:end.toISOString() };
   }).filter(Boolean).sort((a,b)=>new Date(a.startDate)-new Date(b.startDate));
 }
 function normalizePorssisahkoPayload(payload) {
