@@ -1,9 +1,9 @@
 # Versio 62 – 8.9.2026
 
-- Uusi Sähkön hinta -osio sivun lopussa.
+- Uusi Pörssisähkö -osio sivun lopussa.
 - Suomen spot-hinta nyt, päivän halvin ja kallein tunti sekä 24 tunnin hintanäkymä.
 - Huomisen hinnat näytetään, kun ne ovat saatavilla.
-- Hintadata: Pörssisähkö.net / Suomen Nord Pool -spot-hinta, ALV mukana.
+- Hintadata: Spot-hinta.fi / NordAPI / Suomen Nord Pool -spot-hinta, ALV mukana.
 - Sähköhintapalvelun häiriö ei vaikuta sääsivun toimintaan.
 
 # Versio 61 – 1.9.2026

@@ -3,7 +3,7 @@
 Täydellinen GitHub Pages -julkaisupaketti. Pura ZIP ja lataa kaikki tiedostot repositoryn juureen. `assets`-kansio on ladattava kansiorakenne säilyttäen.
 
 ## Uutta v62
-- Sivun lopussa uusi visuaalisesti erottuva Sähkön hinta -osio.
+- Sivun lopussa uusi visuaalisesti erottuva Pörssisähkö -osio.
 - Nykyinen spot-hinta, päivän halvin ja kallein tunti sekä koko päivän tuntihinnat.
 - Huomisen hinnat tulevat näkyviin niiden julkaisemisen jälkeen.
 - Hintadata sisältää ALV:n mutta ei myyjän marginaalia, sähkönsiirtoa, sähköveroa tai muita sopimuskohtaisia maksuja.

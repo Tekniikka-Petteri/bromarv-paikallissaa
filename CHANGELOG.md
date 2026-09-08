@@ -1,7 +1,7 @@
 # Bromarvin paikallissää – Versio 62 – 8.9.2026
 
-- Lisätty sivun loppuun ulkoasultaan erottuva **Sähkön hinta** -osio.
-- Hintadata haetaan Pörssisähkö.netin avoimesta rajapinnasta; hinnat perustuvat Suomen Nord Pool -spot-hintaan.
+- Lisätty sivun loppuun ulkoasultaan erottuva **Pörssisähkö** -osio.
+- Hintadata haetaan Spot-hinta.fi / NordAPIin avoimesta rajapinnasta; hinnat perustuvat Suomen Nord Pool -spot-hintaan.
 - Näytetään nykyisen tunnin hinta, päivän halvin ja kallein tunti sekä kaikki päivän tuntihinnat.
 - Tuntihinta on 1.10.2025 alkaen neljän 15 minuutin spot-hinnan keskiarvo ja sisältää ALV:n.
 - Huomisen hinnat voi avata, kun ne ovat saatavilla rajapinnasta.
@@ -18,4 +18,4 @@
 - Näytetään päivän minimi- ja maksimilämpötila, säätila, suurin saderiski, sademäärä ja voimakkain keskituuli.
 - Pidempi ennuste muodostetaan samasta MET Norway Locationforecast -datasta ilman uutta pakollista sääpalvelua.
 - Suomen- ja ruotsinkieliset tekstit lisätty.
-- Korjattu sähkön hintadatan haku: ensisijainen Pörssisähkö.net API v2, API v1 varalähteenä; 15 minuutin hinnat muunnetaan tuntikeskiarvoiksi.
+- Korjattu sähkön hintadatan haku: ensisijainen Spot-hinta.fi / NordAPI API v2, API v1 varalähteenä; 15 minuutin hinnat muunnetaan tuntikeskiarvoiksi.
