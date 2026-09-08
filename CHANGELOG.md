@@ -19,3 +19,5 @@
 - Pidempi ennuste muodostetaan samasta MET Norway Locationforecast -datasta ilman uutta pakollista sääpalvelua.
 - Suomen- ja ruotsinkieliset tekstit lisätty.
 - Korjattu sähkön hintadatan haku: ensisijainen Spot-hinta.fi / NordAPI API v2, API v1 varalähteenä; 15 minuutin hinnat muunnetaan tuntikeskiarvoiksi.
+
+- Korjattu Pörssisähkö-osion Spot-hinta.fi-yksikkömuunnos: €/kWh → c/kWh (×100).
