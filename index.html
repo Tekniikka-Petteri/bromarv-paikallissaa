@@ -3148,8 +3148,11 @@ document.getElementById('radarSlider').oninput = e => { if (radarEnabled) { stop
 updateHarvestVisibility();
 
 
-const ELECTRICITY_PRICE_URL = 'https://api.porssisahko.net/v1/latest-prices.json';
-const ELECTRICITY_CACHE_KEY = 'bromarv-electricity-v62';
+const ELECTRICITY_PRICE_URLS = [
+  'https://api.porssisahko.net/v2/latest-prices.json',
+  'https://api.porssisahko.net/v1/latest-prices.json'
+];
+const ELECTRICITY_CACHE_KEY = 'bromarv-electricity-v62b';
 const ELECTRICITY_CACHE_MS = 12 * 60 * 60 * 1000;
 let electricityPrices = [];
 let electricitySelectedDay = 'today';
@@ -3169,6 +3172,36 @@ function energyDateLabel(key, sv=false) {
 function energyFmt(v) {
   if (!Number.isFinite(Number(v))) return '--';
   return Number(v).toLocaleString(currentLanguage()==='sv'?'sv-SE':'fi-FI',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function normalizeElectricityPrices(rawPrices) {
+  const valid=(Array.isArray(rawPrices)?rawPrices:[]).filter(p=>
+    Number.isFinite(Number(p?.price)) && Number.isFinite(new Date(p?.startDate).getTime()) && Number.isFinite(new Date(p?.endDate).getTime())
+  );
+  if(!valid.length) return [];
+  const durations=valid.map(p=>new Date(p.endDate)-new Date(p.startDate)).filter(ms=>ms>0);
+  const typical=durations.length ? durations.sort((a,b)=>a-b)[Math.floor(durations.length/2)] : 3600000;
+  // API v2 returns 15-minute prices. Convert them to hourly averages so the UI remains hourly.
+  if(typical <= 20*60*1000 || valid.length > 80){
+    const groups=new Map();
+    for(const p of valid){
+      const start=new Date(p.startDate);
+      const hourStartMs=Math.floor(start.getTime()/3600000)*3600000;
+      const key=String(hourStartMs);
+      if(!groups.has(key)) groups.set(key,[]);
+      groups.get(key).push(p);
+    }
+    return [...groups.entries()].map(([key,items])=>{
+      const startMs=Number(key);
+      const vals=items.map(x=>Number(x.price)).filter(Number.isFinite);
+      return {
+        price: vals.reduce((a,b)=>a+b,0)/vals.length,
+        startDate: new Date(startMs).toISOString(),
+        endDate: new Date(startMs+3600000).toISOString()
+      };
+    }).sort((a,b)=>new Date(a.startDate)-new Date(b.startDate));
+  }
+  return valid.map(p=>({price:Number(p.price),startDate:p.startDate,endDate:p.endDate}))
+    .sort((a,b)=>new Date(a.startDate)-new Date(b.startDate));
 }
 function energyDayEntries(dayKey) {
   return electricityPrices.filter(p => fiDateParts(new Date(p.startDate)) === dayKey).sort((a,b)=>new Date(a.startDate)-new Date(b.startDate));
@@ -3235,17 +3268,25 @@ async function fetchElectricityPrices(force=false) {
     renderElectricity();
     return;
   }
-  try{
-    const data=await fetchJson(ELECTRICITY_PRICE_URL,'Sähkön hintapalvelu');
-    electricityPrices=Array.isArray(data?.prices)?data.prices:[];
-    if(electricityPrices.length) saveCache(ELECTRICITY_CACHE_KEY,{prices:electricityPrices});
-    renderElectricity();
-  }catch(err){
-    console.warn('Sähkön hintatietojen haku epäonnistui.',err);
-    const stale=loadCache(ELECTRICITY_CACHE_KEY);
-    if(stale){electricityPrices=Array.isArray(stale.value?.prices)?stale.value.prices:[];renderElectricity();return;}
-    renderElectricity();
+  let lastErr=null;
+  for(const url of ELECTRICITY_PRICE_URLS){
+    try{
+      const data=await fetchJson(url,'Sähkön hintapalvelu');
+      const normalized=normalizeElectricityPrices(data?.prices);
+      if(!normalized.length) throw new Error('Hintapalvelu ei palauttanut käyttökelpoisia hintoja');
+      electricityPrices=normalized;
+      saveCache(ELECTRICITY_CACHE_KEY,{prices:electricityPrices,source:url});
+      renderElectricity();
+      return;
+    }catch(err){
+      lastErr=err;
+      console.warn('Sähkön hintatietojen haku epäonnistui lähteestä '+url,err);
+    }
   }
+  console.warn('Kaikki sähkön hintalähteet epäonnistuivat.',lastErr);
+  const stale=loadCache(ELECTRICITY_CACHE_KEY);
+  if(stale){electricityPrices=Array.isArray(stale.value?.prices)?stale.value.prices:[];renderElectricity();return;}
+  renderElectricity();
 }
 
 async function startApp() {

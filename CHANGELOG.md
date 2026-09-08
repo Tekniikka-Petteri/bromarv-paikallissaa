@@ -18,3 +18,4 @@
 - Näytetään päivän minimi- ja maksimilämpötila, säätila, suurin saderiski, sademäärä ja voimakkain keskituuli.
 - Pidempi ennuste muodostetaan samasta MET Norway Locationforecast -datasta ilman uutta pakollista sääpalvelua.
 - Suomen- ja ruotsinkieliset tekstit lisätty.
+- Korjattu sähkön hintadatan haku: ensisijainen Pörssisähkö.net API v2, API v1 varalähteenä; 15 minuutin hinnat muunnetaan tuntikeskiarvoiksi.
