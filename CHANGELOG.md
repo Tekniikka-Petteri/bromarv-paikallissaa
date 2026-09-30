@@ -1,4 +1,5 @@
 # Bromarvin paikallissää – Versio 62 – 8.9.2026
+- Korjattu sääikonien päivä/yö-logiikka: nykyhetki ja 8 tunnin ennuste käyttävät nyt Bromarvin todellista auringonnousua ja auringonlaskua kiinteiden kellonaikojen sijaan.
 
 - Lisätty sivun loppuun ulkoasultaan erottuva **Pörssisähkö** -osio.
 - Hintadata haetaan Spot-hinta.fi / NordAPIin avoimesta rajapinnasta; hinnat perustuvat Suomen Nord Pool -spot-hintaan.

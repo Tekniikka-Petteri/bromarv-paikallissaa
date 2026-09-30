@@ -1835,7 +1835,7 @@ function convertMetNoToOpenMeteo(json) {
       wind_speed_10m: hourly.wind_speed_10m[i],
       wind_direction_10m: hourly.wind_direction_10m[i],
       wind_gusts_10m: hourly.wind_gusts_10m[i],
-      is_day: hour >= 6 && hour < 22 ? 1 : 0,
+      is_day: isDayAtBromarv(new Date(first.time)) ? 1 : 0,
       uv_index: null,
       pressure_msl: hourly.pressure_msl[i],
       snow_depth: null
@@ -2246,6 +2246,23 @@ function solarTimesForDate(date, lat, lon) {
   return { sunrise: fromJulian(Jrise), sunset: fromJulian(Jset) };
 }
 
+function helsinkiCalendarDate(date) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Helsinki', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(date);
+  const get = type => Number(parts.find(p => p.type === type)?.value || 0);
+  return new Date(get('year'), Math.max(0, get('month') - 1), get('day'), 12, 0, 0, 0);
+}
+
+function isDayAtBromarv(date) {
+  const moment = date instanceof Date ? date : new Date(date);
+  if (Number.isNaN(moment.getTime())) return true;
+  const localCalendarDate = helsinkiCalendarDate(moment);
+  const solar = solarTimesForDate(localCalendarDate, CENTER.lat, CENTER.lon);
+  if (!solar) return true;
+  return moment >= solar.sunrise && moment < solar.sunset;
+}
+
 function renderSunTimes() {
   const result = solarTimesForDate(new Date(), CENTER.lat, CENTER.lon);
   const riseEl = document.getElementById('sunriseTime');
@@ -2262,13 +2279,15 @@ function renderSunTimes() {
 function renderCenter() {
   const d = allWeather[0].data;
   const c = d.current;
-  const w = weatherInfo(Number(c.weather_code), c.is_day);
+  const currentIsDay = isDayAtBromarv(new Date(c.time)) ? 1 : 0;
+  c.is_day = currentIsDay;
+  const w = weatherInfo(Number(c.weather_code), currentIsDay);
   const temp = document.getElementById('mainTemp');
   temp.classList.remove('loading');
   temp.textContent = `${Number(c.temperature_2m).toFixed(1)}°`;
   document.getElementById('mainIcon').textContent = w.icon;
   document.getElementById('mainLabel').textContent = w.label;
-  updateHeroImage(c.is_day);
+  updateHeroImage(currentIsDay);
   renderSunTimes();
   const windDir = Number(c.wind_direction_10m);
   const windSpeed = Number(c.wind_speed_10m);
@@ -2774,7 +2793,7 @@ function renderTimeline() {
   const html = h.time.slice(start,start+8).map((time, offset) => {
     const i = start + offset;
     const date = new Date(time);
-    const isDay = date.getHours() >= 7 && date.getHours() < 22 ? 1 : 0;
+    const isDay = isDayAtBromarv(date) ? 1 : 0;
     const w = weatherInfo(Number(h.weather_code[i]), isDay);
     return `<div class="hour"><strong>${date.toLocaleTimeString('fi-FI',{hour:'2-digit',minute:'2-digit'})}</strong>
       <div class="hicon" title="${w.label}" aria-label="${w.label}">${timelineWeatherIcon(h.weather_code[i], isDay)}</div><div>${Math.round(h.temperature_2m[i])} °C</div>
