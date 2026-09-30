@@ -939,7 +939,7 @@ main > * { order:initial !important; width:100%; min-width:0; }
 </div>
 </div>
 <div class="sea-observation-note"><strong>Ilmatieteen laitoksen mitattuja havaintoja.</strong> Havainnot täydentävät Bromarvin malliennustetta, mutta eivät muuta paikallisen saderiskin tai ukkosriskin laskentaa. Jos FMI-data puuttuu tai yhteys katkeaa, muu sääsivu jatkaa toimintaansa normaalisti. Avoin data: Ilmatieteen laitos, CC BY 4.0.</div>
-</section><section class="card wide" id="pollenCard">
+</section><section class="card wide" id="pollenCard" hidden>
 <h3>Siitepöly Bromarvissa <span class="source-badge model">Malliennuste</span></h3>
 <div class="weather-label" id="pollenUpdated">Haetaan siitepölyennustetta…</div>
 <div class="pollen-grid">
@@ -2417,8 +2417,16 @@ function pollenNext24hMax(hourly, key) {
   return selected.length ? Math.max(...selected) : NaN;
 }
 
+function setPollenCardVisible(visible) {
+  const card = document.getElementById('pollenCard');
+  if (card) card.hidden = !visible;
+}
+
 function renderAirQuality() {
-  if (!airQualityData?.hourly) return;
+  if (!airQualityData?.hourly) {
+    setPollenCardVisible(false);
+    return;
+  }
   const h = airQualityData.hourly;
   const values = {
     birch: pollenNext24hMax(h, 'birch_pollen'),
@@ -2442,6 +2450,11 @@ function renderAirQuality() {
     }
     finite = [];
   }
+  // Jos kaikille lajeille saadaan vain epäluotettava nollatulos tai mitään
+  // käyttökelpoista arvoa ei ole, piilotetaan koko siitepölyosio.
+  // Osio palautuu automaattisesti, kun yksikin luotettava arvo saadaan.
+  setPollenCardVisible(finite.length > 0);
+
   const max = finite.length ? Math.max(...finite) : NaN;
   const level = pollenLevel(max);
   const summary = document.getElementById('pollenSummary');
@@ -2610,6 +2623,7 @@ async function fetchAirQuality() {
       renderAirQuality();
       document.getElementById('pollenUpdated').textContent = 'Näytetään viimeksi tallennetut siitepölytiedot';
     } else if (!airQualityData) {
+      setPollenCardVisible(false);
       document.getElementById('pollenUpdated').textContent = 'Siitepölytietoja ei saatu';
       document.getElementById('pollenSummary').textContent = 'Tarkista internet-yhteys ja päivitä sivu myöhemmin.';
     }

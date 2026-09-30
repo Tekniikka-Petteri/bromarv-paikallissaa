@@ -1,3 +1,8 @@
+
+## v62 – siitepölyosion automaattinen piilotus
+- Siitepölyosio piilotetaan, jos kaikille lajeille saadaan vain epäluotettavaa tietoa tai data puuttuu.
+- Osio palaa automaattisesti näkyviin, kun vähintään yhdelle lajille saadaan käyttökelpoinen ennuste.
+
 # Bromarvin paikallissää – Versio 62 – 8.9.2026
 - Korjattu sääikonien päivä/yö-logiikka: nykyhetki ja 8 tunnin ennuste käyttävät nyt Bromarvin todellista auringonnousua ja auringonlaskua kiinteiden kellonaikojen sijaan.
 
